@@ -1,0 +1,26 @@
+# Gradle files
+.gradle/
+build/
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Tool local database index
+.library-insight-index.json
+
+# Local AI Context exports
+ai-context.json
+
+# Local properties
+local.properties
