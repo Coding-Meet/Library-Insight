@@ -70,6 +70,12 @@ Scan a JAR, AAR, or directory and save the API index to a local database (`.libr
 
 # Scan a directory of libraries
 ./library-insight scan app/libs/ --db my-custom-db.json
+
+# Scan Maven coordinate directly (downloads binary + sources automatically from Maven Central/Google Maven/SoftBank)
+./library-insight scan com.aldebaran:qisdk:1.7.5
+
+# Scan Maven coordinate with custom repository URL
+./library-insight scan com.mycompany:mylib:1.0.0 --repo https://jitpack.io
 ```
 
 ### 2. Search Symbols
@@ -102,9 +108,14 @@ Compare two library archives directly to check for changes and potential breakin
 ```
 
 ### 6. Export AI Context
-Generate a token-efficient compact JSON representation of the public API index designed for LLM context files.
-```bash
+# Generate a compact, token-efficient JSON context file
 ./library-insight ai-export
+```
+
+### 7. Clear Cache
+Clear all downloaded and cached artifacts from the local cache directory to free up space.
+```bash
+./library-insight clear-cache
 ```
 
 

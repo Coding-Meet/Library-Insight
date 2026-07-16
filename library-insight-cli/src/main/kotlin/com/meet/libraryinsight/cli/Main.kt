@@ -5,9 +5,11 @@ import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.file
+import com.meet.libraryinsight.common.MavenResolver
 import com.meet.libraryinsight.core.LibraryAnalyzer
 import com.meet.libraryinsight.core.diff.DiffEngine
 import com.meet.libraryinsight.export.AiExporter
@@ -26,9 +28,9 @@ class LibraryInsightCommand : CliktCommand(
 
 class ScanCommand : CliktCommand(
     name = "scan",
-    help = "Scan a JAR/AAR or directory of libraries to generate an API index."
+    help = "Scan a JAR/AAR, local directory, or Maven coordinates (group:artifact:version)."
 ) {
-    val path by argument(help = "Path to AAR, JAR, or directory").file(mustExist = true)
+    val pathOrCoordinate by argument(name = "path", help = "Path to AAR, JAR, directory, or Maven coordinate (e.g. com.aldebaran:qisdk:1.7.5)")
     
     val db by option(
         "--db",
@@ -36,13 +38,31 @@ class ScanCommand : CliktCommand(
     ).file().default(File(".library-insight-index.json"))
 
     val libName by option("--lib-name", help = "Name of the library (defaults to filename)")
-    val libVersion by option("--lib-version", help = "Version of the library").default("1.0.0")
-    val sources by option("-s", "--sources", help = "Path to the sources JAR/directory").file(mustExist = true)
+    val libVersion by option("--lib-version", help = "Version of the library")
+    val repos by option("--repo", help = "Additional Maven repository URLs to resolve coordinate artifacts").multiple()
+    val sources by option("-s", "--sources", help = "Path to the sources JAR/directory (for local scans)").file(mustExist = true)
 
     override fun run() {
-        echo("Scanning: ${path.absolutePath}")
-        val name = libName ?: path.nameWithoutExtension
-        val index = LibraryAnalyzer.analyze(path, name, libVersion, sourcesFile = sources)
+        val index = if (MavenResolver.isCoordinate(pathOrCoordinate)) {
+            echo("Detected Maven coordinate: $pathOrCoordinate")
+            val resolved = MavenResolver.resolve(pathOrCoordinate, repos) { progress ->
+                echo("  -> $progress")
+            }
+            val parts = pathOrCoordinate.split(':')
+            val name = libName ?: parts[1]
+            val version = libVersion ?: parts[2]
+            LibraryAnalyzer.analyze(resolved.binaryFile, name, version, resolved.sourcesFile)
+        } else {
+            val file = File(pathOrCoordinate)
+            if (!file.exists()) {
+                echo("Error: path '$pathOrCoordinate' does not exist.", err = true)
+                return
+            }
+            echo("Scanning: ${file.absolutePath}")
+            val name = libName ?: file.nameWithoutExtension
+            val version = libVersion ?: "1.0.0"
+            LibraryAnalyzer.analyze(file, name, version, sources)
+        }
         
         val classesCount = index.packages.flatMap { it.classes }.size
         echo("Scan complete! Found $classesCount classes across ${index.packages.size} packages.")
@@ -276,6 +296,19 @@ class AiExportCommand : CliktCommand(
     }
 }
 
+class ClearCacheCommand : CliktCommand(
+    name = "clear-cache",
+    help = "Clear all cached Maven artifacts from local storage."
+) {
+    override fun run() {
+        echo("Clearing local cache at: ${MavenResolver.cacheDir.absolutePath}...")
+        val bytesDeleted = MavenResolver.clearCache()
+        val mbDeleted = bytesDeleted / 1024.0 / 1024.0
+        val formatted = String.format(java.util.Locale.US, "%.2f", mbDeleted)
+        echo("Cache cleared successfully. Deleted $formatted MB.")
+    }
+}
+
 fun main(args: Array<String>) {
     LibraryInsightCommand()
         .subcommands(
@@ -284,7 +317,8 @@ fun main(args: Array<String>) {
             SearchCommand(),
             ExplainCommand(),
             DiffCommand(),
-            AiExportCommand()
+            AiExportCommand(),
+            ClearCacheCommand()
         )
         .main(args)
 }
