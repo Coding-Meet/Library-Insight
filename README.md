@@ -108,7 +108,8 @@ Compare two library archives directly to check for changes and potential breakin
 ```
 
 ### 6. Export AI Context
-# Generate a compact, token-efficient JSON context file
+Generate a compact, token-efficient split context folder structure (`ai-context/`) for LLMs.
+```bash
 ./library-insight ai-export
 ```
 

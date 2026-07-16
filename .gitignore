@@ -20,7 +20,7 @@ Thumbs.db
 .library-insight-index.json
 
 # Local AI Context exports
-ai-context.json
+ai-context/
 
 # Local properties
 local.properties

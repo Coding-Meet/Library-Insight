@@ -273,9 +273,9 @@ class DiffCommand : CliktCommand(
 
 class AiExportCommand : CliktCommand(
     name = "ai-export",
-    help = "Generate a compact, token-efficient context file (ai-context.json) for LLMs."
+    help = "Generate a compact, token-efficient split context folder structure (ai-context/) for LLMs."
 ) {
-    val outputFile by argument(help = "Output file path").file().optional()
+    val outputDir by argument(help = "Output directory path").file().optional()
 
     val db by option(
         "--db",
@@ -289,10 +289,9 @@ class AiExportCommand : CliktCommand(
             return
         }
 
-        val file = outputFile ?: File("ai-context.json")
-        val aiContextJson = AiExporter.export(index)
-        file.writeText(aiContextJson)
-        echo("Generated compact LLM context file: ${file.absolutePath}")
+        val dir = outputDir ?: File("ai-context")
+        AiExporter.exportSplit(index, dir)
+        echo("Generated compact LLM context directory structure at: ${dir.absolutePath}")
     }
 }
 
