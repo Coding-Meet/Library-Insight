@@ -28,7 +28,9 @@ data class ClassApi(
     val methods: List<MethodApi>,
     val properties: List<PropertyApi>,
     val nestedClasses: List<String>, // Fully qualified names of nested classes
-    val typeParameters: List<TypeParameterApi> = emptyList()
+    val typeParameters: List<TypeParameterApi> = emptyList(),
+    val doc: String? = null,
+    val sourceCode: String? = null
 )
 
 @Serializable
@@ -65,7 +67,9 @@ data class MethodApi(
     val flags: MethodFlags,
     val extensionReceiverType: String? = null,
     val signature: String, // JVM descriptor signature
-    val typeParameters: List<TypeParameterApi> = emptyList()
+    val typeParameters: List<TypeParameterApi> = emptyList(),
+    val doc: String? = null,
+    val sourceCode: String? = null
 )
 
 @Serializable
@@ -98,7 +102,9 @@ data class PropertyApi(
     val getterVisibility: Visibility? = null,
     val setterVisibility: Visibility? = null,
     val isConst: Boolean = false,
-    val isLateinit: Boolean = false
+    val isLateinit: Boolean = false,
+    val doc: String? = null,
+    val sourceCode: String? = null
 )
 
 @Serializable

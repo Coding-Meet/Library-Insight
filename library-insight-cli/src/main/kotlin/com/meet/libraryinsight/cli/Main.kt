@@ -37,11 +37,12 @@ class ScanCommand : CliktCommand(
 
     val libName by option("--lib-name", help = "Name of the library (defaults to filename)")
     val libVersion by option("--lib-version", help = "Version of the library").default("1.0.0")
+    val sources by option("-s", "--sources", help = "Path to the sources JAR/directory").file(mustExist = true)
 
     override fun run() {
         echo("Scanning: ${path.absolutePath}")
         val name = libName ?: path.nameWithoutExtension
-        val index = LibraryAnalyzer.analyze(path, name, libVersion)
+        val index = LibraryAnalyzer.analyze(path, name, libVersion, sourcesFile = sources)
         
         val classesCount = index.packages.flatMap { it.classes }.size
         echo("Scan complete! Found $classesCount classes across ${index.packages.size} packages.")
@@ -168,6 +169,11 @@ class ExplainCommand : CliktCommand(
         if (clazz.annotations.isNotEmpty()) {
             echo("Annotations: ${clazz.annotations.joinToString { "@" + it.name.substringAfterLast('.') }}")
         }
+        val classDoc = clazz.doc
+        if (classDoc != null) {
+            echo("--------------------------------------------------")
+            echo("Documentation:\n${classDoc.trim().lines().joinToString("\n") { "  * $it" }}")
+        }
         echo("==================================================\n")
 
         if (clazz.constructors.isNotEmpty()) {
@@ -182,6 +188,10 @@ class ExplainCommand : CliktCommand(
         if (clazz.properties.isNotEmpty()) {
             echo("Properties:")
             for (prop in clazz.properties) {
+                val propDoc = prop.doc
+                if (propDoc != null) {
+                    echo("  // ${propDoc.trim().replace("\n", "\n  // ")}")
+                }
                 val mut = if (prop.isMutable) "var" else "val"
                 val constStr = if (prop.isConst) "const " else ""
                 echo("  - ${prop.visibility.name.lowercase()} ${constStr}$mut ${prop.name}: ${prop.type}")
@@ -192,6 +202,10 @@ class ExplainCommand : CliktCommand(
         if (clazz.methods.isNotEmpty()) {
             echo("Methods:")
             for (method in clazz.methods) {
+                val methodDoc = method.doc
+                if (methodDoc != null) {
+                    echo("  // ${methodDoc.trim().replace("\n", "\n  // ")}")
+                }
                 val methodMods = mutableListOf<String>()
                 if (method.flags.isSuspend) methodMods.add("suspend")
                 if (method.flags.isInline) methodMods.add("inline")

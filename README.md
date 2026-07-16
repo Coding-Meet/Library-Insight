@@ -107,6 +107,138 @@ Generate a token-efficient compact JSON representation of the public API index d
 ./library-insight ai-export
 ```
 
+
+```
+Library-Insight/
+├── gradle/
+│   └── wrapper/
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── library-insight-cli/
+│   ├── src/
+│   │   └── main/
+│   │       └── kotlin/
+│   │           └── com/
+│   │               └── meet/
+│   │                   └── libraryinsight/
+│   │                       └── cli/
+│   │                           ├── DatabaseHelper.kt
+│   │                           └── Main.kt
+│   └── build.gradle.kts
+├── library-insight-common/
+│   ├── src/
+│   │   └── main/
+│   │       └── kotlin/
+│   │           └── com/
+│   │               └── meet/
+│   │                   └── libraryinsight/
+│   │                       └── common/
+│   │                           └── ArchiveUtils.kt
+│   └── build.gradle.kts
+├── library-insight-core/
+│   ├── src/
+│   │   ├── main/
+│   │   │   └── kotlin/
+│   │   │       └── com/
+│   │   │           └── meet/
+│   │   │               └── libraryinsight/
+│   │   │                   └── core/
+│   │   │                       ├── diff/
+│   │   │                       └── LibraryAnalyzer.kt
+│   │   └── test/
+│   │       └── kotlin/
+│   │           └── com/
+│   │               └── meet/
+│   │                   └── libraryinsight/
+│   │                       └── core/
+│   │                           └── diff/
+│   └── build.gradle.kts
+├── library-insight-export/
+│   ├── src/
+│   │   └── main/
+│   │       └── kotlin/
+│   │           └── com/
+│   │               └── meet/
+│   │                   └── libraryinsight/
+│   │                       └── export/
+│   │                           ├── AiExporter.kt
+│   │                           ├── JsonExporter.kt
+│   │                           └── MarkdownExporter.kt
+│   └── build.gradle.kts
+├── library-insight-kotlin/
+│   ├── src/
+│   │   └── main/
+│   │       └── kotlin/
+│   │           └── com/
+│   │               └── meet/
+│   │                   └── libraryinsight/
+│   │                       └── kotlin/
+│   │                           ├── KotlinMetadataEnricher.kt
+│   │                           └── KotlinMetadataParser.kt
+│   └── build.gradle.kts
+├── library-insight-model/
+│   ├── src/
+│   │   └── main/
+│   │       └── kotlin/
+│   │           └── com/
+│   │               └── meet/
+│   │                   └── libraryinsight/
+│   │                       └── model/
+│   │                           └── LibraryApiIndex.kt
+│   └── build.gradle.kts
+├── library-insight-parser/
+│   ├── src/
+│   │   ├── main/
+│   │   │   └── kotlin/
+│   │   │       └── com/
+│   │   │           └── meet/
+│   │   │               └── libraryinsight/
+│   │   │                   └── parser/
+│   │   │                       ├── BytecodeParser.kt
+│   │   │                       ├── RawClassData.kt
+│   │   │                       └── SignatureParser.kt
+│   │   └── test/
+│   │       └── kotlin/
+│   │           └── com/
+│   │               └── meet/
+│   │                   └── libraryinsight/
+│   │                       └── parser/
+│   │                           └── SignatureParserTest.kt
+│   └── build.gradle.kts
+├── library-insight-search/
+│   ├── src/
+│   │   └── main/
+│   │       └── kotlin/
+│   │           └── com/
+│   │               └── meet/
+│   │                   └── libraryinsight/
+│   │                       └── search/
+│   │                           └── SearchEngine.kt
+│   └── build.gradle.kts
+├── sample/
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/
+│   │       │   └── com/
+│   │       │       └── meet/
+│   │       │           └── sample/
+│   │       │               └── JavaLibrary.java
+│   │       └── kotlin/
+│   │           └── com/
+│   │               └── meet/
+│   │                   └── sample/
+│   │                       └── SampleLibrary.kt
+│   └── build.gradle.kts
+├── ai-context.json
+├── build.gradle.kts
+├── gradlew
+├── gradlew.bat
+├── local.properties
+├── metadata-jvm.md
+├── README.md
+└── settings.gradle.kts
+```
+
 ---
 
 ## License

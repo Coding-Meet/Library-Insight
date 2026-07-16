@@ -10,7 +10,13 @@ data class User(
     val email: String? = null
 )
 
+/**
+ * Core interface for greeting users.
+ */
 interface Greeter {
+    /**
+     * Greets a person by name.
+     */
     fun greet(name: String): String
 }
 
@@ -19,6 +25,9 @@ object AppConfig {
     var debugMode: Boolean = false
 }
 
+/**
+ * A sample calculator class that implements [Greeter].
+ */
 class Calculator : Greeter {
     
     companion object {
@@ -26,6 +35,9 @@ class Calculator : Greeter {
         fun create(): Calculator = Calculator()
     }
 
+    /**
+     * Implementation of [Greeter.greet] returning a friendly greeting.
+     */
     override fun greet(name: String): String {
         return "Hello, $name from Calculator!"
     }
@@ -34,6 +46,9 @@ class Calculator : Greeter {
         return this
     }
 
+    /**
+     * Multiplies the given input value by 2.
+     */
     infix fun calculateWith(value: Int): Int {
         return value * 2
     }
@@ -42,6 +57,9 @@ class Calculator : Greeter {
         block()
     }
 
+    /**
+     * Performs a suspendable addition of two integers.
+     */
     suspend fun performAsyncCalculation(a: Int, b: Int): Int {
         return a + b
     }

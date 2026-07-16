@@ -182,6 +182,75 @@ object ArchiveUtils {
     }
 
     /**
+     * Extracts all .kt and .java source file contents from a file, directory, or sources JAR.
+     * Maps the FQCN representation of the file path (e.g. "com.meet.sample.SampleLibrary") to its source text.
+     */
+    fun extractSources(file: File): Map<String, String> {
+        val sources = mutableMapOf<String, String>()
+        if (!file.exists()) return sources
+
+        if (file.isDirectory) {
+            file.walkTopDown().forEach { child ->
+                if (child.isFile) {
+                    val name = child.name
+                    if (name.endsWith(".kt") || name.endsWith(".java")) {
+                        val text = child.readText(Charsets.UTF_8)
+                        val path = child.absolutePath.replace(File.separatorChar, '.')
+                        val key = extractSourceKeyFromPath(path)
+                        indexSourceFile(text, child.name, sources, key)
+                    }
+                }
+            }
+        } else if (file.name.endsWith(".jar") || file.name.endsWith(".zip") || file.name.endsWith(".aar")) {
+            val zip = ZipInputStream(file.inputStream())
+            var entry = zip.nextEntry
+            while (entry != null) {
+                if (!entry.isDirectory && (entry.name.endsWith(".kt") || entry.name.endsWith(".java"))) {
+                    val text = String(zip.readBytes(), Charsets.UTF_8)
+                    val key = entry.name.removeSuffix(".kt").removeSuffix(".java").replace('/', '.')
+                    val fileName = entry.name.substringAfterLast('/')
+                    indexSourceFile(text, fileName, sources, key)
+                }
+                entry = zip.nextEntry
+            }
+        }
+        return sources
+    }
+
+    private fun indexSourceFile(text: String, fileName: String, sources: MutableMap<String, String>, defaultKey: String) {
+        sources[defaultKey] = text
+        val fileBaseName = fileName.substringBeforeLast('.')
+        val packageMatch = Regex("package\\s+([a-zA-Z0-9_.]+)").find(text)
+        val packageName = packageMatch?.groupValues?.get(1)?.trim() ?: ""
+        
+        val facadeKey = if (packageName.isNotEmpty()) "$packageName.${fileBaseName}Kt" else "${fileBaseName}Kt"
+        sources[facadeKey] = text
+
+        val classRegex = Regex("(class|interface|object|enum class)\\s+([a-zA-Z0-9_]+)")
+        classRegex.findAll(text).forEach { match ->
+            val className = match.groupValues[2]
+            val fqcn = if (packageName.isNotEmpty()) "$packageName.$className" else className
+            sources[fqcn] = text
+        }
+    }
+
+    private fun extractSourceKeyFromPath(dottedPath: String): String {
+        val standardPrefixes = listOf(".src.main.kotlin.", ".src.main.java.", ".src.", ".kotlin.", ".java.", ".main.kotlin.", ".main.java.")
+        for (prefix in standardPrefixes) {
+            val idx = dottedPath.indexOf(prefix)
+            if (idx != -1) {
+                return dottedPath.substring(idx + prefix.length).removeSuffix(".kt").removeSuffix(".java")
+            }
+        }
+        val segments = dottedPath.split('.')
+        val lastIdx = segments.lastIndex
+        if (lastIdx >= 3) {
+            return segments.subList(lastIdx - 3, lastIdx).joinToString(".")
+        }
+        return dottedPath.removeSuffix(".kt").removeSuffix(".java")
+    }
+
+    /**
      * An input stream that prevents closing the underlying stream.
      */
     private class NonClosingInputStream(private val delegate: InputStream) : InputStream() {

@@ -25,9 +25,22 @@ object AiExporter {
         val kind: String,
         val modifiers: List<String>,
         val superTypes: List<String>,
-        val properties: List<String>,
+        val properties: List<AiProperty>,
         val constructors: List<String>,
-        val methods: List<String>
+        val methods: List<AiMethod>,
+        val doc: String? = null
+    )
+
+    @Serializable
+    data class AiProperty(
+        val signature: String,
+        val doc: String? = null
+    )
+
+    @Serializable
+    data class AiMethod(
+        val signature: String,
+        val doc: String? = null
     )
 
     /**
@@ -52,7 +65,8 @@ object AiExporter {
                     val visibility = prop.visibility.name.lowercase()
                     val constStr = if (prop.isConst) "const " else ""
                     val lateinitStr = if (prop.isLateinit) "lateinit " else ""
-                    "$visibility $constStr$lateinitStr$mutability ${prop.name}: ${prop.type}"
+                    val sig = "$visibility $constStr$lateinitStr$mutability ${prop.name}: ${prop.type}"
+                    AiProperty(sig, prop.doc)
                 }
 
                 val constructors = clazz.constructors.map { cons ->
@@ -77,7 +91,8 @@ object AiExporter {
                     val params = method.parameters.joinToString { param ->
                         "${param.name}: ${param.type}${if (param.hasDefaultValue) " = ..." else ""}"
                     }
-                    "$visibility ${modsStr}fun $receiver${method.name}($params): ${method.returnType}"
+                    val sig = "$visibility ${modsStr}fun $receiver${method.name}($params): ${method.returnType}"
+                    AiMethod(sig, method.doc)
                 }
 
                 aiClasses.add(
@@ -88,7 +103,8 @@ object AiExporter {
                         superTypes = clazz.superTypes,
                         properties = properties,
                         constructors = constructors,
-                        methods = methods
+                        methods = methods,
+                        doc = clazz.doc
                     )
                 )
             }
