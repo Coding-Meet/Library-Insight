@@ -71,7 +71,7 @@ Scan a JAR, AAR, local directory, or Maven coordinate.
 ./gradlew :sample:jar :sample:sourcesJar
 
 # Scan the local built sample JAR and its sources
-./library-insight scan sample/build/libs/sample-1.0.0-SNAPSHOT.jar --sources sample/build/libs/sample-1.0.0-SNAPSHOT-sources.jar
+./library-insight scan sample/build/libs/sample-1.0.0.jar --sources sample/build/libs/sample-1.0.0-sources.jar
 
 # Scan Maven coordinate directly (downloads binary + sources automatically from Maven Central/Google/SoftBank)
 ./library-insight scan com.aldebaran:qisdk:1.7.5
