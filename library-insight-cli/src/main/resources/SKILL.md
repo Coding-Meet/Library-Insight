@@ -79,3 +79,9 @@ Clears all downloaded cached Maven binaries and sources from local storage.
 ```bash
 library-insight clear-cache
 ```
+
+### 8. Diagnostics & Doctor (`doctor`)
+Run diagnostic checks for the Java runtime, Node.js, and verify all global AI Agent skill configurations.
+```bash
+library-insight doctor
+```

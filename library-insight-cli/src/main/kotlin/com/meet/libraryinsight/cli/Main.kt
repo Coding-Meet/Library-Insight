@@ -22,7 +22,8 @@ fun main(args: Array<String>) {
             AiExportCommand(),
             ClearCacheCommand(),
             InitCommand(),
-            SkillsCommand()
+            SkillsCommand(),
+            DoctorCommand()
         )
         .main(args)
 }

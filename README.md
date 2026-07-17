@@ -28,9 +28,48 @@ This is incredibly useful for:
 
 ## Architecture & Modular Design
 
-Library Insight follows **Clean Architecture** principles and is composed of the following modules:
+Library Insight follows **Clean Architecture** principles. Below is the modular dependency flow:
 
-- `library-insight-common`: Utility classes for ZIP/JAR/AAR extraction and filesystem operations.
+```mermaid
+graph TD
+    subgraph CLI Layer
+        CLI[library-insight-cli]
+    end
+
+    subgraph Orchestration Layer
+        CORE[library-insight-core]
+    end
+
+    subgraph Processing Modules
+        PARSER[library-insight-parser]
+        KOTLIN[library-insight-kotlin]
+        SEARCH[library-insight-search]
+        EXPORT[library-insight-export]
+    end
+
+    subgraph Data & Common Utility Base
+        MODEL[library-insight-model]
+        COMMON[library-insight-common]
+    end
+
+    CLI --> CORE
+    CORE --> PARSER
+    CORE --> KOTLIN
+    CORE --> SEARCH
+    CORE --> EXPORT
+    
+    PARSER --> MODEL
+    KOTLIN --> MODEL
+    SEARCH --> MODEL
+    EXPORT --> MODEL
+    
+    MODEL --> COMMON
+    COMMON --> ASM[ASM Bytecode Reader]
+    COMMON --> KTOR[Ktor HTTP Client]
+```
+
+The system is composed of the following modules:
+- `library-insight-common`: Utility classes for ZIP/JAR/AAR extraction, Ktor async HTTP engine, and filesystem operations.
 - `library-insight-model`: Immutable Kotlin serialization structures representing the API index schema.
 - `library-insight-parser`: Raw bytecode structure extraction using **ASM** and JVM signature parsing.
 - `library-insight-kotlin`: Kotlin metadata parsing (`kotlin-metadata-jvm`) and JVM bytecode enrichment.
@@ -105,37 +144,55 @@ This creates `.agents/skills/library-insight/SKILL.md` in the project root, enab
 ### 1. Scan Library
 Scan a JAR, AAR, local directory, or Maven coordinate.
 ```bash
-# Build the sample module jar and sources first
-./gradlew :sample:jar :sample:sourcesJar
+# Scan Retrofit from Maven Central (downloads jar + sources automatically)
+library-insight scan com.squareup.retrofit2:retrofit:2.11.0
 
-# Scan the local built sample JAR and its sources
-library-insight scan sample/build/libs/sample-1.0.0.jar --sources sample/build/libs/sample-1.0.0-sources.jar
+# Scan OkHttp client
+library-insight scan com.squareup.okhttp3:okhttp:4.12.0
 
-# Scan Maven coordinate directly (downloads binary + sources automatically from Maven Central/Google/SoftBank)
+# Scan Ktor Client Core
+library-insight scan io.ktor:ktor-client-core:3.0.0
+
+# Scan Jetpack Room Runtime
+library-insight scan androidx.room:room-runtime:2.6.1
+
+# Scan Lottie Android from Maven Central
+library-insight scan com.airbnb.android:lottie:6.4.0
+
+# Scan Jetpack Compose Runtime
+library-insight scan androidx.compose.runtime:runtime:1.6.7
+
+# Scan Aldebaran QiSDK library
 library-insight scan com.aldebaran:qisdk:1.7.5
-
-# Scan Maven coordinate with a custom repository URL
-library-insight scan com.mycompany:mylib:1.0.0 --repo https://jitpack.io
 ```
 
 ### 2. Search Symbols
 Search for packages, classes, methods, or properties in the saved index.
 ```bash
-library-insight search Calculator
-library-insight search shout
+# Search for Retrofit builder or client classes
+library-insight search Retrofit
+library-insight search OkHttpClient
+
+# Search for animation view classes or db descriptors
+library-insight search LottieAnimationView
+library-insight search RoomDatabase
 ```
 
 ### 3. Explain Class
 Print detailed structural details (modifiers, superclass, constructors, properties, methods, and documentation) about a specific class.
 ```bash
-library-insight explain Calculator
+# Get full API structure of Retrofit class
+library-insight explain Retrofit
+
+# Get full API structure of OkHttpClient
+library-insight explain OkHttpClient
 ```
 
 ### 4. Export Index
 Export the scanned index to Markdown reference sheets or pretty-printed JSON.
 ```bash
 # Print Markdown reference sheet to stdout
-library-insight export markdown
+library-insight export markdown > API_REFERENCE.md
 
 # Write JSON index to file
 library-insight export json output.json
@@ -144,7 +201,8 @@ library-insight export json output.json
 ### 5. Diff Library Versions
 Compare two library archives directly to check for changes and potential breaking changes.
 ```bash
-library-insight diff sample-v1.jar sample-v2.jar
+# Detect breaking changes between Retrofit 2.9.0 and 2.11.0
+library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar
 ```
 
 ### 6. Export AI Context

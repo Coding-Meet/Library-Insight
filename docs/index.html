@@ -103,40 +103,45 @@
                     <div id="scan-tab" class="tab-pane active">
                         <h3>Scan Library & Maven Coordinates</h3>
                         <p>Analyze local files or download from repositories directly to populate the indexing database.</p>
-                        <pre><code># Scan local JAR with sources
-library-insight scan sample.jar --sources sample-sources.jar
+                        <pre><code># Scan Retrofit from Maven Central (jar + sources)
+library-insight scan com.squareup.retrofit2:retrofit:2.11.0
 
-# Scan Maven coordinate over HTTP
-library-insight scan com.aldebaran:qisdk:1.7.5
+# Scan OkHttp client
+library-insight scan com.squareup.okhttp3:okhttp:4.12.0
 
-# Resolve using custom repository URL
-library-insight scan com.mycompany:mylib:1.0.0 --repo https://jitpack.io</code></pre>
+# Scan Aldebaran QiSDK library
+library-insight scan com.aldebaran:qisdk:1.7.5</code></pre>
                     </div>
 
                     <div id="search-tab" class="tab-pane">
                         <h3>Search Index Symbols</h3>
                         <p>Quickly search for packages, classes, methods, or property declarations matching a search term.</p>
                         <pre><code># Search matching classes or methods
-library-insight search Calculator
+library-insight search Retrofit
+library-insight search OkHttpClient
 
-# Case-insensitive pattern search
-library-insight search shout</code></pre>
+# Search for animation view classes or db descriptors
+library-insight search LottieAnimationView</code></pre>
                     </div>
 
                     <div id="explain-tab" class="tab-pane">
                         <h3>Explain Class Details</h3>
                         <p>Generate detailed structural reports displaying constructors, signatures, and Javadoc definitions.</p>
-                        <pre><code>library-insight explain Calculator</code></pre>
+                        <pre><code># Inspect structural details of Retrofit class
+library-insight explain Retrofit
+
+# Inspect structural details of OkHttpClient
+library-insight explain OkHttpClient</code></pre>
                     </div>
 
                     <div id="export-tab" class="tab-pane">
                         <h3>Export and Diffing</h3>
                         <p>Save reports to clean Markdown sheets, JSON documents, or perform a version comparison to detect breaking changes.</p>
                         <pre><code># Export index to Markdown
-library-insight export markdown > API.md
+library-insight export markdown > API_REFERENCE.md
 
-# Diff two archive versions
-library-insight diff sample-v1.jar sample-v2.jar</code></pre>
+# Diff two archive versions to detect breaking changes
+library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar</code></pre>
                     </div>
 
                     <div id="ai-tab" class="tab-pane">
