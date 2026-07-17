@@ -16,6 +16,13 @@ The command line tool `library-insight` can be executed globally by:
 * Running instantly with npx: `npx library-insight <command> [options]`
 * Installing via shell: `~/.library-insight/bin/library-insight` (linked globally as `library-insight`)
 
+## Available scripts
+
+- **`scripts/install-cli.sh`** — Installs the `library-insight` command globally on the host system if not already available.
+  ```bash
+  bash scripts/install-cli.sh
+  ```
+
 ### 1. Scan Dependencies (`scan`)
 Scans a local JAR/AAR file, a directory of JARs, or resolves a Maven coordinate over HTTP, downloading it and its corresponding `-sources.jar` automatically from repositories (Maven Central, Google Maven, SoftBank).
 * **Scan Local JAR/AAR**:
