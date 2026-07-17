@@ -122,10 +122,16 @@ Clear all downloaded and cached artifacts from the local cache directory to free
 
 ```
 Library-Insight/
+├── buildSrc/                       # Gradle precompiled script plugins for convention builds
+│   ├── src/main/kotlin/
+│   │   └── kotlin-jvm.gradle.kts   # Shared Kotlin JVM conventions
+│   └── build.gradle.kts
 ├── gradle/
-│   └── wrapper/
-│       ├── gradle-wrapper.jar
-│       └── gradle-wrapper.properties
+│   ├── wrapper/
+│   │   ├── gradle-wrapper.jar
+│   │   └── gradle-wrapper.properties
+│   └── libs.versions.toml          # Gradle version catalog for shared dependencies
+├── gradle.properties               # Gradle build and configuration caching parameters
 ├── library-insight-cli/
 │   ├── src/
 │   │   └── main/
@@ -135,7 +141,15 @@ Library-Insight/
 │   │                   └── libraryinsight/
 │   │                       └── cli/
 │   │                           ├── DatabaseHelper.kt
-│   │                           └── Main.kt
+│   │                           ├── Main.kt
+│   │                           └── commands/
+│   │                               ├── AiExportCommand.kt
+│   │                               ├── ClearCacheCommand.kt
+│   │                               ├── DiffCommand.kt
+│   │                               ├── ExplainCommand.kt
+│   │                               ├── ExportCommand.kt
+│   │                               ├── ScanCommand.kt
+│   │                               └── SearchCommand.kt
 │   └── build.gradle.kts
 ├── library-insight-common/
 │   ├── src/
