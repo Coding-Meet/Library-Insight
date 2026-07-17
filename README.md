@@ -73,9 +73,8 @@ The executable binary will be generated at:
 ## CLI Usage & Commands
 
 > [!NOTE]
-> The examples below assume the executable binary has been built and is run from the project root. You can execute it using:
-> `./library-insight-cli/build/install/library-insight/bin/library-insight <command> [options]`
-> (You can also alias it as `library-insight` for convenience).
+> The examples below assume the executable has been installed globally (via npm or the installer script). You can execute it directly using:
+> `library-insight <command> [options]`
 
 ### 1. Scan Library
 Scan a JAR, AAR, local directory, or Maven coordinate.
@@ -84,54 +83,54 @@ Scan a JAR, AAR, local directory, or Maven coordinate.
 ./gradlew :sample:jar :sample:sourcesJar
 
 # Scan the local built sample JAR and its sources
-./library-insight scan sample/build/libs/sample-1.0.0.jar --sources sample/build/libs/sample-1.0.0-sources.jar
+library-insight scan sample/build/libs/sample-1.0.0.jar --sources sample/build/libs/sample-1.0.0-sources.jar
 
 # Scan Maven coordinate directly (downloads binary + sources automatically from Maven Central/Google/SoftBank)
-./library-insight scan com.aldebaran:qisdk:1.7.5
+library-insight scan com.aldebaran:qisdk:1.7.5
 
 # Scan Maven coordinate with a custom repository URL
-./library-insight scan com.mycompany:mylib:1.0.0 --repo https://jitpack.io
+library-insight scan com.mycompany:mylib:1.0.0 --repo https://jitpack.io
 ```
 
 ### 2. Search Symbols
 Search for packages, classes, methods, or properties in the saved index.
 ```bash
-./library-insight search Calculator
-./library-insight search shout
+library-insight search Calculator
+library-insight search shout
 ```
 
 ### 3. Explain Class
 Print detailed structural details (modifiers, superclass, constructors, properties, methods, and documentation) about a specific class.
 ```bash
-./library-insight explain Calculator
+library-insight explain Calculator
 ```
 
 ### 4. Export Index
 Export the scanned index to Markdown reference sheets or pretty-printed JSON.
 ```bash
 # Print Markdown reference sheet to stdout
-./library-insight export markdown
+library-insight export markdown
 
 # Write JSON index to file
-./library-insight export json output.json
+library-insight export json output.json
 ```
 
 ### 5. Diff Library Versions
 Compare two library archives directly to check for changes and potential breaking changes.
 ```bash
-./library-insight diff sample-v1.jar sample-v2.jar
+library-insight diff sample-v1.jar sample-v2.jar
 ```
 
 ### 6. Export AI Context
 Generate a compact, token-efficient split context folder structure (`build/ai-context/` by default) containing individual class JSON files optimized for LLM prompts.
 ```bash
-./library-insight ai-export
+library-insight ai-export
 ```
 
 ### 7. Clear Cache
 Clear all downloaded and cached Maven artifacts from the local cache directory to free up space.
 ```bash
-./library-insight clear-cache
+library-insight clear-cache
 ```
 
 
