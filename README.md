@@ -236,6 +236,11 @@ library-insight skills remove
 library-insight skills list
 ```
 
+---
+
+## Repository Directory Structure
+
+Below is the directory structure detailing the key folders and components of the Library Insight project:
 
 ```
 Library-Insight/
