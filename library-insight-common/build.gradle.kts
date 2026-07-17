@@ -3,5 +3,6 @@ plugins {
 }
 
 dependencies {
-    // Only standard library utilities needed here
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.java)
 }

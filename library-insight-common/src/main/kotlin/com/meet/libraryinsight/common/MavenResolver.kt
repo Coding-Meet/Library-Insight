@@ -1,10 +1,18 @@
 package com.meet.libraryinsight.common
 
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.java.Java
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.readRawBytes
+import kotlinx.coroutines.runBlocking
 import java.io.File
-import java.net.HttpURLConnection
-import java.net.URL
 
 object MavenResolver {
+
+    private val client = HttpClient(Java) {
+        followRedirects = true
+    }
 
     data class ResolvedArtifact(
         val binaryFile: File,
@@ -120,27 +128,20 @@ object MavenResolver {
     }
 
     private fun downloadFile(urlStr: String, destination: File): Boolean {
-        try {
-            val url = URL(urlStr)
-            val conn = url.openConnection() as HttpURLConnection
-            conn.requestMethod = "GET"
-            conn.connectTimeout = 8000
-            conn.readTimeout = 8000
-            conn.instanceFollowRedirects = true
-            
-            val code = conn.responseCode
-            if (code == HttpURLConnection.HTTP_OK) {
-                destination.parentFile.mkdirs()
-                conn.inputStream.use { input ->
-                    destination.outputStream().use { output ->
-                        input.copyTo(output)
-                    }
+        return runBlocking {
+            try {
+                val response: HttpResponse = client.get(urlStr)
+                if (response.status.value == 200) {
+                    destination.parentFile.mkdirs()
+                    val bytes = response.readRawBytes()
+                    destination.writeBytes(bytes)
+                    true
+                } else {
+                    false
                 }
-                return true
+            } catch (e: Exception) {
+                false
             }
-        } catch (e: Exception) {
-            // Ignore failure to check next repo or binary format
         }
-        return false
     }
 }
