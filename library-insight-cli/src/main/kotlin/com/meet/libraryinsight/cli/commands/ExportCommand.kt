@@ -26,7 +26,7 @@ class ExportCommand : CliktCommand(
     val db by option(
         "--db",
         help = "Index database JSON file path to read from"
-    ).file().default(File(".library-insight-index.json"))
+    ).file().default(File("build/library-insight-index.json"))
 
     override fun run() {
         val index = DatabaseHelper.loadIndex(db)

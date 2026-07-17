@@ -60,7 +60,7 @@ The executable binary will be generated at:
 ## CLI Usage & Commands
 
 ### 1. Scan Library
-Scan a JAR, AAR, or directory and save the API index to a local database (`.library-insight-index.json` by default).
+Scan a JAR, AAR, or directory and save the API index to a local database (`build/library-insight-index.json` by default).
 ```bash
 # Scan a JAR
 ./library-insight scan my-library.jar

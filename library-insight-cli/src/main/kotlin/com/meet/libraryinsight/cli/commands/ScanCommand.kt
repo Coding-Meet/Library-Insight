@@ -20,7 +20,7 @@ class ScanCommand : CliktCommand(
     val db by option(
         "--db",
         help = "Output index database JSON file path"
-    ).file().default(File(".library-insight-index.json"))
+    ).file().default(File("build/library-insight-index.json"))
 
     val libName by option("--lib-name", help = "Name of the library (defaults to filename)")
     val libVersion by option("--lib-version", help = "Version of the library")
