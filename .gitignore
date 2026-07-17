@@ -24,3 +24,6 @@ ai-context/
 
 # Local properties
 local.properties
+
+# Local npm distribution packaging lib artifacts
+npm/lib/
