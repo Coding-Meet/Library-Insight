@@ -20,7 +20,9 @@ fun main(args: Array<String>) {
             ExplainCommand(),
             DiffCommand(),
             AiExportCommand(),
-            ClearCacheCommand()
+            ClearCacheCommand(),
+            InitCommand(),
+            SkillsCommand()
         )
         .main(args)
 }

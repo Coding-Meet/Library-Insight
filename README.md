@@ -133,6 +133,25 @@ Clear all downloaded and cached Maven artifacts from the local cache directory t
 library-insight clear-cache
 ```
 
+### 8. Initialize Workspace Agent Skill (`init`)
+Initialize the current project directory with the Custom AI agent Skill so that local AI assistants can auto-discover and utilize `library-insight`.
+```bash
+library-insight init
+```
+
+### 9. Manage Agent Skills (`skills`)
+Manage Library Insight Custom AI agent skills for the current workspace.
+```bash
+# Install the skill to the current workspace (.agents/skills/)
+library-insight skills add
+
+# Remove the skill from the current workspace
+library-insight skills remove
+
+# List installed skills in the current workspace
+library-insight skills list
+```
+
 
 ```
 Library-Insight/

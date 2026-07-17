@@ -96,6 +96,7 @@
                     <button class="tab-btn" onclick="switchTab(event, 'explain-tab')">Explain</button>
                     <button class="tab-btn" onclick="switchTab(event, 'export-tab')">Export & Diff</button>
                     <button class="tab-btn" onclick="switchTab(event, 'ai-tab')">AI Context</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'skills-tab')">Agent Skills</button>
                 </div>
 
                 <div class="tabs-content">
@@ -143,6 +144,22 @@ library-insight diff sample-v1.jar sample-v2.jar</code></pre>
                         <p>Export a token-efficient split directory layout mapping package namespaces to folders and classes to individual files.</p>
                         <pre><code># Generates output under build/ai-context/
 library-insight ai-export</code></pre>
+                    </div>
+
+                    <div id="skills-tab" class="tab-pane">
+                        <h3>Agent Skills Management</h3>
+                        <p>Initialize or manage custom AI agent skills for the current workspace (.agents/skills/) directly from the CLI.</p>
+                        <pre><code># Initialize workspace skill
+library-insight init
+
+# Install/update skill to workspace
+library-insight skills add
+
+# Remove workspace skill
+library-insight skills remove
+
+# List installed skills
+library-insight skills list</code></pre>
                     </div>
                 </div>
             </div>
