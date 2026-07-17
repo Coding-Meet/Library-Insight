@@ -56,3 +56,31 @@ else
     echo "Please add the following to your shell configuration (.zshrc or .bashrc):"
     echo "  export PATH=\"\$PATH:$INSTALL_DIR/bin\""
 fi
+
+echo ""
+echo "=================================================="
+echo " Distributing AI Agent Skill to Global Configs..."
+echo "=================================================="
+SKILL_SOURCE=".agents/skills/library-insight/SKILL.md"
+
+if [ -f "$SKILL_SOURCE" ]; then
+    SKILL_PATHS=(
+        "$HOME/.claude/skills/library-insight"
+        "$HOME/.agents/skills/library-insight"
+        "$HOME/.codex/skills/library-insight"
+        "$HOME/.cursor/skills/library-insight"
+        "$HOME/.gemini/skills/library-insight"
+        "$HOME/.gemini/config/skills/library-insight"
+        "$HOME/.copilot/skills/library-insight"
+        "$HOME/.junie/skills/library-insight"
+    )
+
+    for path in "${SKILL_PATHS[@]}"; do
+        mkdir -p "$path"
+        cp "$SKILL_SOURCE" "$path/SKILL.md"
+        echo " -> Copied AI Skill to: $path/SKILL.md"
+    done
+    echo "SUCCESS: AI Agent Skill distributed successfully!"
+else
+    echo "Note: Local SKILL.md source file not found. Skipping global skill installation."
+fi

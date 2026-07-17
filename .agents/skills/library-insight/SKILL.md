@@ -11,7 +11,10 @@ This tool extracts all classes, interfaces, methods, properties, and Javadoc/KDo
 
 ## Command Reference
 
-The command line executable is `library-insight` (located at `~/.library-insight/bin/library-insight` or linked globally as `library-insight`).
+The command line tool `library-insight` can be executed globally by:
+* Installing via npm: `npm install -g library-insight`
+* Running instantly with npx: `npx library-insight <command> [options]`
+* Installing via shell: `~/.library-insight/bin/library-insight` (linked globally as `library-insight`)
 
 ### 1. Scan Dependencies (`scan`)
 Scans a local JAR/AAR file, a directory of JARs, or resolves a Maven coordinate over HTTP, downloading it and its corresponding `-sources.jar` automatically from repositories (Maven Central, Google Maven, SoftBank).

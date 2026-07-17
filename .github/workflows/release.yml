@@ -62,6 +62,8 @@ jobs:
           # Copy dependent library jars
           mkdir -p npm/lib/
           cp -R library-insight-cli/build/install/library-insight/lib/* npm/lib/
+          # Copy Custom AI Skill file
+          cp .agents/skills/library-insight/SKILL.md npm/
 
       - name: Publish to npm
         if: startsWith(github.ref, 'refs/tags/v')

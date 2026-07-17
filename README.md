@@ -41,14 +41,27 @@ Library Insight follows **Clean Architecture** principles and is composed of the
 
 ---
 
-## Build & Installation
+## Installation & Setup
 
 ### Requirements
-- JDK 17 or higher
-- Gradle (provided wrapper)
+- JDK 17 or higher (Required to execute the Java/Kotlin runtime engine)
 
-### Build Executable
-Compile the project and install the local executable command distribution:
+### Option A: Install via npm (Recommended)
+You can install the CLI globally on your system instantly using Node Package Manager:
+```bash
+npm install -g library-insight
+```
+*(Once installed, you can execute the `library-insight` command directly from any folder).*
+
+### Option B: Run installer script from local source
+You can install and symlink the CLI globally from a local checkout:
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+### Option C: Manual build from source
+If you just want to run a local build without global registration:
 ```bash
 ./gradlew installDist
 ```

@@ -6,6 +6,9 @@
   "bin": {
     "library-insight": "./bin/index.js"
   },
+  "scripts": {
+    "postinstall": "node ./bin/postinstall.js"
+  },
   "preferGlobal": true,
   "engines": {
     "node": ">=16.0.0"
