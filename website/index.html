@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Insight - Java & Kotlin Library API Indexer</title>
+    <meta name="description" content="Discover, search, and document Java/Kotlin library APIs directly from compiled bytecode & Kotlin metadata with AI context exports.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <span class="gradient-text">Library Insight</span>
+        </div>
+        <nav class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#commands">Commands</a>
+            <a href="#ai-integration">AI Context</a>
+            <a href="#setup" class="btn-primary">Get Started</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="badge">Version 1.0.0-SNAPSHOT</div>
+                <h1>Understand Any JVM Library <br><span class="gradient-text">Without Source Code</span></h1>
+                <p>Inspect compiled Java & Kotlin bytecode (JAR/AAR) or Maven coordinates. Extract signatures, Javadocs, and generate structured AI context indexes instantly.</p>
+                <div class="hero-actions">
+                    <a href="#setup" class="btn-primary">Download Installer</a>
+                    <a href="#commands" class="btn-secondary">CLI Reference</a>
+                </div>
+            </div>
+            
+            <!-- Interactive Terminal Dashboard -->
+            <div class="hero-dashboard">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                        <div class="title">terminal — library-insight</div>
+                    </div>
+                    <div class="terminal-body" id="terminal-body">
+                        <!-- Content typed dynamically by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="section-header">
+                <h2>Why Library Insight?</h2>
+                <p>Designed for developers, documentation generators, and AI assistants.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">📦</div>
+                    <h3>Bytecode Inspection</h3>
+                    <p>Parses compiled Java class signatures and decodes Kotlin metadata to retrieve native declarations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🔍</div>
+                    <h3>Sources & Javadoc Matching</h3>
+                    <p>Matches class definitions to source files automatically to attach documentation comments and method bodies.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🌐</div>
+                    <h3>On-the-Fly Maven Resolution</h3>
+                    <p>Resolves Maven coordinates automatically over HTTP using Ktor client, caching targets locally.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🤖</div>
+                    <h3>Split AI Context</h3>
+                    <p>Generates compact, split-file package and class directories under <code>build/ai-context/</code> optimized for LLM token usage.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Commands Reference Section -->
+        <section id="commands" class="commands-section">
+            <div class="section-header">
+                <h2>Command Line Reference</h2>
+                <p>Explore CLI command options and interactive usage guides.</p>
+            </div>
+            
+            <div class="commands-container">
+                <div class="tabs-list">
+                    <button class="tab-btn active" onclick="switchTab(event, 'scan-tab')">Scan</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'search-tab')">Search</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'explain-tab')">Explain</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'export-tab')">Export & Diff</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'ai-tab')">AI Context</button>
+                </div>
+
+                <div class="tabs-content">
+                    <div id="scan-tab" class="tab-pane active">
+                        <h3>Scan Library & Maven Coordinates</h3>
+                        <p>Analyze local files or download from repositories directly to populate the indexing database.</p>
+                        <pre><code># Scan local JAR with sources
+library-insight scan sample.jar --sources sample-sources.jar
+
+# Scan Maven coordinate over HTTP
+library-insight scan com.aldebaran:qisdk:1.7.5
+
+# Resolve using custom repository URL
+library-insight scan com.mycompany:mylib:1.0.0 --repo https://jitpack.io</code></pre>
+                    </div>
+
+                    <div id="search-tab" class="tab-pane">
+                        <h3>Search Index Symbols</h3>
+                        <p>Quickly search for packages, classes, methods, or property declarations matching a search term.</p>
+                        <pre><code># Search matching classes or methods
+library-insight search Calculator
+
+# Case-insensitive pattern search
+library-insight search shout</code></pre>
+                    </div>
+
+                    <div id="explain-tab" class="tab-pane">
+                        <h3>Explain Class Details</h3>
+                        <p>Generate detailed structural reports displaying constructors, signatures, and Javadoc definitions.</p>
+                        <pre><code>library-insight explain Calculator</code></pre>
+                    </div>
+
+                    <div id="export-tab" class="tab-pane">
+                        <h3>Export and Diffing</h3>
+                        <p>Save reports to clean Markdown sheets, JSON documents, or perform a version comparison to detect breaking changes.</p>
+                        <pre><code># Export index to Markdown
+library-insight export markdown > API.md
+
+# Diff two archive versions
+library-insight diff sample-v1.jar sample-v2.jar</code></pre>
+                    </div>
+
+                    <div id="ai-tab" class="tab-pane">
+                        <h3>AI Context Generator</h3>
+                        <p>Export a token-efficient split directory layout mapping package namespaces to folders and classes to individual files.</p>
+                        <pre><code># Generates output under build/ai-context/
+library-insight ai-export</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Integration Section -->
+        <section id="ai-integration" class="ai-section">
+            <div class="ai-content">
+                <h2>Supercharge Your AI Prompts</h2>
+                <p>Instead of copying thousands of lines of code or relying on outdated internet documentation, split class files let you load only the specific types your AI needs inside its context window.</p>
+                <div class="ai-tree">
+                    <div class="tree-header">build/ai-context/</div>
+                    <div class="tree-node">├── metadata.json</div>
+                    <div class="tree-node">└── com-aldebaran-qi-sdk/</div>
+                    <div class="tree-node indent">├── QiContext.json</div>
+                    <div class="tree-node indent">├── Qi.json</div>
+                    <div class="tree-node indent">└── builder/</div>
+                    <div class="tree-node indent-2">└── ChatBuilder.json</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Setup/Getting Started Section -->
+        <section id="setup" class="setup-section">
+            <div class="section-header">
+                <h2>Get Started Globally</h2>
+                <p>Install and link the CLI executable globally on your computer in seconds.</p>
+            </div>
+            <div class="setup-box">
+                <p>Run the installer script from the root folder:</p>
+                <pre><code># Grant execute permission and run
+chmod +x install.sh
+./install.sh</code></pre>
+                <p class="sub-text">Once finished, the <code>library-insight</code> command will be globally configured on your terminal path.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Library Insight. Released under the Apache 2.0 License.</p>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+</html>

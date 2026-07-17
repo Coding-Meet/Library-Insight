@@ -1,0 +1,71 @@
+---
+name: library-insight
+description: Indexes public APIs and extracts source code comments from Java/Kotlin compiled archives (JAR/AAR) or Maven coordinates, generating compact context JSON layouts for AI agents.
+---
+
+# Library Insight Agent Skill
+
+Use this skill when you need to understand, inspect, or build AI prompts for external JVM libraries (Java/Kotlin JAR or AAR files) or public Maven dependency coordinates.
+
+This tool extracts all classes, interfaces, methods, properties, and Javadoc/KDoc comments from bytecode and sources, creating an indexed database and a split AI-friendly directory structure.
+
+## Command Reference
+
+The command line executable is `library-insight` (located at `~/.library-insight/bin/library-insight` or linked globally as `library-insight`).
+
+### 1. Scan Dependencies (`scan`)
+Scans a local JAR/AAR file, a directory of JARs, or resolves a Maven coordinate over HTTP, downloading it and its corresponding `-sources.jar` automatically from repositories (Maven Central, Google Maven, SoftBank).
+* **Scan Local JAR/AAR**:
+  ```bash
+  library-insight scan path/to/library.aar --sources path/to/library-sources.jar
+  ```
+* **Scan Maven Coordinate**:
+  ```bash
+  library-insight scan groupId:artifactId:version
+  ```
+* **Scan with Custom Repositories**:
+  ```bash
+  library-insight scan groupId:artifactId:version --repo https://jitpack.io
+  ```
+
+*Default Database Output*: `build/library-insight-index.json`.
+
+### 2. Search Symbols (`search`)
+Search for classes, packages, methods, or properties in the saved index.
+```bash
+library-insight search ClassNameOrMethod
+```
+
+### 3. Explain Class (`explain`)
+Print detailed structural details (modifiers, superclasses, constructors, properties, and methods) with their documentation.
+```bash
+library-insight explain FullOrSimpleClassName
+```
+
+### 4. Export Index (`export`)
+Export the index database to pretty JSON or structured Markdown reference sheets.
+```bash
+library-insight export markdown > API_REFERENCE.md
+library-insight export json output.json
+```
+
+### 5. Diff Library Versions (`diff`)
+Compare two library versions to check for changes and potential breaking changes.
+```bash
+library-insight diff old-library.jar new-library.jar
+```
+
+### 6. Export AI Context (`ai-export`)
+Restructures the scanned index database into a split folder structure under `build/ai-context/` containing:
+- `metadata.json` (describing library name, version, and packages).
+- Subfolders for packages mapped as `group-artifact-package` (dots replaced with hyphens) and subpackages nested as real subdirectories.
+- Individual class-specific JSON files containing compact signatures and Javadocs.
+```bash
+library-insight ai-export
+```
+
+### 7. Clear Cache (`clear-cache`)
+Clears all downloaded cached Maven binaries and sources from local storage.
+```bash
+library-insight clear-cache
+```
