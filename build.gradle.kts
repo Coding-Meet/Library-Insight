@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "2.0.20" apply false
-    kotlin("plugin.serialization") version "2.0.20" apply false
+    kotlin("jvm") apply false
+    alias(libs.plugins.kotlinPluginSerialization) apply false
 }
 
 allprojects {
@@ -14,7 +14,7 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "buildsrc.convention.kotlin-jvm")
 
     dependencies {
         // Kotest testing framework
@@ -25,12 +25,7 @@ subprojects {
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
             freeCompilerArgs.add("-Xopt-in=kotlin.RequiresOptIn")
         }
-    }
-
-    tasks.withType<Test>().configureEach {
-        useJUnitPlatform()
     }
 }
