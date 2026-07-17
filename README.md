@@ -83,14 +83,14 @@ Scan a JAR, AAR, local directory, or Maven coordinate.
 ### 2. Search Symbols
 Search for packages, classes, methods, or properties in the saved index.
 ```bash
-./library-insight search SampleLibrary
+./library-insight search Calculator
 ./library-insight search shout
 ```
 
 ### 3. Explain Class
 Print detailed structural details (modifiers, superclass, constructors, properties, methods, and documentation) about a specific class.
 ```bash
-./library-insight explain SampleLibrary
+./library-insight explain Calculator
 ```
 
 ### 4. Export Index
