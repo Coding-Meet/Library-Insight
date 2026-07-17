@@ -70,6 +70,32 @@ The executable binary will be generated at:
 
 ---
 
+## AI Agent Skill Integration
+
+Library Insight bundles a Custom AI Agent Skill (`SKILL.md`) that teaches AI assistants (like Claude, Gemini, Cursor, Copilot, Junie, etc.) how to execute scan and query commands automatically.
+
+### 1. Global Auto-Integration
+When you install the CLI globally via **Option A** (`npm install -g`) or **Option B** (`./install.sh`), a post-install script automatically copies the agent skill file into your user profile configurations:
+- `~/.cursor/skills/library-insight`
+- `~/.gemini/config/skills/library-insight`
+- `~/.claude/skills/library-insight`
+- `~/.agents/skills/library-insight`
+- `~/.copilot/skills/library-insight`
+- `~/.junie/skills/library-insight`
+
+Any active AI agent running on your computer will instantly discover and utilize the `library-insight` command tree.
+
+### 2. Project Workspace Scoping
+If you want to install the skill scoped *only* to your current project directory (workspace-specific scope), run:
+```bash
+library-insight init
+# or
+library-insight skills add
+```
+This creates `.agents/skills/library-insight/SKILL.md` in the project root, enabling workspace-scoped agents to access the tool.
+
+---
+
 ## CLI Usage & Commands
 
 > [!NOTE]
