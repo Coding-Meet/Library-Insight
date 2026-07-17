@@ -139,7 +139,24 @@ object AiExporter {
         }
         outputDir.mkdirs()
 
-        val packagesList = index.packages.map { it.name.replace('.', '-') }
+        val nonDefaultPackages = index.packages.map { it.name }.filter { it.isNotEmpty() }
+        val basePackage = if (nonDefaultPackages.isEmpty()) "" else {
+            nonDefaultPackages.minByOrNull { it.length } ?: ""
+        }
+
+        val packagesList = index.packages.map { pkg ->
+            val pkgName = pkg.name
+            when {
+                pkgName.isEmpty() -> "default-package"
+                basePackage.isNotEmpty() && pkgName.startsWith(basePackage) -> {
+                    val baseFolder = basePackage.replace('.', '-')
+                    val suffix = pkgName.substring(basePackage.length).removePrefix(".").replace('.', '/')
+                    if (suffix.isEmpty()) baseFolder else "$baseFolder/$suffix"
+                }
+                else -> pkgName.replace('.', '-')
+            }
+        }.distinct()
+
         val metadata = AiMetadata(
             library = index.libraryName,
             version = index.version,
@@ -149,8 +166,17 @@ object AiExporter {
         metadataFile.writeText(json.encodeToString(metadata))
 
         for (pkg in index.packages) {
-            val pkgDirName = if (pkg.name.isEmpty()) "default-package" else pkg.name.replace('.', '-')
-            val pkgDir = File(outputDir, pkgDirName)
+            val pkgName = pkg.name
+            val relativePath = when {
+                pkgName.isEmpty() -> "default-package"
+                basePackage.isNotEmpty() && pkgName.startsWith(basePackage) -> {
+                    val baseFolder = basePackage.replace('.', '-')
+                    val suffix = pkgName.substring(basePackage.length).removePrefix(".").replace('.', '/')
+                    if (suffix.isEmpty()) baseFolder else "$baseFolder/$suffix"
+                }
+                else -> pkgName.replace('.', '-')
+            }
+            val pkgDir = File(outputDir, relativePath)
             pkgDir.mkdirs()
 
             for (clazz in pkg.classes) {
