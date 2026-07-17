@@ -273,7 +273,7 @@ class DiffCommand : CliktCommand(
 
 class AiExportCommand : CliktCommand(
     name = "ai-export",
-    help = "Generate a compact, token-efficient split context folder structure (ai-context/) for LLMs."
+    help = "Generate a compact, token-efficient split context folder structure (build/ai-context/) for LLMs."
 ) {
     val outputDir by argument(help = "Output directory path").file().optional()
 
@@ -289,7 +289,7 @@ class AiExportCommand : CliktCommand(
             return
         }
 
-        val dir = outputDir ?: File("ai-context")
+        val dir = outputDir ?: File("build/ai-context")
         AiExporter.exportSplit(index, dir)
         echo("Generated compact LLM context directory structure at: ${dir.absolutePath}")
     }
