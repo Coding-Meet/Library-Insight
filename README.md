@@ -356,6 +356,12 @@ Below is the directory structure detailing the key folders and components of the
 
 ```
 Library-Insight/
+├── .agents/                        # Local workspace AI Agent customizations
+│   └── skills/
+│       └── library-insight/
+│           ├── SKILL.md            # Master Custom AI agent Skill file
+│           └── scripts/
+│               └── install-cli.sh  # Script to globally install CLI binary
 ├── buildSrc/                       # Gradle precompiled script plugins for convention builds
 │   ├── src/main/kotlin/
 │   │   └── kotlin-jvm.gradle.kts   # Shared Kotlin JVM conventions
@@ -478,6 +484,11 @@ Library-Insight/
 │   │                       └── search/
 │   │                           └── SearchEngine.kt
 │   └── build.gradle.kts
+├── npm/                            # npm package distribution packaging configuration
+│   ├── bin/
+│   │   ├── index.js                # Global CLI entrypoint runner script
+│   │   └── postinstall.js          # Auto skill registration script
+│   └── package.json                # npm package metadata
 ├── sample/
 │   ├── src/
 │   │   └── main/
