@@ -179,21 +179,15 @@ library-insight scan com.squareup.retrofit2:retrofit:2.11.0
 
 # Scan OkHttp client
 library-insight scan com.squareup.okhttp3:okhttp:4.12.0
+```
 
-# Scan Ktor Client Core
-library-insight scan io.ktor:ktor-client-core:3.0.0
-
-# Scan Jetpack Room Runtime
-library-insight scan androidx.room:room-runtime:2.6.1
-
-# Scan Lottie Android from Maven Central
-library-insight scan com.airbnb.android:lottie:6.4.0
-
-# Scan Jetpack Compose Runtime
-library-insight scan androidx.compose.runtime:runtime:1.6.7
-
-# Scan Aldebaran QiSDK library
-library-insight scan com.aldebaran:qisdk:1.7.5
+**Example Output:**
+```text
+Detected Maven coordinate: com.squareup.retrofit2:retrofit:2.11.0
+  -> Using cached binary JAR from Gradle cache: retrofit-2.11.0.jar
+  -> Using cached sources JAR from Gradle cache: retrofit-2.11.0-sources.jar
+Scan complete! Found 113 classes across 3 packages.
+Saved API index to: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight-index.json
 ```
 
 ### 2. Search Symbols
@@ -201,13 +195,15 @@ library-insight scan com.aldebaran:qisdk:1.7.5
 Search for packages, classes, methods, or properties in the saved index.
 
 ```bash
-# Search for Retrofit builder or client classes
+# Search for Retrofit class matching patterns
 library-insight search Retrofit
-library-insight search OkHttpClient
+```
 
-# Search for animation view classes or db descriptors
-library-insight search LottieAnimationView
-library-insight search RoomDatabase
+**Example Output:**
+```text
+Found 2 matching classes:
+  - retrofit2.Retrofit
+  - retrofit2.Retrofit$Builder
 ```
 
 ### 3. Explain Class
@@ -217,9 +213,17 @@ Print detailed structural details (modifiers, superclass, constructors, properti
 ```bash
 # Get full API structure of Retrofit class
 library-insight explain Retrofit
+```
 
-# Get full API structure of OkHttpClient
-library-insight explain OkHttpClient
+**Example Output:**
+```text
+Class: retrofit2.Retrofit (public class)
+  Constructors:
+    + public constructor(okhttp3.Call$Factory, okhttp3.HttpUrl, java.util.List<retrofit2.Converter$Factory>, java.util.List<retrofit2.CallAdapter$Factory>, java.util.concurrent.Executor, boolean)
+  Methods:
+    + public fun <T> create(java.lang.Class<T>): T
+    + public fun baseUrl(): okhttp3.HttpUrl
+    + public fun callFactory(): okhttp3.Call$Factory
 ```
 
 ### 4. Export Index
@@ -229,13 +233,11 @@ Export the scanned index to Markdown reference sheets or pretty-printed JSON.
 ```bash
 # Automatically saves to build/API_REFERENCE.md
 library-insight export markdown
+```
 
-# Automatically saves to build/library-insight-index.json
-library-insight export json
-
-# Or specify a custom output path
-library-insight export markdown custom-path.md
-
+**Example Output:**
+```text
+Exported MARKDOWN to: /Users/meet/AndroidStudioProjects/Library-Insight/build/API_REFERENCE.md
 ```
 
 ### 5. Diff Library Versions
@@ -245,6 +247,23 @@ Compare two library archives directly to check for changes and potential breakin
 ```bash
 # Detect breaking changes between Retrofit 2.9.0 and 2.11.0
 library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar
+```
+
+**Example Output:**
+```text
+==================================================
+ LIBRARY INSIGHT API DIFF REPORT
+==================================================
+Old: retrofit-2.9.0
+New: retrofit-2.11.0
+Breaking Changes Found: NO
+==================================================
+➕ Added Classes:
+  - retrofit2.Reflection
+📝 Changed Classes:
+  Class: retrofit2.Invocation
+    Added Methods:
+      + fun service(): java.lang.Class<?>
 ```
 
 ### 6. Export AI Context (Recommended for AI prompts)
@@ -257,12 +276,22 @@ This solves the problem of massive single files (like `API_REFERENCE.md`) by spl
 library-insight ai-export
 ```
 
+**Example Output:**
+```text
+Generated compact LLM context directory structure at: /Users/meet/AndroidStudioProjects/Library-Insight/build/ai-context
+```
+
 ### 7. Clear Cache
 
 Clear all downloaded and cached Maven artifacts from the local cache directory to free up space.
 
 ```bash
 library-insight clear-cache
+```
+
+**Example Output:**
+```text
+Cache cleared successfully. Deleted 2.45 MB.
 ```
 
 ### 8. Initialize Workspace Agent Skill (`init`)
@@ -273,6 +302,12 @@ Initialize the current project directory with the Custom AI agent Skill so that 
 library-insight init
 ```
 
+**Example Output:**
+```text
+Initializing Library Insight agent environment...
+SUCCESS: AI Agent Skill initialized at: /Users/meet/AndroidStudioProjects/Library-Insight/.agents/skills/library-insight/SKILL.md
+```
+
 ### 9. Manage Agent Skills (`skills`)
 
 Manage Library Insight Custom AI agent skills for the current workspace.
@@ -280,12 +315,11 @@ Manage Library Insight Custom AI agent skills for the current workspace.
 ```bash
 # Install the skill to the current workspace (.agents/skills/)
 library-insight skills add
+```
 
-# Remove the skill from the current workspace
-library-insight skills remove
-
-# List installed skills in the current workspace
-library-insight skills list
+**Example Output:**
+```text
+SUCCESS: AI Agent Skill added to workspace at: .agents/skills/library-insight/SKILL.md
 ```
 
 ### 10. CLI Diagnostics & Doctor (`doctor`)
@@ -294,6 +328,24 @@ Run diagnostic checks for Java version, Node.js installation, local caches, and 
 
 ```bash
 library-insight doctor
+```
+
+**Example Output:**
+```text
+[Library Insight Diagnostics]
+1. Java Runtime Environment (JRE):
+   - Path: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java
+   - Version: 17.0.7
+   - Status: OK (Java 17+ verified)
+2. Node.js Environment:
+   - Version: v18.16.0
+   - Status: OK
+3. Local Cache Directory:
+   - Path: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight/cache
+   - Status: OK
+4. AI Agent Skill Registrations:
+   - Gemini Config Skill: ACTIVE (registered)
+   - Cursor Skill: ACTIVE (registered)
 ```
 
 ---
