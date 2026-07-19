@@ -26,7 +26,7 @@ The command line tool `library-insight` can be executed globally by:
 ### 1. Scan Dependencies (`scan`)
 Scans a local JAR/AAR file, a directory of JARs, or resolves a Maven coordinate over HTTP, downloading it and its corresponding `-sources.jar` automatically from repositories (Maven Central, Google Maven, SoftBank).
 
-*(Note: In Gradle/Kotlin project directories, downloaded artifacts are saved locally to `build/library-insight/cache/`. To run fully offline, the scanner automatically checks the local machine's Gradle caches (`~/.gradle/caches/modules-2/files-2.1/`) before sending network requests).*
+*(Note: In Gradle/Kotlin project directories, downloaded artifacts are saved locally to `build/library-insight/cache/`. To run fully offline, the scanner automatically references the local machine's Gradle caches (`~/.gradle/caches/modules-2/files-2.1/`) directly without copying, saving disk space).*
 
 * **Scan Local JAR/AAR**:
   ```bash

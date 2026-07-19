@@ -163,7 +163,7 @@ Scan a JAR, AAR, local directory, or Maven coordinate.
 
 > [!TIP]
 > **Offline-First & Smart Caching:**
-> - **Gradle Cache Lookup**: Before downloading from repositories over the network, `library-insight` scans your machine's Gradle cache (`~/.gradle/caches/modules-2/files-2.1/`). If the dependency coordinate has already been downloaded by Gradle/Android Studio, it is copied directly—enabling fully offline scanning!
+> - **Gradle Cache Lookup**: Before downloading from repositories over the network, `library-insight` scans your machine's Gradle cache (`~/.gradle/caches/modules-2/files-2.1/`). If the dependency coordinate has already been downloaded by Gradle/Android Studio, it is referenced directly without performing any disk copies—saving space and enabling fully offline scanning!
 > - **Local Project Cache**: If you run a scan inside a project directory containing a `build/` folder or a Gradle build file, downloaded artifacts are saved locally to `build/library-insight/cache/` instead of the global home directory, keeping your user profile clutter-free and project cleaning clean.
 
 ```bash
@@ -281,6 +281,14 @@ library-insight skills remove
 library-insight skills list
 ```
 
+### 10. CLI Diagnostics & Doctor (`doctor`)
+
+Run diagnostic checks for Java version, Node.js installation, local caches, and active global AI Agent skill configurations.
+
+```bash
+library-insight doctor
+```
+
 ---
 
 ## Repository Directory Structure
@@ -313,10 +321,13 @@ Library-Insight/
 │   │                               ├── AiExportCommand.kt
 │   │                               ├── ClearCacheCommand.kt
 │   │                               ├── DiffCommand.kt
+│   │                               ├── DoctorCommand.kt
 │   │                               ├── ExplainCommand.kt
 │   │                               ├── ExportCommand.kt
+│   │                               ├── InitCommand.kt
 │   │                               ├── ScanCommand.kt
-│   │                               └── SearchCommand.kt
+│   │                               ├── SearchCommand.kt
+│   │                               └── SkillsCommand.kt
 │   └── build.gradle.kts
 ├── library-insight-common/
 │   ├── src/

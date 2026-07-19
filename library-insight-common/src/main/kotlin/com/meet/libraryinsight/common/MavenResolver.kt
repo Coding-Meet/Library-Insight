@@ -189,37 +189,19 @@ object MavenResolver {
         }
 
         if (aarFile != null) {
-            progressReporter("Copying cached binary AAR from Gradle cache: ${aarFile.name}")
-            cachedAar.parentFile?.mkdirs()
-            aarFile.copyTo(cachedAar, overwrite = true)
-            
-            val destSources = if (sourcesFile != null) {
-                val sourcesF = sourcesFile as File
-                progressReporter("Copying cached sources JAR from Gradle cache: ${sourcesF.name}")
-                cachedSources.parentFile?.mkdirs()
-                sourcesF.copyTo(cachedSources, overwrite = true)
-                cachedSources
-            } else {
-                null
+            progressReporter("Using cached binary AAR from Gradle cache: ${aarFile.name}")
+            if (sourcesFile != null) {
+                progressReporter("Using cached sources JAR from Gradle cache: ${sourcesFile.name}")
             }
-            return ResolvedArtifact(cachedAar, destSources)
+            return ResolvedArtifact(aarFile, sourcesFile)
         }
 
         if (jarFile != null) {
-            progressReporter("Copying cached binary JAR from Gradle cache: ${jarFile.name}")
-            cachedJar.parentFile?.mkdirs()
-            jarFile.copyTo(cachedJar, overwrite = true)
-            
-            val destSources = if (sourcesFile != null) {
-                val sourcesF = sourcesFile as File
-                progressReporter("Copying cached sources JAR from Gradle cache: ${sourcesF.name}")
-                cachedSources.parentFile?.mkdirs()
-                sourcesF.copyTo(cachedSources, overwrite = true)
-                cachedSources
-            } else {
-                null
+            progressReporter("Using cached binary JAR from Gradle cache: ${jarFile.name}")
+            if (sourcesFile != null) {
+                progressReporter("Using cached sources JAR from Gradle cache: ${sourcesFile.name}")
             }
-            return ResolvedArtifact(cachedJar, destSources)
+            return ResolvedArtifact(jarFile, sourcesFile)
         }
 
         return null
