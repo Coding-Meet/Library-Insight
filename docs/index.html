@@ -1,215 +1,521 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library Insight - Java & Kotlin Library API Indexer</title>
-    <meta name="description" content="Discover, search, and document Java/Kotlin library APIs directly from compiled bytecode & Kotlin metadata with AI context exports.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library Insight — Simple API docs for JVM libraries</title>
+<meta name="description" content="Library Insight scans Java and Kotlin libraries, explains their public APIs, compares versions, and gives AI agents smaller context files.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo">
-            <span class="gradient-text">Library Insight</span>
+
+<div class="noise-overlay" aria-hidden="true"></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="top">
+  <div class="nav__inner">
+    <a href="#top" class="nav__brand">
+      <span class="nav__brand-mark">&gt;_</span>
+      <span class="nav__brand-name">Library Insight</span>
+    </a>
+    <nav class="nav__links">
+      <a href="#problem">Problem</a>
+      <a href="#features">Features</a>
+      <a href="#playground">Commands</a>
+      <a href="#start">Start</a>
+    </nav>
+    <a href="https://github.com/Coding-Meet/Library-Insight" class="nav__cta" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z"/></svg>
+      <span>GitHub</span>
+    </a>
+    <button class="nav__burger" id="burgerBtn" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav__mobile" id="mobileMenu">
+    <a href="#problem">Problem</a>
+    <a href="#features">Features</a>
+    <a href="#playground">Commands</a>
+    <a href="#start">Start</a>
+    <a href="https://github.com/Coding-Meet/Library-Insight" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="hero__inner">
+
+      <div class="eyebrow">
+        <span class="eyebrow__dot"></span>
+        Scan any JAR or AAR. No source code needed.
+      </div>
+
+      <h1 class="hero__title">
+        Understand any Java or Kotlin library<br>
+        <span class="text-gradient">without reading the source.</span>
+      </h1>
+
+      <p class="hero__subtitle">
+        Library Insight looks inside compiled JAR and AAR files, finds the public classes,
+        methods, and properties, then gives you clean docs, quick search, version diffs,
+        and small AI-friendly context files.
+      </p>
+
+      <div class="hero__actions">
+        <div class="install-banner">
+          <span class="install-banner__prompt">$</span>
+          <code class="install-banner__cmd">npm install -g library-insight</code>
+          <button class="install-banner__copy" id="copyInstallBtn" aria-label="Copy install command">
+            <svg class="icon-copy" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <svg class="icon-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+            <span class="copy-label">Copy</span>
+          </button>
         </div>
-        <nav class="nav-links">
-            <a href="#features">Features</a>
-            <a href="#commands">Commands</a>
-            <a href="#ai-integration">AI Context</a>
-            <a href="#setup" class="btn-primary">Get Started</a>
-        </nav>
-    </header>
+        <a href="#start" class="btn btn--ghost">Start now -></a>
+      </div>
+    </div>
+  </section>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <div class="badge">Version 1.0.0</div>
-                <h1>Understand Any JVM Library <br><span class="gradient-text">Without Source Code</span></h1>
-                <p>Inspect compiled Java & Kotlin bytecode (JAR/AAR) or Maven coordinates. Extract signatures, Javadocs, and generate structured AI context indexes instantly.</p>
-                <div class="hero-actions">
-                    <a href="#setup" class="btn-primary">Download Installer</a>
-                    <a href="#commands" class="btn-secondary">CLI Reference</a>
-                </div>
+  <!-- ============ PROBLEM / SOLUTION ============ -->
+  <section class="section" id="problem">
+    <div class="section__inner">
+      <p class="section__eyebrow">The problem</p>
+      <h2 class="section__title">AI should code against the library version you actually use.</h2>
+      <p class="section__desc">
+        AI assistants often learn from old docs, latest web examples, or a different
+        library version than your project has installed. That creates wrong methods,
+        deprecated code, and broken implementations.
+      </p>
+
+      <div class="compare-grid">
+
+        <article class="compare-card compare-card--old">
+          <div class="compare-card__head">
+            <span class="compare-card__tag">Without version context</span>
+            <h3>AI guesses from docs and web examples</h3>
+          </div>
+          <div class="compare-card__body">
+            <ul class="compare-list">
+              <li><span class="x-mark">✕</span> AI may use APIs from the latest version, not your installed version</li>
+              <li><span class="x-mark">✕</span> It may suggest methods that do not exist in your dependency</li>
+              <li><span class="x-mark">✕</span> Official docs can be incomplete, old, or not updated with releases</li>
+              <li><span class="x-mark">✕</span> Deprecated methods get reused instead of the recommended replacement</li>
+            </ul>
+            <div class="mini-terminal mini-terminal--old">
+              <span class="mini-terminal__line dim">AI: use library example from the web</span>
+              <span class="mini-terminal__line err">Error: method not found in this version</span>
             </div>
-            
-            <!-- Interactive Terminal Dashboard -->
-            <div class="hero-dashboard">
-                <div class="terminal">
-                    <div class="terminal-header">
-                        <div class="dot red"></div>
-                        <div class="dot yellow"></div>
-                        <div class="dot green"></div>
-                        <div class="title">terminal — library-insight</div>
-                    </div>
-                    <div class="terminal-body" id="terminal-body">
-                        <!-- Content typed dynamically by JS -->
-                    </div>
-                </div>
+          </div>
+        </article>
+
+        <article class="compare-card compare-card--new">
+          <div class="compare-card__head">
+            <span class="compare-card__tag compare-card__tag--accent">With Library Insight</span>
+            <h3>AI gets exact APIs from your library</h3>
+          </div>
+          <div class="compare-card__body">
+            <ul class="compare-list">
+              <li><span class="check-mark">✓</span> Scans the exact JAR/AAR or Maven version in your project</li>
+              <li><span class="check-mark">✓</span> Shows real classes, methods, signatures, and Kotlin metadata</li>
+              <li><span class="check-mark">✓</span> Helps AI avoid unavailable or deprecated APIs</li>
+              <li><span class="check-mark">✓</span> Compares versions so upgrades are easier to understand</li>
+            </ul>
+            <div class="mini-terminal mini-terminal--new">
+              <span class="mini-terminal__line dim">library-insight explain Retrofit</span>
+              <span class="mini-terminal__line ok">OK: exact signatures from your version</span>
             </div>
-        </section>
+          </div>
+        </article>
 
-        <!-- Features Section -->
-        <section id="features" class="features-section">
-            <div class="section-header">
-                <h2>Why Library Insight?</h2>
-                <p>Designed for developers, documentation generators, and AI assistants.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="section" id="features">
+    <div class="section__inner">
+      <p class="section__eyebrow">What it does</p>
+      <h2 class="section__title">Simple commands for real library details.</h2>
+      <p class="section__desc">
+        Give it a Maven coordinate, JAR, AAR, or build folder. It scans the compiled
+        files and turns them into searchable API information.
+      </p>
+
+      <div class="feature-grid">
+
+        <article class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: var(--accent-cyan)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>Finds public APIs</h3>
+          <p>Reads classes, constructors, methods, properties, generics, Kotlin flags, and parameter details from compiled files.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: var(--accent-emerald)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/></svg>
+          </div>
+          <h3>Works with local cache</h3>
+          <p>Checks your Gradle cache first. If Android Studio already downloaded the library, it can scan without downloading again.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: var(--accent-cyan)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3>Made for AI agents</h3>
+          <p>Creates small class-level files so assistants can read only the exact API they need instead of one huge document.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: var(--accent-emerald)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M12 8v8M8 12h8"/></svg>
+          </div>
+          <h3>Compares versions</h3>
+          <p>Shows added, removed, and changed APIs so you can spot breaking changes before upgrading a dependency.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section class="section" id="playground">
+    <div class="section__inner">
+      <p class="section__eyebrow">Command playground</p>
+      <h2 class="section__title">Pick a command and see what it does.</h2>
+      <p class="section__desc">These outputs were captured from <code>demo.sh</code>, so the examples match real CLI behavior.</p>
+
+      <div class="terminal" role="group" aria-label="Interactive command playground">
+        <div class="terminal__titlebar">
+          <div class="terminal__dots"><span></span><span></span><span></span></div>
+          <span class="terminal__path">library-insight command guide</span>
+          <button class="terminal__copy" id="copyTerminalBtn" type="button">Copy output</button>
+        </div>
+
+        <div class="terminal__tabs" role="tablist">
+          <button class="terminal__tab is-active" data-tab="scan" role="tab" aria-selected="true">
+            <span class="terminal__tab-dot"></span>scan
+          </button>
+          <button class="terminal__tab" data-tab="search" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>search
+          </button>
+          <button class="terminal__tab" data-tab="explain" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>explain
+          </button>
+          <button class="terminal__tab" data-tab="diff" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>diff
+          </button>
+          <button class="terminal__tab" data-tab="ai-export" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>ai-export
+          </button>
+          <button class="terminal__tab" data-tab="export" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>export
+          </button>
+          <button class="terminal__tab" data-tab="skills" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>skills
+          </button>
+          <button class="terminal__tab" data-tab="doctor" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>doctor
+          </button>
+        </div>
+
+        <div class="terminal__body">
+
+          <pre class="terminal__panel is-active" data-panel="scan" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight scan com.squareup.retrofit2:retrofit:2.11.0</span>
+<span class="tok-dim">Detected Maven coordinate: com.squareup.retrofit2:retrofit:2.11.0</span>
+<span class="tok-dim">  -> Found local Gradle cache directory for com.squareup.retrofit2:retrofit:2.11.0</span>
+<span class="tok-dim">  -> Using cached binary JAR from Gradle cache: retrofit-2.11.0.jar</span>
+<span class="tok-dim">  -> Using cached sources JAR from Gradle cache: retrofit-2.11.0-sources.jar</span>
+<span class="tok-ok">Scan complete! Found 113 classes across 3 packages.</span>
+<span class="tok-dim">Saved API index to: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight-index.json</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="search" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight search Retrofit</span>
+<span class="tok-ok">Found 116 matches for 'Retrofit':</span>
+<span class="tok-dim">--------------------------------------------------</span>
+<span class="tok-dim">[PACKAGE]  package retrofit2</span>
+<span class="tok-dim">[CLASS]     interface retrofit2.Call</span>
+<span class="tok-dim">[CLASS]     interface retrofit2.CallAdapter</span>
+<span class="tok-dim">[CLASS]    abstract open class retrofit2.CallAdapter$Factory</span>
+<span class="tok-dim">[CLASS]     interface retrofit2.Callback</span>
+<span class="tok-dim">[CLASS]     class retrofit2.HttpException</span>
+<span class="tok-dim">[CLASS]     class retrofit2.Invocation</span>
+<span class="tok-dim">[CLASS]     class retrofit2.Response</span>
+<span class="tok-dim">[CLASS]     class retrofit2.Retrofit</span>
+<span class="tok-dim">[CLASS]     class retrofit2.Retrofit$Builder</span>
+<span class="tok-dim">[PACKAGE]  package retrofit2.http</span>
+<span class="tok-dim">[CLASS]     annotation retrofit2.http.GET</span>
+<span class="tok-dim">[CLASS]     annotation retrofit2.http.POST</span>
+<span class="tok-dim">...more matches omitted for readability</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="explain" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight explain Retrofit</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent"> CLASS EXPLAIN REPORT</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-dim">Class:       retrofit2.Retrofit</span>
+<span class="tok-dim">Package:     retrofit2</span>
+<span class="tok-dim">Kind:        class</span>
+<span class="tok-dim">Visibility:  public</span>
+<span class="tok-dim">Documentation:</span>
+<span class="tok-dim">  Retrofit adapts a Java interface to HTTP calls by using annotations on declared methods.</span>
+<span class="tok-dim">Methods:</span>
+<span class="tok-ok">  - public fun create(p0: java.lang.Class&lt;T&gt;): T</span>
+<span class="tok-ok">  - public fun callFactory(): okhttp3.Call$Factory</span>
+<span class="tok-ok">  - public fun baseUrl(): okhttp3.HttpUrl</span>
+<span class="tok-ok">  - public fun callAdapterFactories(): java.util.List&lt;retrofit2.CallAdapter$Factory&gt;</span>
+<span class="tok-ok">  - public fun converterFactories(): java.util.List&lt;retrofit2.Converter$Factory&gt;</span>
+<span class="tok-dim">Nested Classes:</span>
+<span class="tok-dim">  - Builder</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="diff" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0</span>
+<span class="tok-dim">Resolving Maven coordinate for old version: com.squareup.retrofit2:retrofit:2.9.0</span>
+<span class="tok-dim">  -> Using cached binary JAR from Gradle cache: retrofit-2.9.0.jar</span>
+<span class="tok-dim">Resolving Maven coordinate for new version: com.squareup.retrofit2:retrofit:2.11.0</span>
+<span class="tok-dim">  -> Using cached binary JAR from Gradle cache: retrofit-2.11.0.jar</span>
+<span class="tok-dim">Analyzing old version: retrofit-2.9.0.jar</span>
+<span class="tok-dim">Analyzing new version: retrofit-2.11.0.jar</span>
+<span class="tok-dim">Diffing versions...</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent"> LIBRARY INSIGHT API DIFF REPORT</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-dim">Old: retrofit-2.9.0 (old)</span>
+<span class="tok-dim">New: retrofit-2.11.0 (new)</span>
+<span class="tok-warn">Breaking Changes Found: YES</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-add">Added Classes:</span>
+<span class="tok-dim">  - retrofit2.AndroidMainExecutor</span>
+<span class="tok-dim">  - retrofit2.Reflection</span>
+<span class="tok-warn">Removed Classes:</span>
+<span class="tok-dim">  - retrofit2.Platform$Android</span>
+<span class="tok-dim">  - retrofit2.Platform$Android$MainThreadExecutor</span>
+<span class="tok-accent">Changed Classes:</span>
+<span class="tok-dim">  Class retrofit2.Invocation</span>
+<span class="tok-dim">    Added Methods:</span>
+<span class="tok-ok">      + fun service(): java.lang.Class&lt;?&gt;</span>
+<span class="tok-ok">      + fun instance(): java.lang.Object</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="ai-export" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight ai-export</span>
+<span class="tok-ok">Generated compact LLM context directory structure at: /Users/meet/AndroidStudioProjects/Library-Insight/build/ai-context</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="export" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight export markdown</span>
+<span class="tok-ok">Exported MARKDOWN to: /Users/meet/AndroidStudioProjects/Library-Insight/build/API_REFERENCE.md</span>
+
+<span class="tok-prompt">$</span> <span class="tok-cmd">library-insight export json</span>
+<span class="tok-ok">Exported JSON to: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight-index.json</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="skills" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight init</span>
+<span class="tok-dim">Initializing Library Insight agent environment...</span>
+<span class="tok-ok">SUCCESS: AI Agent Skill initialized at: /private/tmp/library-insight-demo-workspace/.agents/skills/library-insight/SKILL.md</span>
+
+<span class="tok-prompt">$</span> <span class="tok-cmd">library-insight skills add</span>
+<span class="tok-ok">SUCCESS: AI Agent Skill installed successfully at: /private/tmp/library-insight-demo-workspace/.agents/skills/library-insight/SKILL.md</span>
+<span class="tok-accent">Workspace AI Agent Skills:</span>
+<span class="tok-ok">  - [Installed] library-insight (/private/tmp/library-insight-demo-workspace/.agents/skills/library-insight/SKILL.md)</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="doctor" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight doctor</span>
+<span class="tok-accent">Library Insight Diagnostics &amp; Doctor</span>
+<span class="tok-ok">Java Runtime Environment: OK (Java 17+ verified)</span>
+<span class="tok-ok">Node.js Environment: OK</span>
+<span class="tok-dim">Local Download Cache: Directory not created yet</span>
+<span class="tok-ok">Codex AI: INSTALLED (Verified)</span>
+<span class="tok-dim">Diagnostics completed.</span>
+
+<span class="tok-prompt">$</span> <span class="tok-cmd">library-insight clear-cache</span>
+<span class="tok-dim">Clearing local cache at: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight/cache...</span>
+<span class="tok-ok">Cache cleared successfully. Deleted 0.00 MB.</span></code></pre>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GETTING STARTED ============ -->
+  <section class="section" id="start">
+    <div class="section__inner">
+      <p class="section__eyebrow">Docs</p>
+      <h2 class="section__title">Start with the right workflow.</h2>
+      <p class="section__desc">
+        Use this flow when AI needs to implement a dependency correctly for the exact version in your project.
+      </p>
+
+      <div class="steps">
+
+        <article class="step">
+          <div class="step__index">01</div>
+          <div class="step__content">
+            <h3>Install the command</h3>
+            <p>You need JDK 17 or newer. npm installs the <code>library-insight</code> command globally.</p>
+            <div class="code-block">
+              <span class="code-block__lang">bash</span>
+              <pre><code><span class="tok-prompt">$</span> <span class="tok-cmd">npm install -g library-insight</span></code></pre>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="icon">📦</div>
-                    <h3>Bytecode Inspection</h3>
-                    <p>Parses compiled Java class signatures and decodes Kotlin metadata to retrieve native declarations.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="icon">🔍</div>
-                    <h3>Sources & Javadoc Matching</h3>
-                    <p>Matches class definitions to source files automatically to attach documentation comments and method bodies.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="icon">🌐</div>
-                    <h3>On-the-Fly Maven Resolution</h3>
-                    <p>Resolves Maven coordinates automatically over HTTP using Ktor client, caching targets locally.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="icon">🤖</div>
-                    <h3>Split AI Context</h3>
-                    <p>Generates compact, split-file package and class directories under <code>build/ai-context/</code> optimized for LLM token usage.</p>
-                </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step__index">02</div>
+          <div class="step__content">
+            <h3>Check the workspace skill</h3>
+            <p>The skill tells AI agents to verify real dependency APIs before writing code.</p>
+            <div class="code-block">
+              <span class="code-block__lang">bash</span>
+              <pre><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight skills list</span>
+<span class="tok-ok">[Installed] library-insight</span></code></pre>
             </div>
-        </section>
+          </div>
+        </article>
 
-        <!-- Commands Reference Section -->
-        <section id="commands" class="commands-section">
-            <div class="section-header">
-                <h2>Command Line Reference</h2>
-                <p>Explore CLI command options and interactive usage guides.</p>
+        <article class="step">
+          <div class="step__index">03</div>
+          <div class="step__content">
+            <h3>Scan and verify before coding</h3>
+            <p>Scan the dependency, search for the class, then explain it before writing implementation code.</p>
+            <div class="code-block">
+              <span class="code-block__lang">bash</span>
+              <pre><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight scan com.squareup.retrofit2:retrofit:2.11.0</span>
+<span class="tok-prompt">$</span> <span class="tok-cmd">library-insight search Retrofit</span>
+<span class="tok-prompt">$</span> <span class="tok-cmd">library-insight explain Retrofit</span></code></pre>
             </div>
-            
-            <div class="commands-container">
-                <div class="tabs-list">
-                    <button class="tab-btn active" onclick="switchTab(event, 'scan-tab')">Scan</button>
-                    <button class="tab-btn" onclick="switchTab(event, 'search-tab')">Search</button>
-                    <button class="tab-btn" onclick="switchTab(event, 'explain-tab')">Explain</button>
-                    <button class="tab-btn" onclick="switchTab(event, 'export-tab')">Export & Diff</button>
-                    <button class="tab-btn" onclick="switchTab(event, 'ai-tab')">AI Context</button>
-                    <button class="tab-btn" onclick="switchTab(event, 'skills-tab')">Agent Skills</button>
-                </div>
+          </div>
+        </article>
 
-                <div class="tabs-content">
-                    <div id="scan-tab" class="tab-pane active">
-                        <h3>Scan Library & Maven Coordinates</h3>
-                        <p>Analyze local files or download from repositories directly to populate the indexing database.</p>
-                        <pre><code># Scan Retrofit from Maven Central (jar + sources)
-library-insight scan com.squareup.retrofit2:retrofit:2.11.0
+      </div>
 
-# Scan OkHttp client
-library-insight scan com.squareup.okhttp3:okhttp:4.12.0
+      <div class="workflow-grid" aria-label="Recommended workflow">
+        <article class="workflow-card">
+          <span class="workflow-card__label">When adding a library</span>
+          <h3>Scan first</h3>
+          <p>Use the Maven coordinate or local JAR/AAR so the index matches the version installed in your project.</p>
+        </article>
+        <article class="workflow-card">
+          <span class="workflow-card__label">When AI suggests code</span>
+          <h3>Verify the method</h3>
+          <p>Use <code>search</code> and <code>explain</code> to confirm the class and method really exist.</p>
+        </article>
+        <article class="workflow-card">
+          <span class="workflow-card__label">When upgrading</span>
+          <h3>Compare versions</h3>
+          <p>Use <code>diff</code> to catch removed, changed, or deprecated APIs before rewriting code.</p>
+        </article>
+      </div>
 
-# Scan Aldebaran QiSDK library
-library-insight scan com.aldebaran:qisdk:1.7.5</code></pre>
-                    </div>
+      <div class="command-reference" aria-label="Command reference">
+        <div class="command-reference__header">
+          <p class="section__eyebrow">Command reference</p>
+          <h2 class="section__title">Every command in one place.</h2>
+        </div>
 
-                    <div id="search-tab" class="tab-pane">
-                        <h3>Search Index Symbols</h3>
-                        <p>Quickly search for packages, classes, methods, or property declarations matching a search term.</p>
-                        <pre><code># Search matching classes or methods
-library-insight search Retrofit
-library-insight search OkHttpClient
+        <div class="command-grid">
+          <article class="command-card">
+            <h3>scan</h3>
+            <p>Builds the API index from a Maven coordinate, JAR, AAR, directory, or Gradle output.</p>
+            <pre><code>library-insight scan com.squareup.retrofit2:retrofit:2.11.0</code></pre>
+          </article>
 
-# Search for animation view classes or db descriptors
-library-insight search LottieAnimationView</code></pre>
-                    </div>
+          <article class="command-card">
+            <h3>search</h3>
+            <p>Finds packages, classes, methods, and properties in the scanned index.</p>
+            <pre><code>library-insight search Retrofit</code></pre>
+          </article>
 
-                    <div id="explain-tab" class="tab-pane">
-                        <h3>Explain Class Details</h3>
-                        <p>Generate detailed structural reports displaying constructors, signatures, and Javadoc definitions.</p>
-                        <pre><code># Inspect structural details of Retrofit class
-library-insight explain Retrofit
+          <article class="command-card">
+            <h3>explain</h3>
+            <p>Prints class details, constructors, methods, properties, signatures, and docs.</p>
+            <pre><code>library-insight explain Retrofit</code></pre>
+          </article>
 
-# Inspect structural details of OkHttpClient
-library-insight explain OkHttpClient</code></pre>
-                    </div>
+          <article class="command-card">
+            <h3>diff</h3>
+            <p>Compares two library versions and highlights added, removed, changed, or breaking APIs.</p>
+            <pre><code>library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0</code></pre>
+          </article>
 
-                    <div id="export-tab" class="tab-pane">
-                        <h3>Export and Diffing</h3>
-                        <p>Save reports to clean Markdown sheets, JSON documents, or perform a version comparison to detect breaking changes.</p>
-                        <pre><code># Export index to Markdown inside build/ folder
-library-insight export markdown build/API_REFERENCE.md
+          <article class="command-card">
+            <h3>ai-export</h3>
+            <p>Creates split class-level JSON files for AI agents under <code>build/ai-context/</code>.</p>
+            <pre><code>library-insight ai-export</code></pre>
+          </article>
 
-# Diff two archive versions to detect breaking changes
-library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar</code></pre>
-                    </div>
+          <article class="command-card">
+            <h3>export</h3>
+            <p>Exports the scanned index as Markdown or JSON for human-readable docs.</p>
+            <pre><code>library-insight export markdown</code></pre>
+          </article>
 
-                    <div id="ai-tab" class="tab-pane">
-                        <h3>AI Context Generator</h3>
-                        <p>Export a token-efficient split directory layout mapping package namespaces to folders and classes to individual files.</p>
-                        <pre><code># Generates output under build/ai-context/
-library-insight ai-export</code></pre>
-                    </div>
+          <article class="command-card">
+            <h3>init</h3>
+            <p>Adds the Library Insight agent skill to the current workspace.</p>
+            <pre><code>library-insight init</code></pre>
+          </article>
 
-                    <div id="skills-tab" class="tab-pane">
-                        <h3>Agent Skills Management</h3>
-                        <p>Initialize or manage custom AI agent skills for the current workspace (.agents/skills/) directly from the CLI.</p>
-                        <pre><code># Initialize workspace skill
-library-insight init
+          <article class="command-card">
+            <h3>skills</h3>
+            <p>Manages workspace agent skill installation.</p>
+            <pre><code>library-insight skills list</code></pre>
+          </article>
 
-# Install/update skill to workspace
-library-insight skills add
+          <article class="command-card">
+            <h3>doctor</h3>
+            <p>Checks Java, Node.js, cache, and AI skill setup.</p>
+            <pre><code>library-insight doctor</code></pre>
+          </article>
 
-# Remove workspace skill
-library-insight skills remove
+          <article class="command-card">
+            <h3>clear-cache</h3>
+            <p>Deletes downloaded Maven artifacts from the local Library Insight cache.</p>
+            <pre><code>library-insight clear-cache</code></pre>
+          </article>
+        </div>
+      </div>
 
-# List installed skills
-library-insight skills list</code></pre>
-                    </div>
-                </div>
-            </div>
-        </section>
+      <div class="cta-band">
+        <div>
+          <h3>Ready to understand a library faster?</h3>
+          <p>Install once, scan any dependency, and get clean API details for humans and AI.</p>
+        </div>
+        <div class="install-banner install-banner--cta">
+          <span class="install-banner__prompt">$</span>
+          <code class="install-banner__cmd">npm install -g library-insight</code>
+          <button class="install-banner__copy" id="copyInstallBtnCta" aria-label="Copy install command">
+            <svg class="icon-copy" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <svg class="icon-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+            <span class="copy-label">Copy</span>
+          </button>
+        </div>
+      </div>
 
-        <!-- AI Integration Section -->
-        <section id="ai-integration" class="ai-section">
-            <div class="ai-content">
-                <h2>Supercharge Your AI Prompts</h2>
-                <p>Instead of copying thousands of lines of code or relying on outdated internet documentation, split class files let you load only the specific types your AI needs inside its context window.</p>
-                <div class="ai-tree">
-                    <div class="tree-header">build/ai-context/</div>
-                    <div class="tree-node">├── metadata.json</div>
-                    <div class="tree-node">└── com-aldebaran-qi-sdk/</div>
-                    <div class="tree-node indent">├── QiContext.json</div>
-                    <div class="tree-node indent">├── Qi.json</div>
-                    <div class="tree-node indent">└── builder/</div>
-                    <div class="tree-node indent-2">└── ChatBuilder.json</div>
-                </div>
-            </div>
-        </section>
+    </div>
+  </section>
 
-        <!-- Setup/Getting Started Section -->
-        <section id="setup" class="setup-section">
-            <div class="section-header">
-                <h2>Get Started Globally</h2>
-                <p>Install and link the CLI executable globally on your computer in seconds.</p>
-            </div>
-            <div class="setup-box">
-                <p>Option A: Install globally via npm (Recommended):</p>
-                <pre><code>npm install -g library-insight</code></pre>
-                
-                <p style="margin-top: 1.5rem;">Option B: Run from the repository via installer script:</p>
-                <pre><code>chmod +x install.sh
-./install.sh</code></pre>
-                
-                <p class="sub-text" style="margin-top: 1.5rem;">Once finished, the <code>library-insight</code> command will be globally configured on your terminal path.</p>
-            </div>
-        </section>
-    </main>
+</main>
 
-    <footer class="footer">
-        <p>&copy; 2026 Library Insight. Released under the Apache 2.0 License.</p>
-    </footer>
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <span class="nav__brand-mark">&gt;_</span>
+      <span class="nav__brand-name">Library Insight</span>
+    </div>
+    <p class="footer__meta">
+      Apache License 2.0 · Built by <a href="https://codingmeet.com/" target="_blank" rel="noopener" style="text-decoration: underline; color: var(--text-secondary);">Meet</a>
+    </p>
+    <div class="footer__links">
+      <a href="https://github.com/Coding-Meet/Library-Insight" target="_blank" rel="noopener">GitHub</a>
+      <a href="#problem">Why</a>
+      <a href="#features">Features</a>
+      <a href="#playground">Playground</a>
+      <a href="#start">Docs</a>
+    </div>
+  </div>
+</footer>
 
-    <script src="index.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

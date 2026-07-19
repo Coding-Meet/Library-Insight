@@ -1,21 +1,25 @@
 # Library Insight 🔍
 
-Library Insight is a command-line tool that analyzes Java and Kotlin libraries (JAR/AAR) to inspect, extract, and index their complete public API surface from compiled bytecode and Kotlin metadata.
+AI coding assistants often guess Java/Kotlin library APIs from old docs, latest web examples, or a different version than the one installed in your project. That leads to missing methods, deprecated usage, wrong signatures, and wasted debugging time.
 
-Instead of requiring source code, the tool reads compiled `.class` structures (using ASM) and `@Metadata` annotations (using `kotlin-metadata-jvm`) to construct an accurate public API index.
+Library Insight fixes that by scanning the exact JAR/AAR, Gradle output, or Maven version you use. It reads compiled `.class` structures (using ASM) and Kotlin `@Metadata` annotations (using `kotlin-metadata-jvm`) to build a searchable, version-correct public API index.
 
-This is incredibly useful for:
+Use it when you need to:
 
-- Documentation generation
-- API compatibility verification (checking for breaking changes)
-- IDE extensions and indexing engines
-- Context generators supplying AI assistants with exact signatures
+- Know how to implement a library after adding it to a project.
+- Check which classes, methods, constructors, and properties exist in your installed version.
+- Stop AI from using examples from a newer, older, or undocumented version.
+- Find deprecated APIs and compare versions before rewriting code.
+- Give AI assistants exact signatures without dumping huge documentation files into context.
+
+> **Core idea:** AI should code against the library version you actually use, not the version it remembers from the web.
 
 ---
 
 ## Key Features
 
 - **Multi-Format Support**: Reads JARs, AARs (including nested JARs), directories, and Gradle build outputs.
+- **Version-Correct API Lookup**: Scans the exact artifact you point it at, so AI agents and developers see the real public API for that dependency version.
 - **Deep Metadata Extraction**:
   - **Classes/Interfaces/Objects**: Modifiers, companion objects, data/value flags, annotation markers, nested declarations, interfaces, inheritance.
   - **Constructors & Methods**: Visibility, parameter names, default arguments, return types, generic signatures/bounds, extension receivers, operators, infixes, inline, and suspend keywords.
@@ -24,6 +28,22 @@ This is incredibly useful for:
 - **Search Engine**: Performs case-insensitive searches across packages, classes, methods, and properties.
 - **Diff Engine**: Compares two versions of a library to highlight added, removed, or changed APIs, deprecations, and **binary breaking changes** (like visibility reduction, method deletion, or changing suspend modifiers).
 - **AI-Context Exporter**: Generates a compact, token-efficient `ai-context.json` file optimized for LLMs (ChatGPT, Gemini, Claude, Cursor, Copilot).
+
+---
+
+## Why This Exists
+
+When you add a dependency, the first question is simple: "How do I use this version correctly?"
+
+In real projects, that answer is often messy:
+
+- AI may write code for the latest release while your project uses an older version.
+- AI may copy an old blog post where the method name no longer exists.
+- Official docs may be incomplete or not updated for the release you installed.
+- Deprecated methods may still appear in examples, while the replacement is hidden in release notes or source comments.
+- Huge generated docs waste AI context and make one class hard to find.
+
+Library Insight turns the compiled library itself into the source of truth. Scan the dependency, then use `search`, `explain`, `diff`, or `ai-export` to give humans and AI agents exact, version-aware API information.
 
 ---
 
@@ -122,7 +142,9 @@ The executable binary will be generated at:
 
 ## AI Agent Skill Integration
 
-Library Insight bundles a Custom AI Agent Skill (`SKILL.md`) that teaches AI assistants (like Claude, Gemini, Cursor, Copilot, Junie, etc.) how to execute scan and query commands automatically.
+Library Insight bundles a Custom AI Agent Skill (`SKILL.md`) that teaches AI assistants (like Claude, Gemini, Cursor, Copilot, Junie, etc.) to verify real dependency APIs before writing code.
+
+The skill is designed around one rule: do not guess from web examples when the installed library version can be scanned directly. Agents should use `search`, `explain`, `diff`, and `ai-export` to confirm what exists in the actual artifact.
 
 ### 1. Global Auto-Integration
 
@@ -158,15 +180,21 @@ This creates `.agents/skills/library-insight/SKILL.md` in the project root, enab
 > `library-insight <command> [options]`
 
 > [!IMPORTANT]
+> **AI Agent Accuracy Rule:**
+> If you are an AI assistant, do not assume the library API from memory, latest web docs, or random examples. First scan or query the exact library version used by the project whenever possible.
+>
 > **AI Agent Token Optimization Rule:**
-> If you are an AI assistant (such as Cursor, Gemini, Claude, etc.), **DO NOT** read the entire raw `build/library-insight-index.json` or generated `API_REFERENCE.md` files directly using file-viewing tools. Doing so will bloat your context window and exceed token limits.
-> Instead, you **MUST** use the dedicated CLI query subcommands to lookup only the class details or signatures you need:
+> Do **not** read the entire raw `build/library-insight-index.json` or generated `API_REFERENCE.md` files directly using file-viewing tools. Doing so will bloat your context window and exceed token limits.
+> Instead, use the dedicated CLI query subcommands to lookup only the class details or signatures you need:
 > - Use **`library-insight search <query>`** to locate packages or classes.
 > - Use **`library-insight explain <class>`** to inspect full signatures and docs.
+> - Use **`library-insight diff <old> <new>`** before upgrading or replacing deprecated APIs.
 
 ### 1. Scan Library
 
 Scan a JAR, AAR, local directory, or Maven coordinate.
+
+Use this first when you need to know how a dependency should be implemented in the exact version your project uses.
 
 > [!TIP]
 > **Offline-First & Smart Caching:**
@@ -194,6 +222,8 @@ Saved API index to: /Users/meet/AndroidStudioProjects/Library-Insight/build/libr
 
 Search for packages, classes, methods, or properties in the saved index.
 
+Use this when you know part of a class or method name and need to find the matching API in the scanned version.
+
 ```bash
 # Search for Retrofit class matching patterns
 library-insight search Retrofit
@@ -209,6 +239,8 @@ Found 2 matching classes:
 ### 3. Explain Class
 
 Print detailed structural details (modifiers, superclass, constructors, properties, methods, and documentation) about a specific class.
+
+Use this before writing code that calls a class, especially when AI examples disagree with your installed dependency version.
 
 ```bash
 # Get full API structure of Retrofit class
@@ -244,6 +276,8 @@ Exported MARKDOWN to: /Users/meet/AndroidStudioProjects/Library-Insight/build/AP
 
 Compare two library archives directly to check for changes and potential breaking changes.
 
+Use this when a method is deprecated, removed, renamed, or behaving differently between versions.
+
 ```bash
 # Detect breaking changes between Retrofit 2.9.0 and 2.11.0
 library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar
@@ -270,7 +304,7 @@ Breaking Changes Found: NO
 
 Generate a compact, token-efficient split context folder structure (`build/ai-context/` by default) containing individual class JSON files optimized for LLM prompts.
 
-This solves the problem of massive single files (like `API_REFERENCE.md`) by splitting package namespaces and classes into separate, tiny files. AI agents (Cursor, Claude, Gemini) can read `metadata.json` first, and then load only the specific class JSON files they need, reducing token usage by over 95%.
+This solves two problems at once: AI gets exact APIs from the scanned dependency version, and it avoids massive single files like `API_REFERENCE.md`. Agents can read `metadata.json` first, then load only the specific class JSON files they need, reducing token usage by over 95%.
 
 ```bash
 library-insight ai-export
