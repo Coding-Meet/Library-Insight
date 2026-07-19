@@ -9,6 +9,14 @@ Use this skill when you need to understand, inspect, or build AI prompts for ext
 
 This tool extracts all classes, interfaces, methods, properties, and Javadoc/KDoc comments from bytecode and sources, creating an indexed database and a split AI-friendly directory structure.
 
+> [!IMPORTANT]
+> **AI Agent Token Optimization Rule:**
+> **DO NOT** read the entire `build/library-insight-index.json` or `API_REFERENCE.md` files directly using file-viewing tools. They contain massive raw dumps of the entire library surface which will exhaust your context window.
+> Instead, you **MUST** use the CLI query subcommands to interactively look up only the specific information you need:
+> - Use **`library-insight search <query>`** to find packages or classes.
+> - Use **`library-insight explain <class>`** to print the public API signature and Javadocs of a specific class.
+> - Use **`library-insight diff <old> <new>`** to compare versions.
+
 ## Command Reference
 
 The command line tool `library-insight` can be executed globally by:

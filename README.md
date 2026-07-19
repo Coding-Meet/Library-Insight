@@ -157,6 +157,13 @@ This creates `.agents/skills/library-insight/SKILL.md` in the project root, enab
 > The examples below assume the executable has been installed globally (via npm or the installer script). You can execute it directly using:
 > `library-insight <command> [options]`
 
+> [!IMPORTANT]
+> **AI Agent Token Optimization Rule:**
+> If you are an AI assistant (such as Cursor, Gemini, Claude, etc.), **DO NOT** read the entire raw `build/library-insight-index.json` or generated `API_REFERENCE.md` files directly using file-viewing tools. Doing so will bloat your context window and exceed token limits.
+> Instead, you **MUST** use the dedicated CLI query subcommands to lookup only the class details or signatures you need:
+> - Use **`library-insight search <query>`** to locate packages or classes.
+> - Use **`library-insight explain <class>`** to inspect full signatures and docs.
+
 ### 1. Scan Library
 
 Scan a JAR, AAR, local directory, or Maven coordinate.
