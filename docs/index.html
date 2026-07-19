@@ -137,8 +137,8 @@ library-insight explain OkHttpClient</code></pre>
                     <div id="export-tab" class="tab-pane">
                         <h3>Export and Diffing</h3>
                         <p>Save reports to clean Markdown sheets, JSON documents, or perform a version comparison to detect breaking changes.</p>
-                        <pre><code># Export index to Markdown
-library-insight export markdown > API_REFERENCE.md
+                        <pre><code># Export index to Markdown inside build/ folder
+library-insight export markdown build/API_REFERENCE.md
 
 # Diff two archive versions to detect breaking changes
 library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar</code></pre>

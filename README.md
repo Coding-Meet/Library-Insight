@@ -2,9 +2,10 @@
 
 Library Insight is a command-line tool that analyzes Java and Kotlin libraries (JAR/AAR) to inspect, extract, and index their complete public API surface from compiled bytecode and Kotlin metadata.
 
-Instead of requiring source code, the tool reads compiled `.class` structures (using ASM) and `@Metadata` annotations (using `kotlin-metadata-jvm`) to construct an accurate public API index. 
+Instead of requiring source code, the tool reads compiled `.class` structures (using ASM) and `@Metadata` annotations (using `kotlin-metadata-jvm`) to construct an accurate public API index.
 
 This is incredibly useful for:
+
 - Documentation generation
 - API compatibility verification (checking for breaking changes)
 - IDE extensions and indexing engines
@@ -57,18 +58,19 @@ graph TD
     CORE --> KOTLIN
     CORE --> SEARCH
     CORE --> EXPORT
-    
+
     PARSER --> MODEL
     KOTLIN --> MODEL
     SEARCH --> MODEL
     EXPORT --> MODEL
-    
+
     MODEL --> COMMON
     COMMON --> ASM[ASM Bytecode Reader]
     COMMON --> KTOR[Ktor HTTP Client]
 ```
 
 The system is composed of the following modules:
+
 - `library-insight-common`: Utility classes for ZIP/JAR/AAR extraction, Ktor async HTTP engine, and filesystem operations.
 - `library-insight-model`: Immutable Kotlin serialization structures representing the API index schema.
 - `library-insight-parser`: Raw bytecode structure extraction using **ASM** and JVM signature parsing.
@@ -83,27 +85,36 @@ The system is composed of the following modules:
 ## Installation & Setup
 
 ### Requirements
+
 - JDK 17 or higher (Required to execute the Java/Kotlin runtime engine)
 
 ### Option A: Install via npm (Recommended)
+
 You can install the CLI globally on your system instantly using Node Package Manager:
+
 ```bash
 npm install -g library-insight
 ```
-*(Once installed, you can execute the `library-insight` command directly from any folder).*
+
+_(Once installed, you can execute the `library-insight` command directly from any folder)._
 
 ### Option B: Run installer script from local source
+
 You can install and symlink the CLI globally from a local checkout:
+
 ```bash
 chmod +x install.sh
 ./install.sh
 ```
 
 ### Option C: Manual build from source
+
 If you just want to run a local build without global registration:
+
 ```bash
 ./gradlew installDist
 ```
+
 The executable binary will be generated at:
 `./library-insight-cli/build/install/library-insight/bin/library-insight`
 
@@ -114,7 +125,9 @@ The executable binary will be generated at:
 Library Insight bundles a Custom AI Agent Skill (`SKILL.md`) that teaches AI assistants (like Claude, Gemini, Cursor, Copilot, Junie, etc.) how to execute scan and query commands automatically.
 
 ### 1. Global Auto-Integration
+
 When you install the CLI globally via **Option A** (`npm install -g`) or **Option B** (`./install.sh`), a post-install script automatically copies the agent skill file into your user profile configurations:
+
 - `~/.cursor/skills/library-insight`
 - `~/.gemini/config/skills/library-insight`
 - `~/.claude/skills/library-insight`
@@ -125,12 +138,15 @@ When you install the CLI globally via **Option A** (`npm install -g`) or **Optio
 Any active AI agent running on your computer will instantly discover and utilize the `library-insight` command tree.
 
 ### 2. Project Workspace Scoping
-If you want to install the skill scoped *only* to your current project directory (workspace-specific scope), run:
+
+If you want to install the skill scoped _only_ to your current project directory (workspace-specific scope), run:
+
 ```bash
 library-insight init
 # or
 library-insight skills add
 ```
+
 This creates `.agents/skills/library-insight/SKILL.md` in the project root, enabling workspace-scoped agents to access the tool.
 
 ---
@@ -142,7 +158,14 @@ This creates `.agents/skills/library-insight/SKILL.md` in the project root, enab
 > `library-insight <command> [options]`
 
 ### 1. Scan Library
+
 Scan a JAR, AAR, local directory, or Maven coordinate.
+
+> [!TIP]
+> **Offline-First & Smart Caching:**
+> - **Gradle Cache Lookup**: Before downloading from repositories over the network, `library-insight` scans your machine's Gradle cache (`~/.gradle/caches/modules-2/files-2.1/`). If the dependency coordinate has already been downloaded by Gradle/Android Studio, it is copied directly—enabling fully offline scanning!
+> - **Local Project Cache**: If you run a scan inside a project directory containing a `build/` folder or a Gradle build file, downloaded artifacts are saved locally to `build/library-insight/cache/` instead of the global home directory, keeping your user profile clutter-free and project cleaning clean.
+
 ```bash
 # Scan Retrofit from Maven Central (downloads jar + sources automatically)
 library-insight scan com.squareup.retrofit2:retrofit:2.11.0
@@ -167,7 +190,9 @@ library-insight scan com.aldebaran:qisdk:1.7.5
 ```
 
 ### 2. Search Symbols
+
 Search for packages, classes, methods, or properties in the saved index.
+
 ```bash
 # Search for Retrofit builder or client classes
 library-insight search Retrofit
@@ -179,7 +204,9 @@ library-insight search RoomDatabase
 ```
 
 ### 3. Explain Class
+
 Print detailed structural details (modifiers, superclass, constructors, properties, methods, and documentation) about a specific class.
+
 ```bash
 # Get full API structure of Retrofit class
 library-insight explain Retrofit
@@ -190,41 +217,59 @@ library-insight explain OkHttpClient
 
 ### 4. Export Index
 Export the scanned index to Markdown reference sheets or pretty-printed JSON.
-```bash
-# Print Markdown reference sheet to stdout
-library-insight export markdown > API_REFERENCE.md
+*(Note: For large libraries, single Markdown files can become huge; use `ai-export` for AI prompts instead).*
 
-# Write JSON index to file
-library-insight export json output.json
+```bash
+# Automatically saves to build/API_REFERENCE.md
+library-insight export markdown
+
+# Automatically saves to build/library-insight-index.json
+library-insight export json
+
+# Or specify a custom output path
+library-insight export markdown custom-path.md
+
 ```
 
 ### 5. Diff Library Versions
+
 Compare two library archives directly to check for changes and potential breaking changes.
+
 ```bash
 # Detect breaking changes between Retrofit 2.9.0 and 2.11.0
 library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar
 ```
 
-### 6. Export AI Context
+### 6. Export AI Context (Recommended for AI prompts)
+
 Generate a compact, token-efficient split context folder structure (`build/ai-context/` by default) containing individual class JSON files optimized for LLM prompts.
+
+This solves the problem of massive single files (like `API_REFERENCE.md`) by splitting package namespaces and classes into separate, tiny files. AI agents (Cursor, Claude, Gemini) can read `metadata.json` first, and then load only the specific class JSON files they need, reducing token usage by over 95%.
+
 ```bash
 library-insight ai-export
 ```
 
 ### 7. Clear Cache
+
 Clear all downloaded and cached Maven artifacts from the local cache directory to free up space.
+
 ```bash
 library-insight clear-cache
 ```
 
 ### 8. Initialize Workspace Agent Skill (`init`)
+
 Initialize the current project directory with the Custom AI agent Skill so that local AI assistants can auto-discover and utilize `library-insight`.
+
 ```bash
 library-insight init
 ```
 
 ### 9. Manage Agent Skills (`skills`)
+
 Manage Library Insight Custom AI agent skills for the current workspace.
+
 ```bash
 # Install the skill to the current workspace (.agents/skills/)
 library-insight skills add

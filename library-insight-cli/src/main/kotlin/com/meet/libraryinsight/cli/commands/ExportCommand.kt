@@ -21,7 +21,7 @@ class ExportCommand : CliktCommand(
     help = "Export the saved library index to JSON or Markdown format."
 ) {
     val format by argument(help = "Output format").enum<ExportFormat>()
-    val outputFile by argument(help = "Output file path (prints to stdout if omitted)").file().optional()
+    val outputFile by argument(help = "Output file path (defaults to build/API_REFERENCE.md or build/library-insight-index.json; use '-' to print to stdout)").file().optional()
 
     val db by option(
         "--db",
@@ -40,12 +40,21 @@ class ExportCommand : CliktCommand(
             ExportFormat.MARKDOWN -> MarkdownExporter.export(index)
         }
 
-        val file = outputFile
-        if (file != null) {
-            file.writeText(outputContent)
-            echo("Exported ${format} to: ${file.absolutePath}")
-        } else {
+        val file = outputFile ?: when (format) {
+            ExportFormat.JSON -> File("build/library-insight-index.json")
+            ExportFormat.MARKDOWN -> File("build/API_REFERENCE.md")
+        }
+
+        if (file.name == "-") {
             echo(outputContent)
+        } else {
+            try {
+                file.parentFile?.mkdirs()
+                file.writeText(outputContent)
+                echo("Exported ${format} to: ${file.absolutePath}", err = true)
+            } catch (e: Exception) {
+                echo("Error writing export file: ${e.message}", err = true)
+            }
         }
     }
 }

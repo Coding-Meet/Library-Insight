@@ -25,7 +25,15 @@ object MavenResolver {
         "https://qisdk.softbankrobotics.com/sdk/maven/"
     )
 
-    val cacheDir = File(System.getProperty("user.home"), ".library-insight/cache")
+    val cacheDir: File
+        get() {
+            val localBuild = File("build/library-insight/cache")
+            return if (File("build").exists() || File("settings.gradle").exists() || File("settings.gradle.kts").exists()) {
+                localBuild
+            } else {
+                File(System.getProperty("user.home"), ".library-insight/cache")
+            }
+        }
 
     /**
      * Checks if the coordinate is in the format groupId:artifactId:version
@@ -69,6 +77,12 @@ object MavenResolver {
         if (cachedJar.exists()) {
             progressReporter("Found cached binary JAR: ${cachedJar.name}")
             return ResolvedArtifact(cachedJar, if (cachedSources.exists()) cachedSources else null)
+        }
+
+        // 1.5 Check local Gradle cache folder as fallback before internet download
+        val gradleCacheResult = tryResolveFromGradleCache(groupId, artifactId, version, cachedJar, cachedAar, cachedSources, progressReporter)
+        if (gradleCacheResult != null) {
+            return gradleCacheResult
         }
 
         progressReporter("Resolving $coordinate from repositories...")
@@ -143,5 +157,71 @@ object MavenResolver {
                 false
             }
         }
+    }
+
+    private fun tryResolveFromGradleCache(
+        groupId: String,
+        artifactId: String,
+        version: String,
+        cachedJar: File,
+        cachedAar: File,
+        cachedSources: File,
+        progressReporter: (String) -> Unit
+    ): ResolvedArtifact? {
+        val userHome = System.getProperty("user.home") ?: return null
+        val gradleCacheDir = File(userHome, ".gradle/caches/modules-2/files-2.1/$groupId/$artifactId/$version")
+        if (!gradleCacheDir.exists()) return null
+
+        progressReporter("Found local Gradle cache directory for $groupId:$artifactId:$version")
+
+        var jarFile: File? = null
+        var aarFile: File? = null
+        var sourcesFile: File? = null
+
+        gradleCacheDir.walkBottomUp().filter { it.isFile }.forEach { file ->
+            if (file.name.endsWith("-sources.jar")) {
+                sourcesFile = file
+            } else if (file.name.endsWith(".jar")) {
+                jarFile = file
+            } else if (file.name.endsWith(".aar")) {
+                aarFile = file
+            }
+        }
+
+        if (aarFile != null) {
+            progressReporter("Copying cached binary AAR from Gradle cache: ${aarFile.name}")
+            cachedAar.parentFile?.mkdirs()
+            aarFile.copyTo(cachedAar, overwrite = true)
+            
+            val destSources = if (sourcesFile != null) {
+                val sourcesF = sourcesFile as File
+                progressReporter("Copying cached sources JAR from Gradle cache: ${sourcesF.name}")
+                cachedSources.parentFile?.mkdirs()
+                sourcesF.copyTo(cachedSources, overwrite = true)
+                cachedSources
+            } else {
+                null
+            }
+            return ResolvedArtifact(cachedAar, destSources)
+        }
+
+        if (jarFile != null) {
+            progressReporter("Copying cached binary JAR from Gradle cache: ${jarFile.name}")
+            cachedJar.parentFile?.mkdirs()
+            jarFile.copyTo(cachedJar, overwrite = true)
+            
+            val destSources = if (sourcesFile != null) {
+                val sourcesF = sourcesFile as File
+                progressReporter("Copying cached sources JAR from Gradle cache: ${sourcesF.name}")
+                cachedSources.parentFile?.mkdirs()
+                sourcesF.copyTo(cachedSources, overwrite = true)
+                cachedSources
+            } else {
+                null
+            }
+            return ResolvedArtifact(cachedJar, destSources)
+        }
+
+        return null
     }
 }

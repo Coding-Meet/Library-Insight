@@ -30,6 +30,6 @@ class AiExportCommand : CliktCommand(
 
         val dir = outputDir ?: File("build/ai-context")
         AiExporter.exportSplit(index, dir)
-        echo("Generated compact LLM context directory structure at: ${dir.absolutePath}")
+        echo("Generated compact LLM context directory structure at: ${dir.absolutePath}", err = true)
     }
 }

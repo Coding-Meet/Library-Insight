@@ -25,6 +25,9 @@ The command line tool `library-insight` can be executed globally by:
 
 ### 1. Scan Dependencies (`scan`)
 Scans a local JAR/AAR file, a directory of JARs, or resolves a Maven coordinate over HTTP, downloading it and its corresponding `-sources.jar` automatically from repositories (Maven Central, Google Maven, SoftBank).
+
+*(Note: In Gradle/Kotlin project directories, downloaded artifacts are saved locally to `build/library-insight/cache/`. To run fully offline, the scanner automatically checks the local machine's Gradle caches (`~/.gradle/caches/modules-2/files-2.1/`) before sending network requests).*
+
 * **Scan Local JAR/AAR**:
   ```bash
   library-insight scan path/to/library.aar --sources path/to/library-sources.jar
@@ -54,9 +57,17 @@ library-insight explain FullOrSimpleClassName
 
 ### 4. Export Index (`export`)
 Export the index database to pretty JSON or structured Markdown reference sheets.
+*(Note: For large libraries, single Markdown sheets are huge; use `ai-export` for AI context instead).*
 ```bash
-library-insight export markdown > API_REFERENCE.md
-library-insight export json output.json
+# Automatically saves to build/API_REFERENCE.md
+library-insight export markdown
+
+# Automatically saves to build/library-insight-index.json
+library-insight export json
+
+# Or write to a custom path
+library-insight export markdown custom-path.md
+
 ```
 
 ### 5. Diff Library Versions (`diff`)
@@ -66,7 +77,7 @@ library-insight diff old-library.jar new-library.jar
 ```
 
 ### 6. Export AI Context (`ai-export`)
-Restructures the scanned index database into a split folder structure under `build/ai-context/` containing:
+**Recommended for AI Integration.** Instead of a single giant `API_REFERENCE.md` file, this splits the scanned database into a token-efficient directory structure under `build/ai-context/`. AI agents can inspect `metadata.json` first, and then load only the specific class JSON files they need, reducing token usage by 95%+:
 - `metadata.json` (describing library name, version, and packages).
 - Subfolders for packages mapped as `group-artifact-package` (dots replaced with hyphens) and subpackages nested as real subdirectories.
 - Individual class-specific JSON files containing compact signatures and Javadocs.

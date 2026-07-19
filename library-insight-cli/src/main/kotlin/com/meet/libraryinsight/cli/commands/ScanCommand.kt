@@ -53,6 +53,6 @@ class ScanCommand : CliktCommand(
         echo("Scan complete! Found $classesCount classes across ${index.packages.size} packages.")
         
         DatabaseHelper.saveIndex(index, db)
-        echo("Saved API index to: ${db.absolutePath}")
+        echo("Saved API index to: ${db.absolutePath}", err = true)
     }
 }

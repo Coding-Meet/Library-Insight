@@ -42,7 +42,7 @@ class DoctorCommand : CliktCommand(
 
         // 3. Local Cache Directory
         val userHome = System.getProperty("user.home") ?: ""
-        val cacheDir = File(userHome, ".library-insight-cache")
+        val cacheDir = File(File(userHome, ".library-insight"), "cache")
         echo("3. Local Download Cache:")
         echo("   - Path: ${cacheDir.absolutePath}")
         if (cacheDir.exists()) {

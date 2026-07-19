@@ -3,7 +3,11 @@ const path = require('path');
 const os = require('os');
 
 const homeDir = os.homedir();
-const skillSource = path.join(__dirname, '..', 'SKILL.md');
+let skillSource = path.join(__dirname, '..', 'SKILL.md');
+if (!fs.existsSync(skillSource)) {
+  // Local development fallback to the root workspace skill file
+  skillSource = path.join(__dirname, '..', '..', '.agents', 'skills', 'library-insight', 'SKILL.md');
+}
 
 if (fs.existsSync(skillSource)) {
   const skillPaths = [
