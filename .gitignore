@@ -2,12 +2,13 @@
 .gradle/
 build/
 
-# IntelliJ IDEA files
+# IntelliJ IDEA & IDE files
 .idea/
 *.iml
 *.ipr
 *.iws
 out/
+bin/
 
 # OS files
 .DS_Store
