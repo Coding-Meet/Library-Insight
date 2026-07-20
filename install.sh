@@ -27,14 +27,14 @@ echo "URL: $RELEASE_URL"
 # Download using curl
 if curl -L --fail -o "$TEMP_ZIP" "$RELEASE_URL"; then
     echo "Download successful! Extracting..."
-    unzip -o "$TEMP_ZIP" -d "$INSTALL_DIR/"
+    unzip -o "$TEMP_ZIP" -d "$INSTALL_DIR"
     
     # Check if files were extracted into a subdirectory and move them up
     if [ -d "$INSTALL_DIR/library-insight-$VERSION" ]; then
-        cp -R "$INSTALL_DIR/library-insight-$VERSION"/* "$INSTALL_DIR/"
+        cp -R "$INSTALL_DIR/library-insight-$VERSION"/* "$INSTALL_DIR"
         rm -rf "$INSTALL_DIR/library-insight-$VERSION"
     elif [ -d "$INSTALL_DIR/library-insight-cli-$VERSION" ]; then
-        cp -R "$INSTALL_DIR/library-insight-cli-$VERSION"/* "$INSTALL_DIR/"
+        cp -R "$INSTALL_DIR/library-insight-cli-$VERSION"/* "$INSTALL_DIR"
         rm -rf "$INSTALL_DIR/library-insight-cli-$VERSION"
     fi
     rm -f "$TEMP_ZIP"
@@ -46,7 +46,7 @@ else
     if [ -f "./gradlew" ]; then
         echo " Falling back to compiling from local source code..."
         ./gradlew :library-insight-cli:installDist
-        cp -R library-insight-cli/build/install/library-insight/* "$INSTALL_DIR/"
+        cp -R library-insight-cli/build/install/library-insight/* "$INSTALL_DIR"
     else
         echo " ERROR: Could not download pre-compiled release and no local gradlew wrapper found."
         exit 1
