@@ -8,7 +8,7 @@ if [ -z "$VERSION" ]; then
 fi
 
 INSTALL_DIR="$HOME/.library-insight"
-ZIP_NAME="library-insight-cli-$VERSION.zip"
+ZIP_NAME="library-insight-$VERSION.zip"
 RELEASE_URL="https://github.com/Coding-Meet/Library-Insight/releases/download/v$VERSION/$ZIP_NAME"
 
 echo "=================================================="
@@ -30,7 +30,10 @@ if curl -L --fail -o "$TEMP_ZIP" "$RELEASE_URL"; then
     unzip -o "$TEMP_ZIP" -d "$INSTALL_DIR/"
     
     # Check if files were extracted into a subdirectory and move them up
-    if [ -d "$INSTALL_DIR/library-insight-cli-$VERSION" ]; then
+    if [ -d "$INSTALL_DIR/library-insight-$VERSION" ]; then
+        cp -R "$INSTALL_DIR/library-insight-$VERSION"/* "$INSTALL_DIR/"
+        rm -rf "$INSTALL_DIR/library-insight-$VERSION"
+    elif [ -d "$INSTALL_DIR/library-insight-cli-$VERSION" ]; then
         cp -R "$INSTALL_DIR/library-insight-cli-$VERSION"/* "$INSTALL_DIR/"
         rm -rf "$INSTALL_DIR/library-insight-cli-$VERSION"
     fi
@@ -38,11 +41,16 @@ if curl -L --fail -o "$TEMP_ZIP" "$RELEASE_URL"; then
     echo "Pre-compiled release installed successfully!"
 else
     echo "--------------------------------------------------"
-    echo " Note: Release download failed (e.g. tag not pushed yet)."
-    echo " Falling back to compiling from local source code..."
+    echo " Note: Release zip download failed."
     echo "--------------------------------------------------"
-    ./gradlew :library-insight-cli:installDist
-    cp -R library-insight-cli/build/install/library-insight/* "$INSTALL_DIR/"
+    if [ -f "./gradlew" ]; then
+        echo " Falling back to compiling from local source code..."
+        ./gradlew :library-insight-cli:installDist
+        cp -R library-insight-cli/build/install/library-insight/* "$INSTALL_DIR/"
+    else
+        echo " ERROR: Could not download pre-compiled release and no local gradlew wrapper found."
+        exit 1
+    fi
 fi
 
 echo "Configuring executable permissions..."
