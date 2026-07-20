@@ -74,14 +74,18 @@ echo ""
 echo "=================================================="
 echo " Distributing AI Agent Skill to Detected Configs..."
 echo "=================================================="
-SKILL_SOURCE=""
-if [ -f "$INSTALL_DIR/SKILL.md" ]; then
-    SKILL_SOURCE="$INSTALL_DIR/SKILL.md"
-elif [ -f ".agents/skills/library-insight/SKILL.md" ]; then
+SKILL_RAW_URL="https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/.agents/skills/library-insight/SKILL.md"
+
+# Always download latest SKILL.md definition
+echo "Fetching latest AI Agent Skill definition..."
+curl -fsSL -o "$INSTALL_DIR/SKILL.md" "$SKILL_RAW_URL" || true
+
+SKILL_SOURCE="$INSTALL_DIR/SKILL.md"
+if [ ! -s "$SKILL_SOURCE" ] && [ -f ".agents/skills/library-insight/SKILL.md" ]; then
     SKILL_SOURCE=".agents/skills/library-insight/SKILL.md"
 fi
 
-if [ -n "$SKILL_SOURCE" ] && [ -f "$SKILL_SOURCE" ]; then
+if [ -f "$SKILL_SOURCE" ]; then
     PAIRS=(
         "$HOME/.claude:$HOME/.claude/skills/library-insight"
         "$HOME/.agents:$HOME/.agents/skills/library-insight"
@@ -102,9 +106,9 @@ if [ -n "$SKILL_SOURCE" ] && [ -f "$SKILL_SOURCE" ]; then
             src_real=$(realpath "$SKILL_SOURCE" 2>/dev/null || echo "$SKILL_SOURCE")
             dst_real=$(realpath "$skill_dir/SKILL.md" 2>/dev/null || echo "$skill_dir/SKILL.md")
             if [ "$src_real" != "$dst_real" ]; then
-                cp "$SKILL_SOURCE" "$skill_dir/SKILL.md"
+                cp -f "$SKILL_SOURCE" "$skill_dir/SKILL.md"
             fi
-            echo " -> Detected $base_dir - Copied AI Skill to: $skill_dir/SKILL.md"
+            echo " -> Detected $base_dir - Updated AI Skill at: $skill_dir/SKILL.md"
             COPIED_COUNT=$((COPIED_COUNT + 1))
         fi
     done
