@@ -1,7 +1,12 @@
 #!/bin/bash
 set -e
 
-VERSION="1.0.0"
+# Fetch latest release version tag from GitHub API if not set
+if [ -z "$VERSION" ]; then
+    LATEST_TAG=$(curl -s https://api.github.com/repos/Coding-Meet/Library-Insight/releases/latest | grep '"tag_name":' | sed -E 's/.*"v?([^"]+)".*/\1/')
+    VERSION="${LATEST_TAG:-1.0.0}"
+fi
+
 INSTALL_DIR="$HOME/.library-insight"
 ZIP_NAME="library-insight-cli-$VERSION.zip"
 RELEASE_URL="https://github.com/Coding-Meet/Library-Insight/releases/download/v$VERSION/$ZIP_NAME"
@@ -59,28 +64,39 @@ fi
 
 echo ""
 echo "=================================================="
-echo " Distributing AI Agent Skill to Global Configs..."
+echo " Distributing AI Agent Skill to Detected Configs..."
 echo "=================================================="
 SKILL_SOURCE=".agents/skills/library-insight/SKILL.md"
 
 if [ -f "$SKILL_SOURCE" ]; then
-    SKILL_PATHS=(
-        "$HOME/.claude/skills/library-insight"
-        "$HOME/.agents/skills/library-insight"
-        "$HOME/.codex/skills/library-insight"
-        "$HOME/.cursor/skills/library-insight"
-        "$HOME/.gemini/skills/library-insight"
-        "$HOME/.gemini/config/skills/library-insight"
-        "$HOME/.copilot/skills/library-insight"
-        "$HOME/.junie/skills/library-insight"
+    PAIRS=(
+        "$HOME/.claude:$HOME/.claude/skills/library-insight"
+        "$HOME/.agents:$HOME/.agents/skills/library-insight"
+        "$HOME/.codex:$HOME/.codex/skills/library-insight"
+        "$HOME/.cursor:$HOME/.cursor/skills/library-insight"
+        "$HOME/.gemini:$HOME/.gemini/skills/library-insight"
+        "$HOME/.gemini:$HOME/.gemini/config/skills/library-insight"
+        "$HOME/.copilot:$HOME/.copilot/skills/library-insight"
+        "$HOME/.junie:$HOME/.junie/skills/library-insight"
     )
 
-    for path in "${SKILL_PATHS[@]}"; do
-        mkdir -p "$path"
-        cp "$SKILL_SOURCE" "$path/SKILL.md"
-        echo " -> Copied AI Skill to: $path/SKILL.md"
+    COPIED_COUNT=0
+    for pair in "${PAIRS[@]}"; do
+        base_dir="${pair%%:*}"
+        skill_dir="${pair#*:}"
+        if [ -d "$base_dir" ]; then
+            mkdir -p "$skill_dir"
+            cp "$SKILL_SOURCE" "$skill_dir/SKILL.md"
+            echo " -> Detected $base_dir - Copied AI Skill to: $skill_dir/SKILL.md"
+            COPIED_COUNT=$((COPIED_COUNT + 1))
+        fi
     done
-    echo "SUCCESS: AI Agent Skill distributed successfully!"
+
+    if [ $COPIED_COUNT -gt 0 ]; then
+        echo "SUCCESS: AI Agent Skill distributed to $COPIED_COUNT detected config(s)!"
+    else
+        echo "Note: No global AI agent config folders detected in home directory."
+    fi
 else
     echo "Note: Local SKILL.md source file not found. Skipping global skill installation."
 fi

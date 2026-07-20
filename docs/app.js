@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const INSTALL_CMD = 'npm install -g library-insight';
+  const INSTALL_CMD = 'curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh | bash';
 
   /* ---------------------------------------------------------------------
      Copy-to-clipboard

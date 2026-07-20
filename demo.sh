@@ -7,7 +7,7 @@
 #
 # Requirements:
 #   - JDK 17+
-#   - library-insight installed globally via: npm install -g library-insight
+#   - library-insight installed globally via: curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh | bash
 #
 # Usage:
 #   chmod +x demo.sh

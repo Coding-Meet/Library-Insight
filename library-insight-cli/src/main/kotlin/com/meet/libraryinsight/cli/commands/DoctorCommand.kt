@@ -27,23 +27,10 @@ class DoctorCommand : CliktCommand(
         }
         echo("")
 
-        // 2. Node Check
-        echo("2. Node.js Environment:")
-        try {
-            val process = Runtime.getRuntime().exec(arrayOf("node", "-v"))
-            val version = process.inputStream.bufferedReader().use { it.readText() }.trim()
-            echo("   - Version: $version")
-            echo("   - Status: OK")
-        } catch (e: Exception) {
-            echo("   - Version: Not found on system PATH")
-            echo("   - Status: Note (npm global install will not be available; use install.sh instead)")
-        }
-        echo("")
-
-        // 3. Local Cache Directory
+        // 2. Local Cache Directory
         val userHome = System.getProperty("user.home") ?: ""
         val cacheDir = File(File(userHome, ".library-insight"), "cache")
-        echo("3. Local Download Cache:")
+        echo("2. Local Download Cache:")
         echo("   - Path: ${cacheDir.absolutePath}")
         if (cacheDir.exists()) {
             val fileCount = cacheDir.walkBottomUp().filter { it.isFile }.count()
@@ -53,20 +40,25 @@ class DoctorCommand : CliktCommand(
         }
         echo("")
 
-        // 4. Global AI Skills Registry Check
-        echo("4. Global AI Agent Skill Configurations:")
-        val paths = mapOf(
-            "Cursor" to File(userHome, ".cursor/skills/library-insight/SKILL.md"),
-            "Gemini Config" to File(userHome, ".gemini/config/skills/library-insight/SKILL.md"),
-            "Claude Desktop" to File(userHome, ".claude/skills/library-insight/SKILL.md"),
-            "Antigravity Agents" to File(userHome, ".agents/skills/library-insight/SKILL.md"),
-            "GitHub Copilot" to File(userHome, ".copilot/skills/library-insight/SKILL.md"),
-            "Junie Agent" to File(userHome, ".junie/skills/library-insight/SKILL.md"),
-            "Codex AI" to File(userHome, ".codex/skills/library-insight/SKILL.md")
+        // 3. Global AI Skills Registry Check
+        echo("3. Global AI Agent Skill Configurations:")
+        val agentPaths = mapOf(
+            "Cursor" to Pair(File(userHome, ".cursor"), File(userHome, ".cursor/skills/library-insight/SKILL.md")),
+            "Gemini Config" to Pair(File(userHome, ".gemini"), File(userHome, ".gemini/config/skills/library-insight/SKILL.md")),
+            "Claude Desktop" to Pair(File(userHome, ".claude"), File(userHome, ".claude/skills/library-insight/SKILL.md")),
+            "Antigravity Agents" to Pair(File(userHome, ".agents"), File(userHome, ".agents/skills/library-insight/SKILL.md")),
+            "GitHub Copilot" to Pair(File(userHome, ".copilot"), File(userHome, ".copilot/skills/library-insight/SKILL.md")),
+            "Junie Agent" to Pair(File(userHome, ".junie"), File(userHome, ".junie/skills/library-insight/SKILL.md")),
+            "Codex AI" to Pair(File(userHome, ".codex"), File(userHome, ".codex/skills/library-insight/SKILL.md"))
         )
 
-        paths.forEach { (agent, file) ->
-            val status = if (file.exists()) "INSTALLED (Verified)" else "NOT INSTALLED"
+        agentPaths.forEach { (agent, pair) ->
+            val (baseFolder, skillFile) = pair
+            val status = when {
+                skillFile.exists() -> "INSTALLED (Verified)"
+                baseFolder.exists() -> "NOT INSTALLED (folder detected)"
+                else -> "NOT INSTALLED (no base folder)"
+            }
             echo(String.format("   %-22s : %s", "- $agent", status))
         }
         echo("")

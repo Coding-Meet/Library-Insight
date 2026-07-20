@@ -72,7 +72,7 @@
       <div class="hero__actions">
         <div class="install-banner">
           <span class="install-banner__prompt">$</span>
-          <code class="install-banner__cmd">npm install -g library-insight</code>
+          <code class="install-banner__cmd">curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh | bash</code>
           <button class="install-banner__copy" id="copyInstallBtn" aria-label="Copy install command">
             <svg class="icon-copy" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             <svg class="icon-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
@@ -323,7 +323,6 @@
           <pre class="terminal__panel" data-panel="doctor" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight doctor</span>
 <span class="tok-accent">Library Insight Diagnostics &amp; Doctor</span>
 <span class="tok-ok">Java Runtime Environment: OK (Java 17+ verified)</span>
-<span class="tok-ok">Node.js Environment: OK</span>
 <span class="tok-dim">Local Download Cache: Directory not created yet</span>
 <span class="tok-ok">Codex AI: INSTALLED (Verified)</span>
 <span class="tok-dim">Diagnostics completed.</span>
@@ -352,10 +351,10 @@
           <div class="step__index">01</div>
           <div class="step__content">
             <h3>Install the command</h3>
-            <p>You need JDK 17 or newer. npm installs the <code>library-insight</code> command globally.</p>
+            <p>You need JDK 17 or newer. Run the installer script to configure <code>library-insight</code> globally.</p>
             <div class="code-block">
               <span class="code-block__lang">bash</span>
-              <pre><code><span class="tok-prompt">$</span> <span class="tok-cmd">npm install -g library-insight</span></code></pre>
+              <pre><code><span class="tok-prompt">$</span> <span class="tok-cmd">curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh | bash</span></code></pre>
             </div>
           </div>
         </article>
@@ -363,12 +362,12 @@
         <article class="step">
           <div class="step__index">02</div>
           <div class="step__content">
-            <h3>Check the workspace skill</h3>
-            <p>The skill tells AI agents to verify real dependency APIs before writing code.</p>
+            <h3>Initialize workspace skill</h3>
+            <p>Scopes the agent skill to your current project root, creating <code>.agents/skills/library-insight/SKILL.md</code> for workspace-scoped AI agents.</p>
             <div class="code-block">
               <span class="code-block__lang">bash</span>
-              <pre><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight skills list</span>
-<span class="tok-ok">[Installed] library-insight</span></code></pre>
+              <pre><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight init</span>
+<span class="tok-ok">SUCCESS: AI Agent Skill initialized at .agents/skills/library-insight/SKILL.md</span></code></pre>
             </div>
           </div>
         </article>
@@ -483,7 +482,7 @@
         </div>
         <div class="install-banner install-banner--cta">
           <span class="install-banner__prompt">$</span>
-          <code class="install-banner__cmd">npm install -g library-insight</code>
+          <code class="install-banner__cmd">curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh | bash</code>
           <button class="install-banner__copy" id="copyInstallBtnCta" aria-label="Copy install command">
             <svg class="icon-copy" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             <svg class="icon-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>

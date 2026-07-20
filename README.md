@@ -108,26 +108,17 @@ The system is composed of the following modules:
 
 - JDK 17 or higher (Required to execute the Java/Kotlin runtime engine)
 
-### Option A: Install via npm (Recommended)
+### Option A: Install via One-Line Shell Installer (Recommended)
 
-You can install the CLI globally on your system instantly using Node Package Manager:
+You can install the CLI globally on your system instantly with zero Node.js/npm dependencies using the installer script:
 
 ```bash
-npm install -g library-insight
+curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh | bash
 ```
 
 _(Once installed, you can execute the `library-insight` command directly from any folder)._
 
-### Option B: Run installer script from local source
-
-You can install and symlink the CLI globally from a local checkout:
-
-```bash
-chmod +x install.sh
-./install.sh
-```
-
-### Option C: Manual build from source
+### Option B: Manual build from source
 
 If you just want to run a local build without global registration:
 
@@ -148,7 +139,7 @@ The skill is designed around one rule: do not guess from web examples when the i
 
 ### 1. Global Auto-Integration
 
-When you install the CLI globally via **Option A** (`npm install -g`) or **Option B** (`./install.sh`), a post-install script automatically copies the agent skill file into your user profile configurations:
+When you install the CLI globally via **Option A** (`install.sh`), the installer script automatically copies the agent skill file into your user profile configurations:
 
 - `~/.cursor/skills/library-insight`
 - `~/.gemini/config/skills/library-insight`
@@ -176,7 +167,7 @@ This creates `.agents/skills/library-insight/SKILL.md` in the project root, enab
 ## CLI Usage & Commands
 
 > [!NOTE]
-> The examples below assume the executable has been installed globally (via npm or the installer script). You can execute it directly using:
+> The examples below assume the executable has been installed globally (via the installer script). You can execute it directly using:
 > `library-insight <command> [options]`
 
 > [!IMPORTANT]
@@ -518,11 +509,7 @@ Library-Insight/
 │   │                       └── search/
 │   │                           └── SearchEngine.kt
 │   └── build.gradle.kts
-├── npm/                            # npm package distribution packaging configuration
-│   ├── bin/
-│   │   ├── index.js                # Global CLI entrypoint runner script
-│   │   └── postinstall.js          # Auto skill registration script
-│   └── package.json                # npm package metadata
+
 ├── sample/
 │   ├── src/
 │   │   └── main/

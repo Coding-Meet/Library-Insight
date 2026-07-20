@@ -20,9 +20,8 @@ This tool extracts all classes, interfaces, methods, properties, and Javadoc/KDo
 ## Command Reference
 
 The command line tool `library-insight` can be executed globally by:
-* Installing via npm: `npm install -g library-insight`
-* Running instantly with npx: `npx library-insight <command> [options]`
-* Installing via shell: `~/.library-insight/bin/library-insight` (linked globally as `library-insight`)
+* Installing via installer script: `curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh | bash`
+* Running local build: `~/.library-insight/bin/library-insight` (linked globally as `library-insight`)
 
 ## Available scripts
 
