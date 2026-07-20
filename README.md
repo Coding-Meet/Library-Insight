@@ -129,6 +129,14 @@ If you just want to run a local build without global registration:
 The executable binary will be generated at:
 `./library-insight-cli/build/install/library-insight/bin/library-insight`
 
+### Uninstallation
+
+To cleanly remove the global CLI binary, installation files, and registered AI agent skills from your system:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/uninstall.sh | bash
+```
+
 ---
 
 ## AI Agent Skill Integration
