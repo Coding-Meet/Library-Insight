@@ -74,9 +74,14 @@ echo ""
 echo "=================================================="
 echo " Distributing AI Agent Skill to Detected Configs..."
 echo "=================================================="
-SKILL_SOURCE=".agents/skills/library-insight/SKILL.md"
+SKILL_SOURCE=""
+if [ -f "$INSTALL_DIR/SKILL.md" ]; then
+    SKILL_SOURCE="$INSTALL_DIR/SKILL.md"
+elif [ -f ".agents/skills/library-insight/SKILL.md" ]; then
+    SKILL_SOURCE=".agents/skills/library-insight/SKILL.md"
+fi
 
-if [ -f "$SKILL_SOURCE" ]; then
+if [ -n "$SKILL_SOURCE" ] && [ -f "$SKILL_SOURCE" ]; then
     PAIRS=(
         "$HOME/.claude:$HOME/.claude/skills/library-insight"
         "$HOME/.agents:$HOME/.agents/skills/library-insight"
@@ -94,7 +99,11 @@ if [ -f "$SKILL_SOURCE" ]; then
         skill_dir="${pair#*:}"
         if [ -d "$base_dir" ]; then
             mkdir -p "$skill_dir"
-            cp "$SKILL_SOURCE" "$skill_dir/SKILL.md"
+            src_real=$(realpath "$SKILL_SOURCE" 2>/dev/null || echo "$SKILL_SOURCE")
+            dst_real=$(realpath "$skill_dir/SKILL.md" 2>/dev/null || echo "$skill_dir/SKILL.md")
+            if [ "$src_real" != "$dst_real" ]; then
+                cp "$SKILL_SOURCE" "$skill_dir/SKILL.md"
+            fi
             echo " -> Detected $base_dir - Copied AI Skill to: $skill_dir/SKILL.md"
             COPIED_COUNT=$((COPIED_COUNT + 1))
         fi
