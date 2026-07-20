@@ -1,7 +1,7 @@
 #!/bin/bash
 # Check if library-insight is already available
-if command -v library-insight &> /dev/null; then
-    echo "library-insight is already installed and available on PATH."
+if command -v library-insight &> /dev/null || [ -x "$HOME/.library-insight/bin/library-insight" ]; then
+    echo "library-insight is already installed and ready to use."
     exit 0
 fi
 
