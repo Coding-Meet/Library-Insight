@@ -18,18 +18,20 @@ class InitCommand : CliktCommand(
         }
 
         val destDir = File(".agents/skills/library-insight")
+        val isUpdate = File(destDir, "SKILL.md").exists()
         destDir.mkdirs()
         
-        // Write SKILL.md
+        // Write SKILL.md (always overwrites with latest bundled version)
         val destFile = File(destDir, "SKILL.md")
         destFile.writeText(skillContent)
         
-        // Write scripts/install-cli.sh
+        // Write scripts/install-cli.sh (always overwrites with latest bundled version)
         val destScriptFile = File(destDir, "scripts/install-cli.sh")
         destScriptFile.parentFile.mkdirs()
         destScriptFile.writeText(scriptContent)
         destScriptFile.setExecutable(true, false)
         
-        echo("SUCCESS: AI Agent Skill initialized at: ${destFile.absolutePath}")
+        val statusMsg = if (isUpdate) "updated to latest version" else "initialized"
+        echo("SUCCESS: AI Agent Skill $statusMsg at: ${destFile.absolutePath}")
     }
 }
