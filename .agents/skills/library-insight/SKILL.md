@@ -1,6 +1,6 @@
 ---
 name: library-insight
-description: Indexes public APIs and extracts source code comments from Java/Kotlin compiled archives (JAR/AAR) or Maven coordinates, generating compact context JSON layouts for AI agents.
+description: API Explorer & AI Code Advisor that indexes public APIs, visualizes dependency graphs, audits version deprecations, and extracts JVM archive signatures (JAR/AAR) or Maven coordinates for AI context.
 ---
 
 # Library Insight Agent Skill
@@ -16,6 +16,12 @@ This tool extracts all classes, interfaces, methods, properties, and Javadoc/KDo
 > - Use **`library-insight search <query>`** to find packages or classes.
 > - Use **`library-insight explain <class>`** to print the public API signature and Javadocs of a specific class.
 > - Use **`library-insight diff <old> <new>`** to compare versions.
+> - Use **`library-insight audit`** to check project dependency deprecations recursively.
+> - Use **`library-insight migrate <old> <new>`** to get a migration advisor report with replacement suggestions.
+> - Use **`library-insight search-central <query>`** to search Maven Central.
+> - Use **`library-insight graph <coord>`** to visual dependency trees.
+> - Use **`library-insight check-compat <old> <new>`** to lint Semantic Versioning API compliance.
+> - Use **`library-insight mcp`** to communicate as a Model Context Protocol (MCP) server.
 
 ## Command Reference
 
@@ -136,7 +142,7 @@ Cache cleared successfully. Deleted 2.45 MB.
 ```
 
 ### 8. Diagnostics & Doctor (`doctor`)
-Run diagnostic checks for the Java runtime, Node.js, and verify all global AI Agent skill configurations.
+Run diagnostic checks for the Java runtime, local cache directory, and verify all global AI Agent skill configurations.
 ```bash
 library-insight doctor
 ```
@@ -148,13 +154,60 @@ library-insight doctor
    - Path: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java
    - Version: 17.0.7
    - Status: OK (Java 17+ verified)
-2. Node.js Environment:
-   - Version: v18.16.0
-   - Status: OK
-3. Local Cache Directory:
+2. Local Cache Directory:
    - Path: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight/cache
    - Status: OK
-4. AI Agent Skill Registrations:
+3. AI Agent Skill Registrations:
    - Gemini Config Skill: ACTIVE (registered)
    - Cursor Skill: ACTIVE (registered)
+```
+
+### 9. Model Context Protocol Server (`mcp`)
+Start the Model Context Protocol (MCP) server listening on stdio. Allows external AI clients (like Cursor or Claude Desktop) to invoke `scan_library`, `search_symbols`, and `explain_class` tools directly.
+```bash
+library-insight mcp
+```
+
+### 10. Dependency API Audit (`audit`)
+Scan and audit all Gradle build file dependencies recursively to find deprecated classes, methods, and properties inside active versions.
+```bash
+library-insight audit
+```
+
+**Example Output:**
+```text
+==================================================
+      Library Insight Dependency Audit
+==================================================
+Detected Gradle Version Catalog at gradle/libs.versions.toml
+Scanning 11 Gradle build file(s)...
+Found 10 dependencies to audit.
+...
+Audit Summary: Scanned 10 libraries successfully.
+Total Deprecated APIs found: 1819
+==================================================
+
+### 11. API Migration Advisor (`migrate`)
+Compare two library versions and output a migration advisor report showing removed, deprecated, and replacement APIs.
+```bash
+library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+```
+
+### 12. Search Maven Central (`search-central`)
+Search Maven Central Solr repository indices dynamically for matching packages and versions:
+```bash
+library-insight search-central retrofit
+```
+
+### 13. Dependency Graph (`graph`)
+Renders a visual hierarchical tree of dependencies resolved recursively from `.pom` XML package descriptors:
+```bash
+library-insight graph com.github.ajalt.clikt:clikt-jvm:4.4.0
+```
+
+### 14. API Compatibility Checker (`check-compat`)
+Lints version bumps against actual bytecode modifications to enforce Semantic Versioning (SemVer) compliance:
+```bash
+library-insight check-compat com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+```
 ```

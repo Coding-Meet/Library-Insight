@@ -88,8 +88,11 @@ object LibraryAnalyzer {
             classApis
         }
 
+        // Centralized annotation clean-up to remove compiler-internal metadata
+        val cleanedClassApis = finalClassApis.map { cleanClassAnnotations(it) }
+
         // Group by package
-        val packageMap = finalClassApis.groupBy { classApi ->
+        val packageMap = cleanedClassApis.groupBy { classApi ->
             val fullName = classApi.name
             if (fullName.contains('.')) {
                 fullName.substringBeforeLast('.')
@@ -110,5 +113,35 @@ object LibraryAnalyzer {
             version = version,
             packages = packages
         )
+    }
+
+    private fun cleanClassAnnotations(clazz: ClassApi): ClassApi {
+        return clazz.copy(
+            annotations = clazz.annotations.filter { isUserFacingAnnotation(it.name) },
+            constructors = clazz.constructors.map { cons ->
+                cons.copy(
+                    annotations = cons.annotations.filter { isUserFacingAnnotation(it.name) },
+                    parameters = cons.parameters.map { param ->
+                        param.copy(annotations = param.annotations.filter { isUserFacingAnnotation(it.name) })
+                    }
+                )
+            },
+            methods = clazz.methods.map { method ->
+                method.copy(
+                    annotations = method.annotations.filter { isUserFacingAnnotation(it.name) },
+                    parameters = method.parameters.map { param ->
+                        param.copy(annotations = param.annotations.filter { isUserFacingAnnotation(it.name) })
+                    }
+                )
+            },
+            properties = clazz.properties.map { prop ->
+                prop.copy(annotations = prop.annotations.filter { isUserFacingAnnotation(it.name) })
+            }
+        )
+    }
+
+    private fun isUserFacingAnnotation(name: String): Boolean {
+        val normalized = name.replace('/', '.')
+        return normalized != "kotlin.Metadata" && !normalized.startsWith("kotlin.jvm.internal")
     }
 }

@@ -3,27 +3,42 @@ package com.meet.libraryinsight.cli
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import com.meet.libraryinsight.cli.commands.*
+import com.meet.libraryinsight.common.Logger
 
 class LibraryInsightCommand : CliktCommand(
     name = "library-insight",
-    help = "Library Insight: Inspect and index compiled Java/Kotlin library APIs (JAR/AAR)."
+    help = "Library Insight: API Explorer & AI Code Advisor for JVM libraries."
 ) {
     override fun run() = Unit
 }
 
 fun main(args: Array<String>) {
-    LibraryInsightCommand()
-        .subcommands(
-            ScanCommand(),
-            ExportCommand(),
-            SearchCommand(),
-            ExplainCommand(),
-            DiffCommand(),
-            AiExportCommand(),
-            ClearCacheCommand(),
-            InitCommand(),
-            SkillsCommand(),
-            DoctorCommand()
-        )
-        .main(args)
+    System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "warn")
+    Logger.info("Library-Insight CLI invocation with args: ${args.joinToString(" ")}")
+    try {
+        LibraryInsightCommand()
+            .subcommands(
+                ScanCommand(),
+                ExportCommand(),
+                SearchCommand(),
+                ExplainCommand(),
+                DiffCommand(),
+                AiExportCommand(),
+                ClearCacheCommand(),
+                InitCommand(),
+                SkillsCommand(),
+                DoctorCommand(),
+                McpCommand(),
+                AuditCommand(),
+                MigrateCommand(),
+                SearchCentralCommand(),
+                GraphCommand(),
+                CheckCompatCommand()
+            )
+            .main(args)
+        Logger.info("Library-Insight CLI completed successfully")
+    } catch (e: Exception) {
+        Logger.error("Uncaught exception in CLI main", e)
+        throw e
+    }
 }

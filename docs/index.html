@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Library Insight — Simple API docs for JVM libraries</title>
-<meta name="description" content="Library Insight scans Java and Kotlin libraries, explains their public APIs, compares versions, and gives AI agents smaller context files.">
+<title>Library Insight — API Explorer & AI Code Advisor for JVM Libraries</title>
+<meta name="description" content="Library Insight is a CLI tool and MCP server that inspects JVM libraries, visualizes dependency graphs, audits version deprecations, and provides AI-ready API references.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -226,6 +226,24 @@
           <button class="terminal__tab" data-tab="doctor" role="tab" aria-selected="false">
             <span class="terminal__tab-dot"></span>doctor
           </button>
+          <button class="terminal__tab" data-tab="audit" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>audit
+          </button>
+          <button class="terminal__tab" data-tab="migrate" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>migrate
+          </button>
+          <button class="terminal__tab" data-tab="search-central" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>search-central
+          </button>
+          <button class="terminal__tab" data-tab="graph" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>graph
+          </button>
+          <button class="terminal__tab" data-tab="check-compat" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>check-compat
+          </button>
+          <button class="terminal__tab" data-tab="mcp" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>mcp
+          </button>
         </div>
 
         <div class="terminal__body">
@@ -324,12 +342,77 @@
 <span class="tok-accent">Library Insight Diagnostics &amp; Doctor</span>
 <span class="tok-ok">Java Runtime Environment: OK (Java 17+ verified)</span>
 <span class="tok-dim">Local Download Cache: Directory not created yet</span>
-<span class="tok-ok">Codex AI: INSTALLED (Verified)</span>
+<span class="tok-ok">AI Agent Skill: INSTALLED (Verified)</span>
 <span class="tok-dim">Diagnostics completed.</span>
 
 <span class="tok-prompt">$</span> <span class="tok-cmd">library-insight clear-cache</span>
 <span class="tok-dim">Clearing local cache at: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight/cache...</span>
 <span class="tok-ok">Cache cleared successfully. Deleted 0.00 MB.</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="audit" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight audit</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent">      Library Insight Dependency Audit</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-dim">Detected Gradle Version Catalog at gradle/libs.versions.toml</span>
+<span class="tok-dim">Scanning 11 Gradle build file(s)...</span>
+<span class="tok-dim">Found 10 dependencies to audit.</span>
+<span class="tok-dim">Auditing org.ow2.asm:asm:9.7...</span>
+<span class="tok-warn">  - Status: ⚠️  Deprecations detected (4 APIs)</span>
+<span class="tok-ok">Audit Summary: Scanned 10 libraries successfully.</span>
+<span class="tok-accent">Total Deprecated APIs found: 1819</span>
+<span class="tok-dim">==================================================</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="migrate" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent">        Library Insight Migration Report</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-dim">Old Version : retrofit-2.9.0:2.9.0</span>
+<span class="tok-dim">New Version : retrofit-2.11.0:2.11.0</span>
+<span class="tok-dim">==================================================</span>
+
+<span class="tok-warn">❌ Removed Classes</span>
+<span class="tok-dim">- retrofit2.Platform$Android</span>
+<span class="tok-dim">- retrofit2.Platform$Android$MainThreadExecutor</span>
+
+<span class="tok-warn">❌ Removed Methods</span>
+<span class="tok-dim">- fun retrofit2.Platform.defaultCallbackExecutor(): java.util.concurrent.Executor</span>
+
+<span class="tok-dim">--------------------------------------------------</span>
+<span class="tok-warn">Binary Compatibility: ❌ BREAKING CHANGES DETECTED</span>
+<span class="tok-dim">==================================================</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="search-central" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight search-central clikt</span>
+<span class="tok-dim">Searching Maven Central for 'clikt'...</span>
+<span class="tok-ok">Found 10 matching libraries on Maven Central:</span>
+
+<span class="tok-dim">📦 Coordinate: com.github.ajalt.clikt:clikt:5.0.3</span>
+<span class="tok-dim">   Repository: central</span>
+<span class="tok-dim">   Group:      com.github.ajalt.clikt</span>
+<span class="tok-dim">   Artifact:   clikt</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="graph" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight graph com.github.ajalt.clikt:clikt-jvm:4.4.0</span>
+<span class="tok-dim">Resolving dependency tree for com.github.ajalt.clikt:clikt-jvm:4.4.0...</span>
+<span class="tok-ok">com.github.ajalt.clikt:clikt-jvm:4.4.0</span>
+<span class="tok-dim">│   ├── com.github.ajalt.mordant:mordant-jvm:2.5.0</span>
+<span class="tok-dim">│   │   ├── com.github.ajalt.colormath:colormath-jvm:3.5.0</span>
+<span class="tok-dim">│   │   │   ├── org.jetbrains.kotlin:kotlin-stdlib:1.9.21</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="check-compat" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight check-compat com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent">     API Compatibility &amp; SemVer Compliance</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-dim">Old version: 2.9.0</span>
+<span class="tok-dim">New version: 2.11.0</span>
+<span class="tok-dim">==================================================</span>
+
+<span class="tok-warn">🚨 SemVer Violation: Version bump does not match API changes!</span>
+<span class="tok-warn">  ❌ API Breaking Change detected but MAJOR version was not incremented! (Old: 2.9.0, New: 2.11.0)</span>
+<span class="tok-dim">==================================================</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="mcp" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight mcp</span>
+<span class="tok-dim">Starting Model Context Protocol (MCP) server listening on stdio...</span>
+<span class="tok-ok">SUCCESS: Connected to IDE host client (Cursor / Claude Desktop).</span>
+<span class="tok-dim">Exposing MCP Tools: scan_library, search_symbols, explain_class.</span></code></pre>
 
         </div>
       </div>
@@ -471,6 +554,42 @@
             <h3>clear-cache</h3>
             <p>Deletes downloaded Maven artifacts from the local Library Insight cache.</p>
             <pre><code>library-insight clear-cache</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>audit</h3>
+            <p>Scans project subdirectories recursively for Gradle dependencies and audits deprecated APIs.</p>
+            <pre><code>library-insight audit</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>mcp</h3>
+            <p>Starts the Model Context Protocol (MCP) server for deep AI IDE tool execution.</p>
+            <pre><code>library-insight mcp</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>migrate</h3>
+            <p>Compares two library versions and outputs a migration advisor report showing removed, deprecated, and replacement APIs.</p>
+            <pre><code>library-insight migrate &lt;old&gt; &lt;new&gt;</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>search-central</h3>
+            <p>Searches Maven Central dynamically for coordinates and version tags matching your query.</p>
+            <pre><code>library-insight search-central &lt;query&gt;</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>graph</h3>
+            <p>Downloads target POM descriptor and prints a visual tree of all transitive compile-scoped dependencies.</p>
+            <pre><code>library-insight graph &lt;coordinate&gt;</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>check-compat</h3>
+            <p>Compares old and new indexes to audit SemVer compliance and flags unbumped breaking API changes.</p>
+            <pre><code>library-insight check-compat &lt;old&gt; &lt;new&gt;</code></pre>
           </article>
 
           <article class="command-card">
