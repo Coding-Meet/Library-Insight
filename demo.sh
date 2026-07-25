@@ -172,20 +172,20 @@ echo ""
 # 14. DEPENDENCY GRAPH
 # Generate an ASCII recursive transitive dependency graph
 # ------------------------------------------------------------------
-echo ">> [14/16] GRAPH - Generate recursive transitive dependency tree"
-echo "   library-insight graph com.github.ajalt.clikt:clikt-jvm:4.4.0"
+echo ">> [14/16] DEPENDENCY-GRAPH - Generate recursive transitive dependency tree"
+echo "   library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0"
 echo ""
-library-insight graph com.github.ajalt.clikt:clikt-jvm:4.4.0
+library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
 echo ""
 
 # ------------------------------------------------------------------
 # 15. SEMVER COMPLIANCE CHECKER
 # Verify that library modifications comply with SemVer version numbers
 # ------------------------------------------------------------------
-echo ">> [15/16] CHECK-COMPAT - Verify Semantic Versioning compliance"
-echo "   library-insight check-compat $LIBRARY_OLD $LIBRARY_NEW"
+echo ">> [15/16] SEMVER - Verify Semantic Versioning compliance"
+echo "   library-insight semver $LIBRARY_OLD $LIBRARY_NEW"
 echo ""
-library-insight check-compat $LIBRARY_OLD $LIBRARY_NEW
+library-insight semver $LIBRARY_OLD $LIBRARY_NEW
 echo ""
 
 # ------------------------------------------------------------------

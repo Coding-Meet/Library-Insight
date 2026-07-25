@@ -1,6 +1,6 @@
 ---
 name: library-insight
-description: API Explorer & AI Code Advisor that indexes public APIs, visualizes dependency graphs, audits version deprecations, and extracts JVM archive signatures (JAR/AAR) or Maven coordinates for AI context.
+description: JVM API Explorer & MCP Server that indexes public APIs, visualizes dependency graphs, audits version deprecations, and extracts JVM archive signatures (JAR/AAR) or Maven coordinates for AI context.
 ---
 
 # Library Insight Agent Skill
@@ -16,12 +16,15 @@ This tool extracts all classes, interfaces, methods, properties, and Javadoc/KDo
 > - Use **`library-insight search <query>`** to find packages or classes.
 > - Use **`library-insight explain <class>`** to print the public API signature and Javadocs of a specific class.
 > - Use **`library-insight diff <old> <new>`** to compare versions.
-> - Use **`library-insight audit`** to check project dependency deprecations recursively.
+> - Use **`library-insight audit`** to check project dependency API deprecations recursively.
 > - Use **`library-insight migrate <old> <new>`** to get a migration advisor report with replacement suggestions.
 > - Use **`library-insight search-central <query>`** to search Maven Central.
-> - Use **`library-insight graph <coord>`** to visual dependency trees.
-> - Use **`library-insight check-compat <old> <new>`** to lint Semantic Versioning API compliance.
+> - Use **`library-insight dependency-graph <coord>`** to visualize dependency trees.
+> - Use **`library-insight semver <old> <new>`** to lint Semantic Versioning API compliance.
 > - Use **`library-insight mcp`** to communicate as a Model Context Protocol (MCP) server.
+>
+> **MCP Integration Rule:**
+> If an MCP server is already configured and available (e.g., in Cursor, Claude Desktop, or another IDE with MCP support), **prefer the MCP server over shelling out to the CLI**. The MCP server exposes `scan_library`, `search_symbols`, and `explain_class` tools natively without subprocess overhead.
 
 ## Command Reference
 
@@ -199,15 +202,14 @@ Search Maven Central Solr repository indices dynamically for matching packages a
 library-insight search-central retrofit
 ```
 
-### 13. Dependency Graph (`graph`)
+### 13. Dependency Graph (`dependency-graph`)
 Renders a visual hierarchical tree of dependencies resolved recursively from `.pom` XML package descriptors:
 ```bash
-library-insight graph com.github.ajalt.clikt:clikt-jvm:4.4.0
+library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
 ```
 
-### 14. API Compatibility Checker (`check-compat`)
+### 14. SemVer Compliance (`semver`)
 Lints version bumps against actual bytecode modifications to enforce Semantic Versioning (SemVer) compliance:
 ```bash
-library-insight check-compat com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
-```
+library-insight semver com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
 ```
