@@ -357,7 +357,7 @@ SUCCESS: AI Agent Skill added to workspace at: .agents/skills/library-insight/SK
 
 ### 10. CLI Diagnostics & Doctor (`doctor`)
 
-Run diagnostic checks for Java version, Node.js installation, local caches, and active global AI Agent skill configurations.
+Run diagnostic checks for Java version, local caches, and active global AI Agent skill configurations.
 
 ```bash
 library-insight doctor
@@ -370,15 +370,105 @@ library-insight doctor
    - Path: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java
    - Version: 17.0.7
    - Status: OK (Java 17+ verified)
-2. Node.js Environment:
-   - Version: v18.16.0
-   - Status: OK
-3. Local Cache Directory:
+2. Local Cache Directory:
    - Path: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight/cache
    - Status: OK
-4. AI Agent Skill Registrations:
+3. AI Agent Skill Registrations:
    - Gemini Config Skill: ACTIVE (registered)
    - Cursor Skill: ACTIVE (registered)
+```
+
+### 11. Model Context Protocol (MCP) Server (`mcp`)
+
+Start the Model Context Protocol (MCP) server listening on stdio. This enables AI tools (such as Cursor, Claude Desktop, Copilot, etc.) to dynamically call Library Insight tools (like scanning libraries, searching symbols, or explaining classes) directly from the IDE context.
+
+```bash
+library-insight mcp
+```
+
+### 12. Dependency API Audit (`audit`)
+
+Scan and audit all project dependencies declared recursively inside `build.gradle.kts` and catalog libraries inside `gradle/libs.versions.toml`. It analyzes bytecode annotations inside local cached dependencies to report deprecated classes, methods, and properties.
+
+```bash
+library-insight audit
+```
+
+**Example Output:**
+```text
+==================================================
+      Library Insight Dependency Audit
+==================================================
+Detected Gradle Version Catalog at gradle/libs.versions.toml
+Scanning 11 Gradle build file(s)...
+
+Found 10 dependencies to audit:
+  - org.ow2.asm:asm:9.7
+  ...
+
+--------------------------------------------------
+Auditing org.ow2.asm:asm:9.7...
+  - Total classes: 39
+  - Status: ⚠️  Deprecations detected
+    * Deprecated Classes    : 0
+    * Deprecated Methods    : 2
+    * Deprecated Properties : 2
+==================================================
+Audit Summary: Scanned 10 libraries successfully.
+Total Deprecated APIs found: 1819
+==================================================
+```
+
+### 13. API Migration Advisor (`migrate`)
+
+Compare two library versions and output a structured migration report, automatically detecting replacement APIs from Kotlin `@ReplaceWith` annotation expressions and Javadoc `@deprecated` link tags.
+
+```bash
+library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+```
+
+**Example Output:**
+```text
+==================================================
+        Library Insight Migration Report
+==================================================
+Old Version : com.squareup.retrofit2:retrofit:2.9.0
+New Version : com.squareup.retrofit2:retrofit:2.11.0
+==================================================
+
+❌ Removed Classes
+-----------------
+- retrofit2.Platform$Android
+- retrofit2.Platform$Android$MainThreadExecutor
+
+❌ Removed Methods
+-----------------
+- fun retrofit2.Platform.defaultCallbackExecutor(): java.util.concurrent.Executor
+
+--------------------------------------------------
+Binary Compatibility: ❌ BREAKING CHANGES DETECTED
+==================================================
+```
+
+### 14. Search Maven Central (`search-central`)
+
+Search Maven Central Solr repository indices dynamically for matching packages and versions.
+```bash
+library-insight search-central clikt
+```
+
+### 15. Dependency Graph (`graph`)
+
+Renders a visual hierarchical tree of dependencies resolved recursively from `.pom` XML package descriptors.
+```bash
+library-insight graph com.github.ajalt.clikt:clikt-jvm:4.4.0
+```
+
+### 16. API Compatibility Checker (`check-compat`)
+
+Lints version bumps against actual bytecode modifications to enforce Semantic Versioning (SemVer) compliance.
+```bash
+library-insight check-compat com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
 ```
 
 ---
@@ -417,14 +507,20 @@ Library-Insight/
 │   │                           ├── Main.kt
 │   │                           └── commands/
 │   │                               ├── AiExportCommand.kt
+│   │                               ├── AuditCommand.kt
+│   │                               ├── CheckCompatCommand.kt
 │   │                               ├── ClearCacheCommand.kt
 │   │                               ├── DiffCommand.kt
 │   │                               ├── DoctorCommand.kt
 │   │                               ├── ExplainCommand.kt
 │   │                               ├── ExportCommand.kt
+│   │                               ├── GraphCommand.kt
 │   │                               ├── InitCommand.kt
+│   │                               ├── McpCommand.kt
+│   │                               ├── MigrateCommand.kt
 │   │                               ├── ScanCommand.kt
 │   │                               ├── SearchCommand.kt
+│   │                               ├── SearchCentralCommand.kt
 │   │                               └── SkillsCommand.kt
 │   └── build.gradle.kts
 ├── library-insight-common/

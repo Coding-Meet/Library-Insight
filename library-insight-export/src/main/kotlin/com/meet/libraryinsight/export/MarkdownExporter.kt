@@ -28,19 +28,18 @@ object MarkdownExporter {
             for (clazz in pkg.classes) {
                 sb.append("### Class ${clazz.name}\n\n")
                 
-                // Show annotations
-                if (clazz.annotations.isNotEmpty()) {
-                    sb.append("```kotlin\n")
-                    clazz.annotations.forEach { anno ->
-                        sb.append(formatAnnotation(anno)).append("\n")
-                    }
-                    sb.append("```\n")
-                }
-
-                // Declaration signature
+                // Declaration signature (including annotations in a single clean code block)
                 sb.append("```kotlin\n")
+                if (clazz.annotations.isNotEmpty()) {
+                    clazz.annotations.forEach { anno ->
+                        val formatted = formatAnnotation(anno)
+                        if (formatted.isNotEmpty()) {
+                            sb.append(formatted).append("\n")
+                        }
+                    }
+                }
                 val vis = clazz.visibility.name.lowercase()
-                val mods = clazz.modifiers.joinToString(" ")
+                val mods = if (clazz.modifiers.isNotEmpty()) clazz.modifiers.joinToString(" ") + " " else ""
                 val kind = when (clazz.kind) {
                     ClassKind.COMPANION_OBJECT -> "companion object"
                     ClassKind.OBJECT -> "object"
@@ -56,23 +55,38 @@ object MarkdownExporter {
                 } else ""
                 
                 val inheritance = if (clazz.superTypes.isNotEmpty()) " : " + clazz.superTypes.joinToString(", ") else ""
-                sb.append("$vis $mods $kind ${clazz.simpleName}$generics$inheritance\n")
+                sb.append("$vis $mods$kind ${clazz.simpleName}$generics$inheritance\n")
                 sb.append("```\n\n")
+
+                // Show class documentation as blockquote
+                val cDoc = clazz.doc
+                if (cDoc != null) {
+                    sb.append("> ${cDoc.trim().replace("\n", "\n> ")}\n\n")
+                }
 
                 // Properties
                 if (clazz.properties.isNotEmpty()) {
                     sb.append("#### Properties\n\n")
-                    sb.append("| Name | Type | Mutability | Visibility | Other |\n")
+                    sb.append("| Name | Type | Mutability | Visibility | Description |\n")
                     sb.append("| --- | --- | --- | --- | --- |\n")
                     for (prop in clazz.properties) {
                         val mutability = if (prop.isMutable) "var" else "val"
                         val other = mutableListOf<String>()
                         if (prop.isConst) other.add("const")
                         if (prop.isLateinit) other.add("lateinit")
-                        if (prop.annotations.isNotEmpty()) {
-                            other.add(prop.annotations.joinToString { formatAnnotation(it) })
-                        }
-                        sb.append("| `${prop.name}` | `${prop.type}` | `$mutability` | `${prop.visibility.name.lowercase()}` | ${other.joinToString(", ")} |\n")
+                        
+                        val annoText = if (prop.annotations.isNotEmpty()) {
+                            prop.annotations.map { formatAnnotation(it) }.filter { it.isNotEmpty() }.joinToString { it }
+                        } else ""
+
+                        val docText = prop.doc?.trim()?.replace("\n", " ") ?: ""
+                        val descriptionParts = mutableListOf<String>()
+                        if (annoText.isNotEmpty()) descriptionParts.add(annoText)
+                        if (other.isNotEmpty()) descriptionParts.add(other.joinToString(", "))
+                        if (docText.isNotEmpty()) descriptionParts.add(docText)
+                        val description = descriptionParts.joinToString("; ")
+
+                        sb.append("| `${prop.name}` | `${prop.type}` | `$mutability` | `${prop.visibility.name.lowercase()}` | $description |\n")
                     }
                     sb.append("\n")
                 }
@@ -114,8 +128,16 @@ object MarkdownExporter {
                         val nameAndParams = "$receiver${method.name}($params)"
                         
                         sb.append("- `$visMethod ${modsStr}fun $nameAndParams: ${method.returnType}`\n")
+                        
+                        val mDoc = method.doc
+                        if (mDoc != null) {
+                            sb.append("  > ${mDoc.trim().replace("\n", "\n  > ")}\n")
+                        }
                         if (method.annotations.isNotEmpty()) {
-                            sb.append("  *Annotations: ${method.annotations.joinToString { formatAnnotation(it) }}*\n")
+                            val methodAnnos = method.annotations.map { formatAnnotation(it) }.filter { it.isNotEmpty() }
+                            if (methodAnnos.isNotEmpty()) {
+                                sb.append("  *Annotations: ${methodAnnos.joinToString()}*\n")
+                            }
                         }
                     }
                     sb.append("\n")
@@ -129,6 +151,10 @@ object MarkdownExporter {
     }
 
     private fun formatAnnotation(anno: AnnotationApi): String {
+        val normalizedName = anno.name.replace('/', '.')
+        if (normalizedName == "kotlin.Metadata" || normalizedName.startsWith("kotlin.jvm.internal")) {
+            return ""
+        }
         val args = if (anno.arguments.isNotEmpty()) {
             anno.arguments.map { "${it.key} = ${it.value}" }.joinToString()
         } else ""

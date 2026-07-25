@@ -5,13 +5,49 @@ import io.ktor.client.engine.java.Java
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.readRawBytes
+import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.*
 import java.io.File
 
 object MavenResolver {
 
     private val client = HttpClient(Java) {
         followRedirects = true
+    }
+
+    data class CentralSearchResult(
+        val coordinate: String,
+        val groupId: String,
+        val artifactId: String,
+        val latestVersion: String,
+        val repository: String
+    )
+
+    /**
+     * Queries Maven Central Solr API for matching coordinates.
+     */
+    fun searchCentral(query: String, rows: Int = 10): List<CentralSearchResult> {
+        try {
+            val responseText = runBlocking {
+                client.get("https://search.maven.org/solrsearch/select?q=$query&rows=$rows&wt=json").bodyAsText()
+            }
+            val json = Json.parseToJsonElement(responseText).jsonObject
+            val responseObj = json["response"]?.jsonObject ?: return emptyList()
+            val docs = responseObj["docs"]?.jsonArray ?: return emptyList()
+
+            return docs.map { docElement ->
+                val doc = docElement.jsonObject
+                val id = doc["id"]?.jsonPrimitive?.content ?: ""
+                val g = doc["g"]?.jsonPrimitive?.content ?: ""
+                val a = doc["a"]?.jsonPrimitive?.content ?: ""
+                val latest = doc["latestVersion"]?.jsonPrimitive?.content ?: ""
+                val repo = doc["repositoryId"]?.jsonPrimitive?.content ?: "central"
+                CentralSearchResult(id, g, a, latest, repo)
+            }
+        } catch (e: Exception) {
+            return emptyList()
+        }
     }
 
     data class ResolvedArtifact(
@@ -52,6 +88,7 @@ object MavenResolver {
         customRepos: List<String> = emptyList(),
         progressReporter: (String) -> Unit = {}
     ): ResolvedArtifact {
+        Logger.info("Resolving coordinate: $coordinate")
         val parts = coordinate.split(':')
         val groupId = parts[0].trim()
         val artifactId = parts[1].trim()
@@ -71,10 +108,12 @@ object MavenResolver {
 
         // 1. Check cache first
         if (cachedAar.exists()) {
+            Logger.info("Cache hit (AAR) for $coordinate")
             progressReporter("Found cached binary AAR: ${cachedAar.name}")
             return ResolvedArtifact(cachedAar, if (cachedSources.exists()) cachedSources else null)
         }
         if (cachedJar.exists()) {
+            Logger.info("Cache hit (JAR) for $coordinate")
             progressReporter("Found cached binary JAR: ${cachedJar.name}")
             return ResolvedArtifact(cachedJar, if (cachedSources.exists()) cachedSources else null)
         }
@@ -82,10 +121,12 @@ object MavenResolver {
         // 1.5 Check local Gradle cache folder as fallback before internet download
         val gradleCacheResult = tryResolveFromGradleCache(groupId, artifactId, version, cachedJar, cachedAar, cachedSources, progressReporter)
         if (gradleCacheResult != null) {
+            Logger.info("Resolved $coordinate from Gradle local cache")
             return gradleCacheResult
         }
 
         progressReporter("Resolving $coordinate from repositories...")
+        Logger.info("Resolving $coordinate from remote repositories...")
 
         // 2. Iterate repositories
         val allRepos = customRepos + REPOSITORIES
@@ -97,32 +138,40 @@ object MavenResolver {
 
             // Try AAR first
             progressReporter("Checking AAR in $repo...")
+            Logger.info("Checking remote URL: $binaryAarUrl")
             if (downloadFile(binaryAarUrl, cachedAar)) {
                 progressReporter("Successfully downloaded AAR!")
+                Logger.info("Successfully downloaded AAR from $repo")
                 // Try downloading sources
                 progressReporter("Checking sources JAR...")
                 val hasSources = downloadFile(sourcesUrl, cachedSources)
                 if (hasSources) {
                     progressReporter("Successfully downloaded sources JAR!")
+                    Logger.info("Successfully downloaded sources JAR from $repo")
                 }
                 return ResolvedArtifact(cachedAar, if (hasSources) cachedSources else null)
             }
 
             // Try JAR next
             progressReporter("Checking JAR in $repo...")
+            Logger.info("Checking remote URL: $binaryJarUrl")
             if (downloadFile(binaryJarUrl, cachedJar)) {
                 progressReporter("Successfully downloaded JAR!")
+                Logger.info("Successfully downloaded JAR from $repo")
                 // Try downloading sources
                 progressReporter("Checking sources JAR...")
                 val hasSources = downloadFile(sourcesUrl, cachedSources)
                 if (hasSources) {
                     progressReporter("Successfully downloaded sources JAR!")
+                    Logger.info("Successfully downloaded sources JAR from $repo")
                 }
                 return ResolvedArtifact(cachedJar, if (hasSources) cachedSources else null)
             }
         }
 
-        throw IllegalArgumentException("Could not resolve maven coordinate '$coordinate' in any of the registered repositories: $REPOSITORIES")
+        val err = "Could not resolve maven coordinate '$coordinate' in any of the registered repositories: $REPOSITORIES"
+        Logger.error(err)
+        throw IllegalArgumentException(err)
     }
 
     /**
