@@ -55,7 +55,7 @@
 
       <div class="eyebrow">
         <span class="eyebrow__dot"></span>
-        Scan any JAR or AAR. No source code needed.
+        JVM API Explorer &amp; MCP Server for AI IDEs.
       </div>
 
       <h1 class="hero__title">
@@ -64,9 +64,9 @@
       </h1>
 
       <p class="hero__subtitle">
-        Library Insight looks inside compiled JAR and AAR files, finds the public classes,
-        methods, and properties, then gives you clean docs, quick search, version diffs,
-        and small AI-friendly context files.
+        Library Insight inspects compiled JAR and AAR files, finds the exact public API for
+        your installed version, and exposes it as an MCP server so AI IDEs like Cursor and
+        Claude Desktop can query it directly.
       </p>
 
       <div class="hero__actions">
@@ -153,6 +153,14 @@
 
         <article class="feature-card">
           <div class="feature-card__icon" style="--icon-color: var(--accent-cyan)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3>MCP Server for AI IDEs</h3>
+          <p>Connect Cursor, Claude Desktop, or any MCP-compatible IDE. They can scan, search, and explain library APIs without leaving the editor.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: var(--accent-emerald)">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           </div>
           <h3>Finds public APIs</h3>
@@ -160,19 +168,11 @@
         </article>
 
         <article class="feature-card">
-          <div class="feature-card__icon" style="--icon-color: var(--accent-emerald)">
+          <div class="feature-card__icon" style="--icon-color: var(--accent-cyan)">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/></svg>
           </div>
           <h3>Works with local cache</h3>
           <p>Checks your Gradle cache first. If Android Studio already downloaded the library, it can scan without downloading again.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-card__icon" style="--icon-color: var(--accent-cyan)">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <h3>Made for AI agents</h3>
-          <p>Creates small class-level files so assistants can read only the exact API they need instead of one huge document.</p>
         </article>
 
         <article class="feature-card">
@@ -235,11 +235,11 @@
           <button class="terminal__tab" data-tab="search-central" role="tab" aria-selected="false">
             <span class="terminal__tab-dot"></span>search-central
           </button>
-          <button class="terminal__tab" data-tab="graph" role="tab" aria-selected="false">
-            <span class="terminal__tab-dot"></span>graph
+          <button class="terminal__tab" data-tab="dependency-graph" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>dependency-graph
           </button>
-          <button class="terminal__tab" data-tab="check-compat" role="tab" aria-selected="false">
-            <span class="terminal__tab-dot"></span>check-compat
+          <button class="terminal__tab" data-tab="semver" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>semver
           </button>
           <button class="terminal__tab" data-tab="mcp" role="tab" aria-selected="false">
             <span class="terminal__tab-dot"></span>mcp
@@ -390,14 +390,14 @@
 <span class="tok-dim">   Group:      com.github.ajalt.clikt</span>
 <span class="tok-dim">   Artifact:   clikt</span></code></pre>
 
-          <pre class="terminal__panel" data-panel="graph" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight graph com.github.ajalt.clikt:clikt-jvm:4.4.0</span>
+          <pre class="terminal__panel" data-panel="dependency-graph" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0</span>
 <span class="tok-dim">Resolving dependency tree for com.github.ajalt.clikt:clikt-jvm:4.4.0...</span>
 <span class="tok-ok">com.github.ajalt.clikt:clikt-jvm:4.4.0</span>
 <span class="tok-dim">│   ├── com.github.ajalt.mordant:mordant-jvm:2.5.0</span>
 <span class="tok-dim">│   │   ├── com.github.ajalt.colormath:colormath-jvm:3.5.0</span>
 <span class="tok-dim">│   │   │   ├── org.jetbrains.kotlin:kotlin-stdlib:1.9.21</span></code></pre>
 
-          <pre class="terminal__panel" data-panel="check-compat" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight check-compat com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0</span>
+          <pre class="terminal__panel" data-panel="semver" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight semver com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0</span>
 <span class="tok-dim">==================================================</span>
 <span class="tok-accent">     API Compatibility &amp; SemVer Compliance</span>
 <span class="tok-dim">==================================================</span>
@@ -581,15 +581,15 @@
           </article>
 
           <article class="command-card">
-            <h3>graph</h3>
+            <h3>dependency-graph</h3>
             <p>Downloads target POM descriptor and prints a visual tree of all transitive compile-scoped dependencies.</p>
-            <pre><code>library-insight graph &lt;coordinate&gt;</code></pre>
+            <pre><code>library-insight dependency-graph &lt;coordinate&gt;</code></pre>
           </article>
 
           <article class="command-card">
-            <h3>check-compat</h3>
+            <h3>semver</h3>
             <p>Compares old and new indexes to audit SemVer compliance and flags unbumped breaking API changes.</p>
-            <pre><code>library-insight check-compat &lt;old&gt; &lt;new&gt;</code></pre>
+            <pre><code>library-insight semver &lt;old&gt; &lt;new&gt;</code></pre>
           </article>
 
           <article class="command-card">

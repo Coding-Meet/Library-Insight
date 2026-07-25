@@ -18,16 +18,17 @@ Use it when you need to:
 
 ## Key Features
 
+- **MCP Server**: Connect Cursor, Claude Desktop, or any MCP-compatible IDE. They call `scan_library`, `search_symbols`, and `explain_class` directly without leaving the editor.
 - **Multi-Format Support**: Reads JARs, AARs (including nested JARs), directories, and Gradle build outputs.
 - **Version-Correct API Lookup**: Scans the exact artifact you point it at, so AI agents and developers see the real public API for that dependency version.
-- **Deep Metadata Extraction**:
-  - **Classes/Interfaces/Objects**: Modifiers, companion objects, data/value flags, annotation markers, nested declarations, interfaces, inheritance.
-  - **Constructors & Methods**: Visibility, parameter names, default arguments, return types, generic signatures/bounds, extension receivers, operators, infixes, inline, and suspend keywords.
-  - **Properties**: Mutability (`val`/`var`), const declarations, lateinits, backing fields, and custom accessors.
-- **Format Exporters**: Converts API indices to structured **JSON** or highly readable **Markdown** reference documentation.
-- **Search Engine**: Performs case-insensitive searches across packages, classes, methods, and properties.
-- **Diff Engine**: Compares two versions of a library to highlight added, removed, or changed APIs, deprecations, and **binary breaking changes** (like visibility reduction, method deletion, or changing suspend modifiers).
-- **AI-Context Exporter**: Generates a compact, token-efficient `ai-context.json` file optimized for LLMs (ChatGPT, Gemini, Claude, Cursor, Copilot).
+- **Deep Metadata Extraction**: Classes, constructors, methods, properties, generics, Kotlin metadata, suspend keywords, annotations.
+- **Migration Advisor**: Compares two versions and reports removed, deprecated, and replacement APIs — great for Retrofit, OkHttp, Compose, and Kotlin upgrades.
+- **Dependency API Audit**: Scans project Gradle dependencies and reports deprecated APIs found in installed bytecode.
+- **Dependency Graph**: Renders a recursive visual tree of transitive dependencies from POM descriptors.
+- **SemVer Checker**: Lints version bumps against actual code changes to catch unbumped breaking changes.
+- **Search Maven Central**: Find coordinates and latest versions without leaving the terminal.
+- **Format Exporters**: Converts API indices to structured **JSON** or readable **Markdown** reference docs.
+- **AI-Context Exporter**: Generates a compact, token-efficient `ai-context/` directory for LLMs — 95%+ smaller than a raw dump.
 
 ---
 
@@ -172,306 +173,38 @@ This creates `.agents/skills/library-insight/SKILL.md` in the project root, enab
 
 ---
 
-## CLI Usage & Commands
+## Quick Start
 
 > [!NOTE]
-> The examples below assume the executable has been installed globally (via the installer script). You can execute it directly using:
-> `library-insight <command> [options]`
-
-> [!IMPORTANT]
-> **AI Agent Accuracy Rule:**
-> If you are an AI assistant, do not assume the library API from memory, latest web docs, or random examples. First scan or query the exact library version used by the project whenever possible.
->
-> **AI Agent Token Optimization Rule:**
-> Do **not** read the entire raw `build/library-insight-index.json` or generated `API_REFERENCE.md` files directly using file-viewing tools. Doing so will bloat your context window and exceed token limits.
-> Instead, use the dedicated CLI query subcommands to lookup only the class details or signatures you need:
-> - Use **`library-insight search <query>`** to locate packages or classes.
-> - Use **`library-insight explain <class>`** to inspect full signatures and docs.
-> - Use **`library-insight diff <old> <new>`** before upgrading or replacing deprecated APIs.
-
-### 1. Scan Library
-
-Scan a JAR, AAR, local directory, or Maven coordinate.
-
-Use this first when you need to know how a dependency should be implemented in the exact version your project uses.
-
-> [!TIP]
-> **Offline-First & Smart Caching:**
-> - **Gradle Cache Lookup**: Before downloading from repositories over the network, `library-insight` scans your machine's Gradle cache (`~/.gradle/caches/modules-2/files-2.1/`). If the dependency coordinate has already been downloaded by Gradle/Android Studio, it is referenced directly without performing any disk copies—saving space and enabling fully offline scanning!
-> - **Local Project Cache**: If you run a scan inside a project directory containing a `build/` folder or a Gradle build file, downloaded artifacts are saved locally to `build/library-insight/cache/` instead of the global home directory, keeping your user profile clutter-free and project cleaning clean.
+> These examples assume you have installed the CLI globally. Run `library-insight <command>` from any folder.
 
 ```bash
-# Scan Retrofit from Maven Central (downloads jar + sources automatically)
+# 1. Scan a library from Maven Central (or picks it from your Gradle cache)
 library-insight scan com.squareup.retrofit2:retrofit:2.11.0
 
-# Scan OkHttp client
-library-insight scan com.squareup.okhttp3:okhttp:4.12.0
-```
-
-**Example Output:**
-```text
-Detected Maven coordinate: com.squareup.retrofit2:retrofit:2.11.0
-  -> Using cached binary JAR from Gradle cache: retrofit-2.11.0.jar
-  -> Using cached sources JAR from Gradle cache: retrofit-2.11.0-sources.jar
-Scan complete! Found 113 classes across 3 packages.
-Saved API index to: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight-index.json
-```
-
-### 2. Search Symbols
-
-Search for packages, classes, methods, or properties in the saved index.
-
-Use this when you know part of a class or method name and need to find the matching API in the scanned version.
-
-```bash
-# Search for Retrofit class matching patterns
+# 2. Find a class by name
 library-insight search Retrofit
-```
 
-**Example Output:**
-```text
-Found 2 matching classes:
-  - retrofit2.Retrofit
-  - retrofit2.Retrofit$Builder
-```
-
-### 3. Explain Class
-
-Print detailed structural details (modifiers, superclass, constructors, properties, methods, and documentation) about a specific class.
-
-Use this before writing code that calls a class, especially when AI examples disagree with your installed dependency version.
-
-```bash
-# Get full API structure of Retrofit class
+# 3. Inspect full API signatures and docs for a class
 library-insight explain Retrofit
-```
 
-**Example Output:**
-```text
-Class: retrofit2.Retrofit (public class)
-  Constructors:
-    + public constructor(okhttp3.Call$Factory, okhttp3.HttpUrl, java.util.List<retrofit2.Converter$Factory>, java.util.List<retrofit2.CallAdapter$Factory>, java.util.concurrent.Executor, boolean)
-  Methods:
-    + public fun <T> create(java.lang.Class<T>): T
-    + public fun baseUrl(): okhttp3.HttpUrl
-    + public fun callFactory(): okhttp3.Call$Factory
-```
+# 4. Compare two versions — see what was added, removed, or changed
+library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
 
-### 4. Export Index
-Export the scanned index to Markdown reference sheets or pretty-printed JSON.
-*(Note: For large libraries, single Markdown files can become huge; use `ai-export` for AI prompts instead).*
+# 5. Get a migration report with replacement API suggestions
+library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
 
-```bash
-# Automatically saves to build/API_REFERENCE.md
-library-insight export markdown
-```
+# 6. Audit all project dependencies for deprecated APIs
+library-insight audit
 
-**Example Output:**
-```text
-Exported MARKDOWN to: /Users/meet/AndroidStudioProjects/Library-Insight/build/API_REFERENCE.md
-```
-
-### 5. Diff Library Versions
-
-Compare two library archives directly to check for changes and potential breaking changes.
-
-Use this when a method is deprecated, removed, renamed, or behaving differently between versions.
-
-```bash
-# Detect breaking changes between Retrofit 2.9.0 and 2.11.0
-library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar
-```
-
-**Example Output:**
-```text
-==================================================
- LIBRARY INSIGHT API DIFF REPORT
-==================================================
-Old: retrofit-2.9.0
-New: retrofit-2.11.0
-Breaking Changes Found: NO
-==================================================
-➕ Added Classes:
-  - retrofit2.Reflection
-📝 Changed Classes:
-  Class: retrofit2.Invocation
-    Added Methods:
-      + fun service(): java.lang.Class<?>
-```
-
-### 6. Export AI Context (Recommended for AI prompts)
-
-Generate a compact, token-efficient split context folder structure (`build/ai-context/` by default) containing individual class JSON files optimized for LLM prompts.
-
-This solves two problems at once: AI gets exact APIs from the scanned dependency version, and it avoids massive single files like `API_REFERENCE.md`. Agents can read `metadata.json` first, then load only the specific class JSON files they need, reducing token usage by over 95%.
-
-```bash
-library-insight ai-export
-```
-
-**Example Output:**
-```text
-Generated compact LLM context directory structure at: /Users/meet/AndroidStudioProjects/Library-Insight/build/ai-context
-```
-
-### 7. Clear Cache
-
-Clear all downloaded and cached Maven artifacts from the local cache directory to free up space.
-
-```bash
-library-insight clear-cache
-```
-
-**Example Output:**
-```text
-Cache cleared successfully. Deleted 2.45 MB.
-```
-
-### 8. Initialize Workspace Agent Skill (`init`)
-
-Initialize the current project directory with the Custom AI agent Skill so that local AI assistants can auto-discover and utilize `library-insight`.
-
-```bash
-library-insight init
-```
-
-**Example Output:**
-```text
-Initializing Library Insight agent environment...
-SUCCESS: AI Agent Skill initialized at: /Users/meet/AndroidStudioProjects/Library-Insight/.agents/skills/library-insight/SKILL.md
-```
-
-### 9. Manage Agent Skills (`skills`)
-
-Manage Library Insight Custom AI agent skills for the current workspace.
-
-```bash
-# Install the skill to the current workspace (.agents/skills/)
-library-insight skills add
-```
-
-**Example Output:**
-```text
-SUCCESS: AI Agent Skill added to workspace at: .agents/skills/library-insight/SKILL.md
-```
-
-### 10. CLI Diagnostics & Doctor (`doctor`)
-
-Run diagnostic checks for Java version, local caches, and active global AI Agent skill configurations.
-
-```bash
-library-insight doctor
-```
-
-**Example Output:**
-```text
-[Library Insight Diagnostics]
-1. Java Runtime Environment (JRE):
-   - Path: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java
-   - Version: 17.0.7
-   - Status: OK (Java 17+ verified)
-2. Local Cache Directory:
-   - Path: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight/cache
-   - Status: OK
-3. AI Agent Skill Registrations:
-   - Gemini Config Skill: ACTIVE (registered)
-   - Cursor Skill: ACTIVE (registered)
-```
-
-### 11. Model Context Protocol (MCP) Server (`mcp`)
-
-Start the Model Context Protocol (MCP) server listening on stdio. This enables AI tools (such as Cursor, Claude Desktop, Copilot, etc.) to dynamically call Library Insight tools (like scanning libraries, searching symbols, or explaining classes) directly from the IDE context.
-
-```bash
+# 7. Start the MCP server (connect via Cursor, Claude Desktop, etc.)
 library-insight mcp
 ```
 
-### 12. Dependency API Audit (`audit`)
-
-Scan and audit all project dependencies declared recursively inside `build.gradle.kts` and catalog libraries inside `gradle/libs.versions.toml`. It analyzes bytecode annotations inside local cached dependencies to report deprecated classes, methods, and properties.
-
-```bash
-library-insight audit
-```
-
-**Example Output:**
-```text
-==================================================
-      Library Insight Dependency Audit
-==================================================
-Detected Gradle Version Catalog at gradle/libs.versions.toml
-Scanning 11 Gradle build file(s)...
-
-Found 10 dependencies to audit:
-  - org.ow2.asm:asm:9.7
-  ...
-
---------------------------------------------------
-Auditing org.ow2.asm:asm:9.7...
-  - Total classes: 39
-  - Status: ⚠️  Deprecations detected
-    * Deprecated Classes    : 0
-    * Deprecated Methods    : 2
-    * Deprecated Properties : 2
-==================================================
-Audit Summary: Scanned 10 libraries successfully.
-Total Deprecated APIs found: 1819
-==================================================
-```
-
-### 13. API Migration Advisor (`migrate`)
-
-Compare two library versions and output a structured migration report, automatically detecting replacement APIs from Kotlin `@ReplaceWith` annotation expressions and Javadoc `@deprecated` link tags.
-
-```bash
-library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
-```
-
-**Example Output:**
-```text
-==================================================
-        Library Insight Migration Report
-==================================================
-Old Version : com.squareup.retrofit2:retrofit:2.9.0
-New Version : com.squareup.retrofit2:retrofit:2.11.0
-==================================================
-
-❌ Removed Classes
------------------
-- retrofit2.Platform$Android
-- retrofit2.Platform$Android$MainThreadExecutor
-
-❌ Removed Methods
------------------
-- fun retrofit2.Platform.defaultCallbackExecutor(): java.util.concurrent.Executor
-
---------------------------------------------------
-Binary Compatibility: ❌ BREAKING CHANGES DETECTED
-==================================================
-```
-
-### 14. Search Maven Central (`search-central`)
-
-Search Maven Central Solr repository indices dynamically for matching packages and versions.
-```bash
-library-insight search-central clikt
-```
-
-### 15. Dependency Graph (`graph`)
-
-Renders a visual hierarchical tree of dependencies resolved recursively from `.pom` XML package descriptors.
-```bash
-library-insight graph com.github.ajalt.clikt:clikt-jvm:4.4.0
-```
-
-### 16. API Compatibility Checker (`check-compat`)
-
-Lints version bumps against actual bytecode modifications to enforce Semantic Versioning (SemVer) compliance.
-```bash
-library-insight check-compat com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
-```
+→ See **[docs/CLI.md](docs/CLI.md)** for the complete command reference (all 16 commands with examples and output).
 
 ---
+
 
 ## Repository Directory Structure
 

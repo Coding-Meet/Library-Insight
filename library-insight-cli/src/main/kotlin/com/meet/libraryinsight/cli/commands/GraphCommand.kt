@@ -12,8 +12,8 @@ import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Element
 
 class GraphCommand : CliktCommand(
-    name = "graph",
-    help = "Download and print a visual dependency graph of a coordinate."
+    name = "dependency-graph",
+    help = "Download and print a visual dependency tree of a Maven coordinate."
 ) {
     val coordinate by argument(help = "Maven coordinate (group:artifact:version)")
 

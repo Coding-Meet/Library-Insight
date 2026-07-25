@@ -8,7 +8,7 @@ import com.meet.libraryinsight.core.diff.DiffEngine
 import java.io.File
 
 class CheckCompatCommand : CliktCommand(
-    name = "check-compat",
+    name = "semver",
     help = "Verify Semantic Versioning compliance by comparing code differences against version numbers."
 ) {
     val oldSource by argument(help = "Old version coordinates or JAR path")
