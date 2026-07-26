@@ -1,5 +1,6 @@
 package com.meet.libraryinsight.kotlin
 
+import com.meet.libraryinsight.common.Logger
 import com.meet.libraryinsight.model.*
 import com.meet.libraryinsight.model.Visibility
 import com.meet.libraryinsight.model.ClassKind
@@ -15,12 +16,48 @@ import org.objectweb.asm.Opcodes
 
 object KotlinMetadataEnricher {
 
+    private val logger = Logger
+
+    /**
+     * Internal marker: name of kotlin.DslMarker annotation descriptor.
+     * Used for DSL scope detection.
+     */
+    private const val DSL_MARKER_DESC = "Lkotlin/DslMarker;"
+
     fun enrich(rawClass: RawClassData, metadata: KotlinClassMetadata): ClassApi {
         return when (metadata) {
             is KotlinClassMetadata.Class -> enrichClass(rawClass, metadata.kmClass)
             is KotlinClassMetadata.FileFacade -> enrichPackageFacade(rawClass, metadata.kmPackage)
             is KotlinClassMetadata.MultiFileClassPart -> enrichPackageFacade(rawClass, metadata.kmPackage)
             else -> fallbackToJava(rawClass)
+        }
+    }
+
+    /**
+     * Extracts type aliases from a FileFacade or MultiFileClassPart package metadata.
+     * Called externally by LibraryAnalyzer to collect package-level aliases.
+     */
+    fun extractTypeAliases(rawClass: RawClassData, metadata: KotlinClassMetadata): List<TypeAliasApi> {
+        val kmPackage = when (metadata) {
+            is KotlinClassMetadata.FileFacade -> metadata.kmPackage
+            is KotlinClassMetadata.MultiFileClassPart -> metadata.kmPackage
+            else -> return emptyList()
+        }
+        logger.info("Extracting type aliases from ${rawClass.name}: ${kmPackage.typeAliases.size} found")
+        return kmPackage.typeAliases.map { alias ->
+            val typeParamsMap = alias.typeParameters.associate { it.id to it.name }
+            TypeAliasApi(
+                name = alias.name,
+                expandedType = formatKmType(alias.expandedType, typeParamsMap),
+                typeParameters = alias.typeParameters.map { param ->
+                    TypeParameterApi(
+                        name = param.name,
+                        upperBounds = param.upperBounds.map { formatKmType(it, typeParamsMap) },
+                        isReified = param.isReified
+                    )
+                },
+                annotations = alias.annotations.mapNotNull { mapKmAnnotation(it) }
+            )
         }
     }
 
@@ -42,16 +79,6 @@ object KotlinMetadataEnricher {
 
         val kind = when {
             kmClass.kind == KmClassKind.COMPANION_OBJECT -> ClassKind.COMPANION_OBJECT
-            // Check flags or kind (OBJECT vs CLASS)
-            // Kotlin metadata doesn't have an explicit enum for object, but we can detect it.
-            // In 2.0.0, KmClass has ClassKind or similar, wait, kmClass has no direct isObject,
-            // but Kotlin ClassKind can be retrieved via flags.
-            // Let's check how objects are compiled. Companion objects have isCompanion = true.
-            // Standard objects are usually compiled as FINAL classes with static field INSTANCE.
-            // Let's inspect the compiled classes to verify if they have INSTANCE field or check kmClass.kind.
-            // Actually, in 2.0.0, kmClass.kind is an enum kotlin.metadata.ClassKind:
-            // CLASS, INTERFACE, ENUM_CLASS, ENUM_ENTRY, ANNOTATION_CLASS, OBJECT, COMPANION_OBJECT.
-            // Let's map it!
             else -> mapClassKind(kmClass.kind)
         }
 
@@ -69,7 +96,8 @@ object KotlinMetadataEnricher {
                     name = param.name,
                     type = formatKmType(param.type, typeParamsMap),
                     annotations = rawAnnotations.map { mapAnnotation(it) },
-                    hasDefaultValue = param.declaresDefaultValue
+                    hasDefaultValue = param.declaresDefaultValue,
+                    isLambdaReceiver = isLambdaWithReceiver(param.type)
                 )
             }
 
@@ -94,13 +122,19 @@ object KotlinMetadataEnricher {
         // Nested classes
         val nestedClasses = kmClass.nestedClasses.map { "${rawClass.name}\$$it" }
 
-        // Type Parameters
+        // Type Parameters — with reified flag
         val typeParams = kmClass.typeParameters.map { param ->
             TypeParameterApi(
                 name = param.name,
-                upperBounds = param.upperBounds.map { formatKmType(it, typeParamsMap) }
+                upperBounds = param.upperBounds.map { formatKmType(it, typeParamsMap) },
+                isReified = param.isReified
             )
         }
+
+        // @DslMarker scope detection
+        val dslMarkerAnnotations = detectDslMarkerAnnotations(rawClass)
+
+        logger.info("Enriched class ${rawClass.name}: ${functions.size} functions, ${properties.size} properties, ${dslMarkerAnnotations.size} DSL scopes")
 
         return ClassApi(
             name = rawClass.name,
@@ -114,7 +148,8 @@ object KotlinMetadataEnricher {
             methods = functions,
             properties = properties,
             nestedClasses = nestedClasses,
-            typeParameters = typeParams
+            typeParameters = typeParams,
+            dslMarkerAnnotations = dslMarkerAnnotations
         )
     }
 
@@ -189,7 +224,7 @@ object KotlinMetadataEnricher {
     }
 
     private fun enrichFunction(rawClass: RawClassData, kmFunction: KmFunction, typeParamsMap: Map<Int, String>): MethodApi {
-        // Map local type parameters
+        // Map local type parameters — with reified flag
         val localTypeParamsMap = typeParamsMap + kmFunction.typeParameters.associate { it.id to it.name }
         
         val sig = kmFunction.signature
@@ -205,7 +240,8 @@ object KotlinMetadataEnricher {
                 name = param.name,
                 type = formatKmType(param.type, localTypeParamsMap),
                 annotations = rawAnnotations.map { mapAnnotation(it) },
-                hasDefaultValue = param.declaresDefaultValue
+                hasDefaultValue = param.declaresDefaultValue,
+                isLambdaReceiver = isLambdaWithReceiver(param.type)
             )
         }
 
@@ -230,10 +266,12 @@ object KotlinMetadataEnricher {
 
         val signatureString = sig?.descriptor ?: rawMethod?.desc ?: ""
 
+        // Type Parameters — with reified flag
         val typeParameters = kmFunction.typeParameters.map { param ->
             TypeParameterApi(
                 name = param.name,
-                upperBounds = param.upperBounds.map { formatKmType(it, localTypeParamsMap) }
+                upperBounds = param.upperBounds.map { formatKmType(it, localTypeParamsMap) },
+                isReified = param.isReified
             )
         }
 
@@ -374,8 +412,28 @@ object KotlinMetadataEnricher {
         }
     }
 
-    private fun formatKmType(type: KmType, typeParamsMap: Map<Int, String>): String {
-        val classifierStr = when (val classifier = type.classifier) {
+    /**
+     * Formats a KmType into human-readable Kotlin syntax.
+     *
+     * Key DSL improvements:
+     * - `kotlin.FunctionN` with arguments is rendered as `(P1, P2) -> R`
+     * - `kotlin.ExtensionFunctionType` (lambda-with-receiver) is rendered as `Receiver.(P) -> R`
+     *   by detecting the `AnnotationFlag.IS_SUSPEND` on the first argument being the receiver.
+     */
+    internal fun formatKmType(type: KmType, typeParamsMap: Map<Int, String>): String {
+        val classifier = type.classifier
+
+        // Detect kotlin.FunctionN (regular lambdas and extension lambdas)
+        if (classifier is KmClassifier.Class) {
+            val className = classifier.name
+            // Matches kotlin/Function0 .. kotlin/Function22 and kotlin/FunctionN
+            val functionArity = extractFunctionArity(className)
+            if (functionArity != null && type.arguments.isNotEmpty()) {
+                return formatFunctionType(type, typeParamsMap, functionArity)
+            }
+        }
+
+        val classifierStr = when (classifier) {
             is KmClassifier.Class -> classifier.name.replace('/', '.')
             is KmClassifier.TypeParameter -> typeParamsMap[classifier.id] ?: "T"
             is KmClassifier.TypeAlias -> classifier.name.replace('/', '.')
@@ -402,6 +460,77 @@ object KotlinMetadataEnricher {
 
         val nullableSuffix = if (type.isNullable) "?" else ""
         return classifierStr + argsStr + nullableSuffix
+    }
+
+    /**
+     * Formats kotlin.FunctionN types into readable Kotlin lambda syntax.
+     * Handles both regular lambdas `(A, B) -> R` and extension lambdas `A.(B) -> R`.
+     */
+    private fun formatFunctionType(type: KmType, typeParamsMap: Map<Int, String>, arity: Int): String {
+        val args = type.arguments
+        val nullableSuffix = if (type.isNullable) "?" else ""
+        val isSuspend = type.annotations.any { it.className == "kotlin/coroutines/SuspendFunction" }
+
+        // Check for extension function type: kotlin.ExtensionFunctionType annotation on the type
+        val isExtension = type.annotations.any { it.className == "kotlin/ExtensionFunctionType" }
+
+        val allArgTypes = args.map { it.type?.let { t -> formatKmType(t, typeParamsMap) } ?: "*" }
+
+        return if (isExtension && allArgTypes.size >= 2) {
+            // Extension lambda: first arg is receiver, rest are params, last is return type
+            val receiver = allArgTypes.first()
+            val params = allArgTypes.drop(1).dropLast(1)
+            val returnType = allArgTypes.last()
+            val suspendPrefix = if (isSuspend) "suspend " else ""
+            val paramsStr = params.joinToString(", ")
+            "$suspendPrefix$receiver.($paramsStr) -> $returnType$nullableSuffix"
+        } else {
+            // Regular lambda: all but last are params, last is return type
+            val params = allArgTypes.dropLast(1)
+            val returnType = allArgTypes.last()
+            val suspendPrefix = if (isSuspend) "suspend " else ""
+            val paramsStr = params.joinToString(", ")
+            "$suspendPrefix($paramsStr) -> $returnType$nullableSuffix"
+        }
+    }
+
+    /**
+     * Detects if a class name is kotlin/FunctionN and returns the arity N, or null if not.
+     */
+    private fun extractFunctionArity(className: String): Int? {
+        if (!className.startsWith("kotlin/Function")) return null
+        val suffix = className.removePrefix("kotlin/Function")
+        return suffix.toIntOrNull()
+    }
+
+    /**
+     * Returns true if the KmType represents a lambda-with-receiver (extension function type).
+     * Used to mark ParameterApi.isLambdaReceiver.
+     */
+    private fun isLambdaWithReceiver(type: KmType?): Boolean {
+        if (type == null) return false
+        val classifier = type.classifier
+        if (classifier !is KmClassifier.Class) return false
+        if (extractFunctionArity(classifier.name) == null) return false
+        return type.annotations.any { it.className == "kotlin/ExtensionFunctionType" }
+    }
+
+    /**
+     * Detects @DslMarker-annotated annotations applied to this class.
+     * A class is a "DSL scope" if any of its annotations is itself annotated with @DslMarker.
+     * Returns a list of simple annotation names that carry the @DslMarker meta-annotation.
+     */
+    private fun detectDslMarkerAnnotations(rawClass: RawClassData): List<String> {
+        return rawClass.annotations.filter { annotation ->
+            // Check if this annotation class itself has @DslMarker on it
+            // We detect by checking if the annotation descriptor has "DslMarker" in its meta-annotations.
+            // Since we only have the annotation descriptor here, we use a heuristic:
+            // @DslMarker is typically on custom annotation classes applied to DSL builders.
+            // We detect it by checking if the annotation's own annotations list contains DslMarker.
+            annotation.metaAnnotations.any { meta -> meta.desc == DSL_MARKER_DESC }
+        }.map { annotation ->
+            SignatureParser.parseDescriptor(annotation.desc).substringAfterLast('.')
+        }
     }
 
     private fun mapVisibility(vis: KmVisibility): Visibility {
@@ -438,6 +567,17 @@ object KotlinMetadataEnricher {
             name = SignatureParser.parseDescriptor(raw.desc),
             arguments = argsMap
         )
+    }
+
+    private fun mapKmAnnotation(annotation: KmAnnotation): AnnotationApi? {
+        return try {
+            AnnotationApi(
+                name = annotation.className.replace('/', '.'),
+                arguments = annotation.arguments.mapValues { it.value.toString() }
+            )
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun formatAnnotationValue(value: Any?): String {

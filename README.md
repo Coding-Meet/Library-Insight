@@ -26,6 +26,7 @@ Use it when you need to:
 - **Dependency API Audit**: Scans project Gradle dependencies and reports deprecated APIs found in installed bytecode.
 - **Dependency Graph**: Renders a recursive visual tree of transitive dependencies from POM descriptors.
 - **SemVer Checker**: Lints version bumps against actual code changes to catch unbumped breaking changes.
+- **Kotlin DSL Support**: Renders lambda signatures in human-readable Kotlin syntax `(A) -> B`, extracts type aliases, detects `@DslMarker` scopes, marks `reified` type parameters, and provides a dedicated `dsl-report` command for DSL-heavy libraries.
 - **Search Maven Central**: Find coordinates and latest versions without leaving the terminal.
 - **Format Exporters**: Converts API indices to structured **JSON** or readable **Markdown** reference docs.
 - **AI-Context Exporter**: Generates a compact, token-efficient `ai-context/` directory for LLMs — 95%+ smaller than a raw dump.
@@ -199,9 +200,12 @@ library-insight audit
 
 # 7. Start the MCP server (connect via Cursor, Claude Desktop, etc.)
 library-insight mcp
+
+# 8. Get a Kotlin DSL surface report (type aliases, @DslMarker scopes, lambda receivers)
+library-insight dsl-report
 ```
 
-→ See **[docs/CLI.md](docs/CLI.md)** for the complete command reference (all 16 commands with examples and output).
+→ See **[docs/CLI.md](docs/CLI.md)** for the complete command reference (all 17 commands with examples and output).
 
 ---
 

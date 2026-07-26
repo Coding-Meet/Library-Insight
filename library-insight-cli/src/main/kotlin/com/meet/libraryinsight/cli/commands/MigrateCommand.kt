@@ -144,7 +144,26 @@ class MigrateCommand : CliktCommand(
                 }
             }
 
-            // 3. Removed Methods
+            // Compare package-level type aliases
+            val oldAliasesMap = oldIndex.packages.flatMap { it.typeAliases }.associateBy { it.name }
+            val newAliasesMap = newIndex.packages.flatMap { it.typeAliases }.associateBy { it.name }
+            val removedAliases = oldAliasesMap.keys.filter { it !in newAliasesMap.keys }
+
+            if (removedAliases.isNotEmpty()) {
+                hasBreaking = true
+            }
+
+            // 3. Removed Type Aliases
+            if (removedAliases.isNotEmpty()) {
+                echo("❌ Removed Type Aliases")
+                echo("----------------------")
+                removedAliases.sorted().forEach { name ->
+                    echo("- typealias $name = ${oldAliasesMap[name]!!.expandedType}")
+                }
+                echo("")
+            }
+
+            // 4. Removed Methods
             if (removedMethods.isNotEmpty()) {
                 echo("❌ Removed Methods")
                 echo("-----------------")
@@ -152,7 +171,7 @@ class MigrateCommand : CliktCommand(
                 echo("")
             }
 
-            // 4. Deprecated Methods
+            // 5. Deprecated Methods
             if (deprecatedMethods.isNotEmpty()) {
                 echo("⚠️ Deprecated Methods")
                 echo("--------------------")
@@ -160,7 +179,7 @@ class MigrateCommand : CliktCommand(
                 echo("")
             }
 
-            // 5. Removed Properties
+            // 6. Removed Properties
             if (removedProperties.isNotEmpty()) {
                 echo("❌ Removed Properties")
                 echo("--------------------")
@@ -168,7 +187,7 @@ class MigrateCommand : CliktCommand(
                 echo("")
             }
 
-            // 6. Deprecated Properties
+            // 7. Deprecated Properties
             if (deprecatedProperties.isNotEmpty()) {
                 echo("⚠️ Deprecated Properties")
                 echo("-----------------------")

@@ -12,7 +12,9 @@ data class LibraryApiIndex(
 @Serializable
 data class PackageApi(
     val name: String,
-    val classes: List<ClassApi>
+    val classes: List<ClassApi>,
+    /** Top-level type aliases declared in this package (from Kotlin FileFacade metadata). */
+    val typeAliases: List<TypeAliasApi> = emptyList()
 )
 
 @Serializable
@@ -29,6 +31,8 @@ data class ClassApi(
     val properties: List<PropertyApi>,
     val nestedClasses: List<String>, // Fully qualified names of nested classes
     val typeParameters: List<TypeParameterApi> = emptyList(),
+    /** Names of @DslMarker-annotated annotations applied to this class (marks DSL scopes). */
+    val dslMarkerAnnotations: List<String> = emptyList(),
     val doc: String? = null,
     val sourceCode: String? = null
 )
@@ -89,7 +93,9 @@ data class ParameterApi(
     val name: String,
     val type: String,
     val annotations: List<AnnotationApi> = emptyList(),
-    val hasDefaultValue: Boolean = false
+    val hasDefaultValue: Boolean = false,
+    /** True if this parameter is a function type with a receiver (lambda-with-receiver / DSL block). */
+    val isLambdaReceiver: Boolean = false
 )
 
 @Serializable
@@ -110,5 +116,21 @@ data class PropertyApi(
 @Serializable
 data class TypeParameterApi(
     val name: String,
-    val upperBounds: List<String> = emptyList()
+    val upperBounds: List<String> = emptyList(),
+    /** True if this type parameter is reified (only valid on inline functions). */
+    val isReified: Boolean = false
+)
+
+/**
+ * A Kotlin type alias declaration.
+ * e.g. `typealias BuilderBlock = Builder.() -> Unit`
+ */
+@Serializable
+data class TypeAliasApi(
+    val name: String,
+    /** The fully expanded underlying type after alias resolution. */
+    val expandedType: String,
+    val typeParameters: List<TypeParameterApi> = emptyList(),
+    val annotations: List<AnnotationApi> = emptyList(),
+    val doc: String? = null
 )

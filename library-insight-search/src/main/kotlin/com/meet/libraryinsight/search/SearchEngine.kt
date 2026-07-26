@@ -5,7 +5,7 @@ import com.meet.libraryinsight.model.*
 object SearchEngine {
 
     enum class MatchType {
-        PACKAGE, CLASS, METHOD, PROPERTY
+        PACKAGE, CLASS, METHOD, PROPERTY, TYPE_ALIAS
     }
 
     data class SearchResult(
@@ -34,6 +34,20 @@ object SearchEngine {
                         details = "package ${pkg.name}"
                     )
                 )
+            }
+
+            // Check type aliases
+            for (alias in pkg.typeAliases) {
+                if (alias.name.lowercase().contains(lowercaseQuery) || alias.expandedType.lowercase().contains(lowercaseQuery)) {
+                    results.add(
+                        SearchResult(
+                            type = MatchType.TYPE_ALIAS,
+                            packageName = pkg.name,
+                            name = alias.name,
+                            details = "typealias ${alias.name} = ${alias.expandedType}"
+                        )
+                    )
+                }
             }
 
             for (clazz in pkg.classes) {

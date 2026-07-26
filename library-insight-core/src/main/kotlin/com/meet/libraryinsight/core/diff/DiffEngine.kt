@@ -14,6 +14,9 @@ object DiffEngine {
         val addedClasses: List<String>,
         val removedClasses: List<String>,
         val changedClasses: List<ClassDiff>,
+        val addedTypeAliases: List<String> = emptyList(),
+        val removedTypeAliases: List<String> = emptyList(),
+        val changedTypeAliases: List<TypeAliasDiff> = emptyList(),
         val hasBreakingChanges: Boolean
     )
 
@@ -41,6 +44,13 @@ object DiffEngine {
         val isBreaking: Boolean
     )
 
+    @Serializable
+    data class TypeAliasDiff(
+        val aliasName: String,
+        val change: String,
+        val isBreaking: Boolean
+    )
+
     /**
      * Compares two library API indexes and returns a detailed report of changes.
      */
@@ -61,12 +71,40 @@ object DiffEngine {
             }
         }
 
+        // Compare Type Aliases across packages
+        val oldAliasMap = oldIndex.packages.flatMap { it.typeAliases }.associateBy { it.name }
+        val newAliasMap = newIndex.packages.flatMap { it.typeAliases }.associateBy { it.name }
+
+        val addedAliases = newAliasMap.keys.filter { it !in oldAliasMap.keys }
+        val removedAliases = oldAliasMap.keys.filter { it !in oldAliasMap.keys }
+        val changedAliases = mutableListOf<TypeAliasDiff>()
+        var breakingAliasChange = false
+
+        for (name in newAliasMap.keys intersect oldAliasMap.keys) {
+            val oldA = oldAliasMap[name]!!
+            val newA = newAliasMap[name]!!
+            if (oldA.expandedType != newA.expandedType) {
+                // Expanded type changed under the same alias name - technically breaking if signatures changed
+                changedAliases.add(
+                    TypeAliasDiff(
+                        aliasName = name,
+                        change = "Underlying type changed from '${oldA.expandedType}' to '${newA.expandedType}'",
+                        isBreaking = true
+                    )
+                )
+                breakingAliasChange = true
+            }
+        }
+
+        // Removing a public type alias is also breaking
+        val hasRemovedAliases = removedAliases.isNotEmpty()
+
         // Removing a public class is a breaking change
         val breakingClassesRemoved = oldClassMap.filter { (name, clazz) ->
             name in removedClasses && (clazz.visibility == Visibility.PUBLIC || clazz.visibility == Visibility.PROTECTED)
         }.isNotEmpty()
 
-        val hasBreakingChanges = breakingClassesRemoved || changedClasses.any { it.isBreaking }
+        val hasBreakingChanges = breakingClassesRemoved || changedClasses.any { it.isBreaking } || breakingAliasChange || hasRemovedAliases
 
         return DiffReport(
             oldLibrary = oldIndex.libraryName,
@@ -76,6 +114,9 @@ object DiffEngine {
             addedClasses = addedClasses.sorted(),
             removedClasses = removedClasses.sorted(),
             changedClasses = changedClasses.sortedBy { it.className },
+            addedTypeAliases = addedAliases.map { "typealias $it = ${newAliasMap[it]!!.expandedType}" }.sorted(),
+            removedTypeAliases = removedAliases.map { "typealias $it = ${oldAliasMap[it]!!.expandedType}" }.sorted(),
+            changedTypeAliases = changedAliases.sortedBy { it.aliasName },
             hasBreakingChanges = hasBreakingChanges
         )
     }
@@ -263,6 +304,27 @@ object DiffEngine {
         sb.append("Breaking Changes Found: ${if (report.hasBreakingChanges) "YES 🚨" else "NO ✅"}\n")
         sb.append("==================================================\n\n")
 
+        if (report.addedTypeAliases.isNotEmpty()) {
+            sb.append("➕ Added Type Aliases:\n")
+            report.addedTypeAliases.forEach { sb.append("  - $it\n") }
+            sb.append("\n")
+        }
+
+        if (report.removedTypeAliases.isNotEmpty()) {
+            sb.append("➖ Removed Type Aliases:\n")
+            report.removedTypeAliases.forEach { sb.append("  - $it\n") }
+            sb.append("\n")
+        }
+
+        if (report.changedTypeAliases.isNotEmpty()) {
+            sb.append("📝 Changed Type Aliases:\n")
+            report.changedTypeAliases.forEach {
+                val breakingBadge = if (it.isBreaking) " [🚨 BREAKING]" else ""
+                sb.append("  typealias ${it.aliasName}$breakingBadge: ${it.change}\n")
+            }
+            sb.append("\n")
+        }
+
         if (report.addedClasses.isNotEmpty()) {
             sb.append("➕ Added Classes:\n")
             report.addedClasses.forEach { sb.append("  - $it\n") }
@@ -326,7 +388,8 @@ object DiffEngine {
             }
         }
 
-        if (report.addedClasses.isEmpty() && report.removedClasses.isEmpty() && report.changedClasses.isEmpty()) {
+        if (report.addedClasses.isEmpty() && report.removedClasses.isEmpty() && report.changedClasses.isEmpty() &&
+            report.addedTypeAliases.isEmpty() && report.removedTypeAliases.isEmpty() && report.changedTypeAliases.isEmpty()) {
             sb.append("No public API changes detected. The interfaces are identical. ✅\n")
         }
 

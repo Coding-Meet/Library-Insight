@@ -47,11 +47,22 @@ class ExplainCommand : CliktCommand(
         if (clazz.modifiers.isNotEmpty()) {
             echo("Modifiers:   ${clazz.modifiers.joinToString(", ")}")
         }
+        if (clazz.typeParameters.isNotEmpty()) {
+            val typeParamStr = clazz.typeParameters.joinToString(", ") { param ->
+                val reifiedPrefix = if (param.isReified) "reified " else ""
+                val boundsStr = if (param.upperBounds.isNotEmpty()) " : ${param.upperBounds.joinToString(" & ")}" else ""
+                "$reifiedPrefix${param.name}$boundsStr"
+            }
+            echo("TypeParams:  <$typeParamStr>")
+        }
         if (clazz.superTypes.isNotEmpty()) {
             echo("Supertypes:  ${clazz.superTypes.joinToString(", ")}")
         }
         if (clazz.annotations.isNotEmpty()) {
             echo("Annotations: ${clazz.annotations.joinToString { "@" + it.name.substringAfterLast('.') }}")
+        }
+        if (clazz.dslMarkerAnnotations.isNotEmpty()) {
+            echo("DSL Scopes:  ${clazz.dslMarkerAnnotations.joinToString(", ") { "@$it" }}  ← @DslMarker")
         }
         val classDoc = clazz.doc
         if (classDoc != null) {
@@ -97,9 +108,21 @@ class ExplainCommand : CliktCommand(
                 if (method.flags.isInfix) methodMods.add("infix")
                 if (method.flags.isStatic) methodMods.add("static")
                 val modsStr = if (methodMods.isNotEmpty()) methodMods.joinToString(" ") + " " else ""
-                val params = method.parameters.joinToString { "${it.name}: ${it.type}" }
+
+                // Type parameters with reified keyword
+                val typeParamStr = if (method.typeParameters.isNotEmpty()) {
+                    "<${method.typeParameters.joinToString(", ") { param ->
+                        val reifiedPrefix = if (param.isReified) "reified " else ""
+                        "$reifiedPrefix${param.name}"
+                    }}> "
+                } else ""
+
+                val params = method.parameters.joinToString { param ->
+                    val lambdaHint = if (param.isLambdaReceiver) " /*receiver*/" else ""
+                    "${param.name}: ${param.type}$lambdaHint"
+                }
                 val receiver = if (method.extensionReceiverType != null) "${method.extensionReceiverType}." else ""
-                echo("  - ${method.visibility.name.lowercase()} ${modsStr}fun $receiver${method.name}($params): ${method.returnType}")
+                echo("  - ${method.visibility.name.lowercase()} ${modsStr}fun $typeParamStr$receiver${method.name}($params): ${method.returnType}")
             }
             echo("")
         }

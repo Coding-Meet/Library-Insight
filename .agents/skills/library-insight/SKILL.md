@@ -22,6 +22,7 @@ This tool extracts all classes, interfaces, methods, properties, and Javadoc/KDo
 > - Use **`library-insight dependency-graph <coord>`** to visualize dependency trees.
 > - Use **`library-insight semver <old> <new>`** to lint Semantic Versioning API compliance.
 > - Use **`library-insight mcp`** to communicate as a Model Context Protocol (MCP) server.
+> - Use **`library-insight dsl-report [--package <pkg>]`** to generate a Kotlin DSL surface report (type aliases, `@DslMarker` scopes, extension functions, lambda receivers, reified functions).
 >
 > **MCP Integration Rule:**
 > If an MCP server is already configured and available (e.g., in Cursor, Claude Desktop, or another IDE with MCP support), **prefer the MCP server over shelling out to the CLI**. The MCP server exposes `scan_library`, `search_symbols`, and `explain_class` tools natively without subprocess overhead.
@@ -212,4 +213,20 @@ library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
 Lints version bumps against actual bytecode modifications to enforce Semantic Versioning (SemVer) compliance:
 ```bash
 library-insight semver com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+```
+
+### 15. Kotlin DSL Surface Report (`dsl-report`)
+
+Generates a structured report of the library's Kotlin DSL API surface. Essential for DSL-heavy libraries.
+
+Report sections:
+- **Type aliases** — extracted from Kotlin package metadata
+- **DSL scopes** — classes carrying `@DslMarker`-annotated annotations (grouped by marker)
+- **Extension functions** — all receiver-typed functions
+- **Lambda-with-receiver parameters** — DSL builder functions
+- **Inline reified functions**
+
+```bash
+library-insight dsl-report
+library-insight dsl-report --package io.ktor.client
 ```

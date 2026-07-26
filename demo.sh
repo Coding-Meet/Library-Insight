@@ -192,10 +192,21 @@ echo ""
 # 16. MCP (Model Context Protocol) Server Test
 # Start MCP server and feed it a tools/list request to verify stdio integration
 # ------------------------------------------------------------------
-echo ">> [16/16] MCP - Test Model Context Protocol tools list interface"
+echo ">> [16/17] MCP - Test Model Context Protocol tools list interface"
 echo "   echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | library-insight mcp"
 echo ""
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | library-insight mcp
+echo ""
+
+# ------------------------------------------------------------------
+# 17. DSL REPORT
+# Generate Kotlin DSL surface report: type aliases, @DslMarker scopes,
+# extension functions, lambda-with-receiver functions, inline reified functions
+# ------------------------------------------------------------------
+echo ">> [17/17] DSL-REPORT - Generate Kotlin DSL surface report"
+echo "   library-insight dsl-report"
+echo ""
+library-insight dsl-report
 echo ""
 
 # ------------------------------------------------------------------

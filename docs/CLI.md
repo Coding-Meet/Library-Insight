@@ -286,3 +286,58 @@ library-insight doctor
 3. AI Agent Skill Registrations:
    - Gemini Config Skill: ACTIVE
 ```
+
+---
+
+## 17. `dsl-report` — Kotlin DSL Surface Report
+
+Generate a dedicated Kotlin DSL surface report for DSL-heavy libraries. Shows:
+- **Type aliases** extracted from package metadata
+- **DSL scopes** — classes annotated with `@DslMarker` markers, grouped by marker
+- **Extension functions** — all `ReceiverType.function()` signatures
+- **Lambda-with-receiver parameters** — DSL builder functions (`block: Builder.() -> Unit`)
+- **Inline reified functions** — functions with `reified` type parameters
+
+```bash
+library-insight dsl-report
+
+# Filter to a specific package
+library-insight dsl-report --package io.ktor.client
+```
+
+**Example output:**
+```
+==================================================
+  DSL SURFACE REPORT  —  ktor-client-core-jvm 2.3.12
+==================================================
+
+▶ Type Aliases (3)
+  typealias HttpClientConfig<T> = T.() -> Unit
+  typealias ResponseValidator = suspend (response: HttpResponse) -> Unit
+  typealias HeadersBuilder = StringValuesBuilder
+
+▶ DSL Scopes — @DslMarker annotated classes (5)
+  @KtorDsl → HttpClientConfig, HttpRequestBuilder, HeadersBuilder
+
+▶ Extension Functions (24)
+  fun HttpClient.get(urlString: String, block: (String) -> Unit): HttpResponse
+  fun HttpRequestBuilder.contentType(contentType: ContentType): Unit
+  ...
+
+▶ Lambda-with-Receiver Parameters — DSL builder functions (12)
+  fun httpClient([config: HttpClientConfig<*>.() -> Unit]): HttpClient
+  fun HttpRequestBuilder.headers([block: HeadersBuilder.() -> Unit]): Unit
+  ...
+
+▶ Inline Reified Functions (3)
+  inline fun <reified T> HttpClient.get(url: String): T
+  inline fun <reified T> HttpResponse.body(): T
+  ...
+
+==================================================
+  Tip: run 'explain <ClassName>' for full API details on any class above.
+==================================================
+```
+
+> **Note for DSL library authors:** If your library uses `@DslMarker` and the annotation is bundled in the same JAR, Library Insight will group all DSL builder scopes by their marker annotation — making it easy for AI agents and developers to understand which builders can safely nest.
+```
