@@ -143,8 +143,12 @@ object LibraryAnalyzer {
         // Centralized annotation clean-up to remove compiler-internal metadata
         val cleanedClassApis = finalClassApis.map { cleanClassAnnotations(it) }
 
+        // Scan for guide/README markdown examples and associate them
+        val markdownTexts = extractMarkdownContents(sourcesFile)
+        val enrichedClassApis = associateMarkdownExamples(cleanedClassApis, markdownTexts)
+
         // Group by package and attach typeAliases
-        val packageMap = cleanedClassApis.groupBy { classApi ->
+        val packageMap = enrichedClassApis.groupBy { classApi ->
             val fullName = classApi.name
             if (fullName.contains('.')) {
                 fullName.substringBeforeLast('.')
@@ -161,7 +165,7 @@ object LibraryAnalyzer {
             )
         }.sortedBy { it.name }
 
-        logger.info("Analysis complete: ${packages.size} packages, ${cleanedClassApis.size} classes, " +
+        logger.info("Analysis complete: ${packages.size} packages, ${enrichedClassApis.size} classes, " +
                 "${packageTypeAliases.values.sumOf { it.size }} type aliases")
 
         return LibraryApiIndex(
@@ -169,6 +173,77 @@ object LibraryAnalyzer {
             version = version,
             packages = packages
         )
+    }
+
+    private fun extractMarkdownContents(sourcesFile: File?): List<String> {
+        val markdownTexts = mutableListOf<String>()
+        
+        // 1. Try extracting from local directory if the workspace is local
+        val localDocsDirs = listOf(File("."), File(".."), File("./docs"), File("../docs"))
+        for (dir in localDocsDirs) {
+            if (dir.exists() && dir.isDirectory) {
+                dir.listFiles()?.forEach { file ->
+                    if (file.isFile && file.extension == "md") {
+                        try {
+                            markdownTexts.add(file.readText(Charsets.UTF_8))
+                        } catch (e: Exception) {}
+                    }
+                }
+            }
+        }
+
+        // 2. Extract from the sourcesFile directory if provided
+        if (sourcesFile != null && sourcesFile.exists() && sourcesFile.isDirectory) {
+            sourcesFile.walkTopDown().forEach { file ->
+                if (file.isFile && file.extension == "md") {
+                    try {
+                        markdownTexts.add(file.readText(Charsets.UTF_8))
+                    } catch (e: Exception) {}
+                }
+            }
+        }
+
+        // 3. Extract from the sourcesFile JAR/ZIP if provided
+        if (sourcesFile != null && sourcesFile.exists() && 
+            (sourcesFile.name.endsWith(".jar") || sourcesFile.name.endsWith(".zip") || sourcesFile.name.endsWith(".aar"))) {
+            try {
+                java.util.zip.ZipFile(sourcesFile).use { zip ->
+                    val entries = zip.entries()
+                    while (entries.hasMoreElements()) {
+                        val entry = entries.nextElement()
+                        if (!entry.isDirectory && entry.name.endsWith(".md", ignoreCase = true)) {
+                            zip.getInputStream(entry).use { stream ->
+                                markdownTexts.add(String(stream.readBytes(), Charsets.UTF_8))
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {}
+        }
+        return markdownTexts
+    }
+
+    private fun associateMarkdownExamples(classes: List<ClassApi>, markdownTexts: List<String>): List<ClassApi> {
+        if (markdownTexts.isEmpty()) return classes
+
+        val codeBlockRegex = Regex("```(?:kotlin|java)\\n([\\s\\S]*?)```", RegexOption.IGNORE_CASE)
+        val allExamples = markdownTexts.flatMap { text ->
+            codeBlockRegex.findAll(text).map { it.groupValues[1].trim() }
+        }.filter { it.isNotEmpty() }
+
+        if (allExamples.isEmpty()) return classes
+
+        return classes.map { clazz ->
+            val matchingExamples = allExamples.filter { example ->
+                example.contains(clazz.simpleName, ignoreCase = true) || 
+                example.contains(clazz.name.replace('/', '.'), ignoreCase = true)
+            }
+            if (matchingExamples.isNotEmpty()) {
+                clazz.copy(documentationExamples = clazz.documentationExamples + matchingExamples)
+            } else {
+                clazz
+            }
+        }
     }
 
     private fun cleanClassAnnotations(clazz: ClassApi): ClassApi {

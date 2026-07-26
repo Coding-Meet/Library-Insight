@@ -34,7 +34,11 @@ fun main(args: Array<String>) {
                 SearchCentralCommand(),
                 GraphCommand(),
                 CheckCompatCommand(),
-                DslReportCommand()
+                DslReportCommand(),
+                ExamplesCommand(),
+                HealthCommand(),
+                DependencyCheckCommand(),
+                CallGraphCommand()
             )
             .main(args)
         Logger.info("Library-Insight CLI completed successfully")

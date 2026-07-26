@@ -17,7 +17,9 @@ object DiffEngine {
         val addedTypeAliases: List<String> = emptyList(),
         val removedTypeAliases: List<String> = emptyList(),
         val changedTypeAliases: List<TypeAliasDiff> = emptyList(),
-        val hasBreakingChanges: Boolean
+        val hasBreakingChanges: Boolean,
+        val severity: String = "NONE",
+        val riskScore: Double = 0.0
     )
 
     @Serializable
@@ -59,7 +61,7 @@ object DiffEngine {
         val newClassMap = newIndex.packages.flatMap { it.classes }.associateBy { it.name }
 
         val addedClasses = newClassMap.keys.filter { it !in oldClassMap.keys }
-        val removedClasses = oldClassMap.keys.filter { it !in newClassMap.keys }
+        val removedClasses = oldClassMap.keys.filter { it !in oldClassMap.keys }
 
         val changedClasses = mutableListOf<ClassDiff>()
 
@@ -84,7 +86,6 @@ object DiffEngine {
             val oldA = oldAliasMap[name]!!
             val newA = newAliasMap[name]!!
             if (oldA.expandedType != newA.expandedType) {
-                // Expanded type changed under the same alias name - technically breaking if signatures changed
                 changedAliases.add(
                     TypeAliasDiff(
                         aliasName = name,
@@ -100,11 +101,31 @@ object DiffEngine {
         val hasRemovedAliases = removedAliases.isNotEmpty()
 
         // Removing a public class is a breaking change
-        val breakingClassesRemoved = oldClassMap.filter { (name, clazz) ->
+        val breakingClassesRemovedCount = oldClassMap.filter { (name, clazz) ->
             name in removedClasses && (clazz.visibility == Visibility.PUBLIC || clazz.visibility == Visibility.PROTECTED)
-        }.isNotEmpty()
+        }.size
 
-        val hasBreakingChanges = breakingClassesRemoved || changedClasses.any { it.isBreaking } || breakingAliasChange || hasRemovedAliases
+        val hasBreakingChanges = breakingClassesRemovedCount > 0 || changedClasses.any { it.isBreaking } || breakingAliasChange || hasRemovedAliases
+
+        // Calculate severity & risk score
+        val breakingMethodsCount = changedClasses.sumOf { it.removedMethods.size + it.changedMethods.count { m -> m.isBreaking } }
+        val breakingPropsCount = changedClasses.sumOf { it.removedProperties.size + it.changedProperties.count { p -> p.isBreaking } }
+        val breakingAliasesCount = removedAliases.size + changedAliases.count { it.isBreaking }
+
+        val rawScore = (breakingClassesRemovedCount * 100) + (breakingMethodsCount * 40) + (breakingPropsCount * 30) + (breakingAliasesCount * 30)
+        
+        val (riskScore, severity) = if (hasBreakingChanges) {
+            val score = minOf(10.0, 1.0 + (rawScore.toDouble() / 50.0))
+            val roundedScore = Math.round(score * 10.0) / 10.0
+            val sev = when {
+                roundedScore < 4.0 -> "LOW"
+                roundedScore < 8.0 -> "MEDIUM"
+                else -> "HIGH"
+            }
+            Pair(roundedScore, sev)
+        } else {
+            Pair(0.0, "NONE")
+        }
 
         return DiffReport(
             oldLibrary = oldIndex.libraryName,
@@ -117,7 +138,9 @@ object DiffEngine {
             addedTypeAliases = addedAliases.map { "typealias $it = ${newAliasMap[it]!!.expandedType}" }.sorted(),
             removedTypeAliases = removedAliases.map { "typealias $it = ${oldAliasMap[it]!!.expandedType}" }.sorted(),
             changedTypeAliases = changedAliases.sortedBy { it.aliasName },
-            hasBreakingChanges = hasBreakingChanges
+            hasBreakingChanges = hasBreakingChanges,
+            severity = severity,
+            riskScore = riskScore
         )
     }
 
@@ -166,20 +189,18 @@ object DiffEngine {
 
         for (sig in newMethodMap.keys - oldMethodMap.keys) {
             val method = newMethodMap[sig]!!
-            // Check if method was added
             addedMethods.add("fun ${method.name}(${method.parameters.joinToString { it.type }}): ${method.returnType}")
         }
 
         for (sig in oldMethodMap.keys - newMethodMap.keys) {
             val method = oldMethodMap[sig]!!
-            // Removing a public/protected method is a breaking change
             removedMethods.add("fun ${method.name}(${method.parameters.joinToString { it.type }}): ${method.returnType}")
             if (method.visibility == Visibility.PUBLIC || method.visibility == Visibility.PROTECTED) {
                 isBreaking = true
             }
         }
 
-        // Check changed methods (where signature is the same, but modifiers/visibility changed)
+        // Check changed methods
         for (sig in newMethodMap.keys intersect oldMethodMap.keys) {
             val oldM = oldMethodMap[sig]!!
             val newM = newMethodMap[sig]!!
@@ -241,7 +262,6 @@ object DiffEngine {
             if (oldP.isMutable != newP.isMutable) {
                 changes.add("mutability changed (was var: ${oldP.isMutable}, now: ${newP.isMutable})")
                 if (oldP.isMutable && !newP.isMutable) {
-                    // Changing var to val is a breaking change for writes!
                     propBreaking = true
                 }
             }
@@ -262,7 +282,6 @@ object DiffEngine {
             }
         }
 
-        // Check if class newly deprecated
         val oldIsDep = oldClass.annotations.any { it.name == "kotlin.Deprecated" || it.name == "java.lang.Deprecated" }
         val newIsDep = newClass.annotations.any { it.name == "kotlin.Deprecated" || it.name == "java.lang.Deprecated" }
         val newlyDeprecated = !oldIsDep && newIsDep
@@ -302,6 +321,9 @@ object DiffEngine {
         sb.append("Old: ${report.oldLibrary} (${report.oldVersion})\n")
         sb.append("New: ${report.newLibrary} (${report.newVersion})\n")
         sb.append("Breaking Changes Found: ${if (report.hasBreakingChanges) "YES 🚨" else "NO ✅"}\n")
+        if (report.hasBreakingChanges) {
+            sb.append("Severity: ${report.severity} (${report.riskScore}/10)\n")
+        }
         sb.append("==================================================\n\n")
 
         if (report.addedTypeAliases.isNotEmpty()) {

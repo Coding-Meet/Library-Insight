@@ -134,5 +134,15 @@ class ExplainCommand : CliktCommand(
             }
             echo("")
         }
+
+        if (clazz.documentationExamples.isNotEmpty()) {
+            echo("Guide Examples (from README/Dokka):")
+            for (example in clazz.documentationExamples.take(2)) {
+                echo("  ```kotlin")
+                echo(example.lines().joinToString("\n") { "  $it" })
+                echo("  ```")
+            }
+            echo("")
+        }
     }
 }

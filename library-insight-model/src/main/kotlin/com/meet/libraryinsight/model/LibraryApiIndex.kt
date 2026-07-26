@@ -34,7 +34,8 @@ data class ClassApi(
     /** Names of @DslMarker-annotated annotations applied to this class (marks DSL scopes). */
     val dslMarkerAnnotations: List<String> = emptyList(),
     val doc: String? = null,
-    val sourceCode: String? = null
+    val sourceCode: String? = null,
+    val documentationExamples: List<String> = emptyList()
 )
 
 @Serializable

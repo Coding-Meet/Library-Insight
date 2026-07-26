@@ -126,6 +126,24 @@ class DslReportCommand : CliktCommand(
             }
         }
 
+        // ── 6. Fluent / Builder APIs ──────────────────────────────
+        val fluentClasses = allClasses.filter { clazz ->
+            val fluentMethods = clazz.methods.filter { method ->
+                method.visibility == com.meet.libraryinsight.model.Visibility.PUBLIC &&
+                (method.returnType == clazz.name || method.returnType == clazz.simpleName ||
+                 method.returnType.endsWith(".${clazz.simpleName}") || method.returnType.contains("Builder"))
+            }
+            fluentMethods.size >= 2
+        }
+        echo("\n▶ Fluent / Builder APIs (${fluentClasses.size})")
+        if (fluentClasses.isEmpty()) {
+            echo("  (none found)")
+        } else {
+            for (clazz in fluentClasses.sortedBy { it.simpleName }) {
+                echo("  class ${clazz.name}  → provides fluent builder methods")
+            }
+        }
+
         echo("\n$SEP")
         echo("  Tip: run 'explain <ClassName>' for full API details on any class above.")
         echo(SEP)

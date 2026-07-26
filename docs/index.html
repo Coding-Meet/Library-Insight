@@ -183,6 +183,31 @@
           <p>Shows added, removed, and changed APIs so you can spot breaking changes before upgrading a dependency.</p>
         </article>
 
+        <article class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: var(--accent-cyan)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Dependency ABI Conflict Detector</h3>
+          <p>Traverses bytecode references recursively across transitives to catch NoSuchMethodError and NoSuchFieldError linkage risk before deployment.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: var(--accent-emerald)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h3>API Health &amp; Complexity Report</h3>
+          <p>Grades package stability, audits deprecation rates, and prints structural index values including generic density and inheritance depth.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: var(--accent-cyan)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3zM6 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/></svg>
+          </div>
+          <h3>API Call Graph Traverser</h3>
+          <p>Traces method execution instruction paths recursively to build a visual invocation tree, perfect for nested DSL scope checks.</p>
+        </article>
+
+
       </div>
     </div>
   </section>
@@ -243,6 +268,21 @@
           </button>
           <button class="terminal__tab" data-tab="mcp" role="tab" aria-selected="false">
             <span class="terminal__tab-dot"></span>mcp
+          </button>
+          <button class="terminal__tab" data-tab="dsl-report" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>dsl-report
+          </button>
+          <button class="terminal__tab" data-tab="examples" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>examples
+          </button>
+          <button class="terminal__tab" data-tab="health" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>health
+          </button>
+          <button class="terminal__tab" data-tab="dependency-check" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>dependency-check
+          </button>
+          <button class="terminal__tab" data-tab="callgraph" role="tab" aria-selected="false">
+            <span class="terminal__tab-dot"></span>callgraph
           </button>
         </div>
 
@@ -413,6 +453,56 @@
 <span class="tok-dim">Starting Model Context Protocol (MCP) server listening on stdio...</span>
 <span class="tok-ok">SUCCESS: Connected to IDE host client (Cursor / Claude Desktop).</span>
 <span class="tok-dim">Exposing MCP Tools: scan_library, search_symbols, explain_class.</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="dsl-report" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight dsl-report</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent">  DSL SURFACE REPORT  —  sample-1.1.0 1.0.0</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-dim">▶ DSL Scopes — @DslMarker annotated classes (4)</span>
+<span class="tok-ok">  @HtmlDsl → HeadBuilder, HtmlBuilder</span>
+<span class="tok-dim">▶ Extension Functions (5)</span>
+<span class="tok-ok">  fun kotlin.String.shout(): kotlin.String</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="examples" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight examples HtmlBuilder</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent">  API USAGE EXAMPLES GENERATOR  —  HtmlBuilder</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-dim">Detected Usage Patterns:</span>
+<span class="tok-ok">  ✓ Constructor</span>
+<span class="tok-dim">  ✗ Builder</span>
+<span class="tok-dim">  ✗ Factory</span>
+<span class="tok-dim">  ✗ Singleton</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent">// Pattern: Guide Examples (from README/Dokka)</span>
+<span class="tok-ok">val result = html {</span>
+<span class="tok-ok">    head { title("My Page") }</span>
+<span class="tok-ok">}</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="health" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight health</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent">    PACKAGE HEALTH &amp; COMPLEXITY REPORT</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-ok">API Health Grade: A (Deprecation ratio: 1.11%)</span>
+<span class="tok-dim">▶ API Distribution</span>
+<span class="tok-dim">  Total Public APIs   : 90</span>
+<span class="tok-dim">▶ API Complexity Metrics</span>
+<span class="tok-ok">  Largest Class       : com.meet.sample.SampleLibraryKt (9 methods)</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="dependency-check" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight dependency-check</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent">    DEPENDENCY CONFLICT &amp; ABI DETECTOR</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-dim">Analyzing references for ABI linkage conflicts...</span>
+<span class="tok-warn">🚨 Potential ABI Method Conflicts (LinkageError risk):</span>
+<span class="tok-warn">  [Method Missing] class org.objectweb.asm.CurrentFrame</span>
+<span class="tok-warn">   └── Calls missing method: org.objectweb.asm.CurrentFrame.merge(...)</span></code></pre>
+
+          <pre class="terminal__panel" data-panel="callgraph" role="tabpanel"><code><span class="tok-prompt">$</span> <span class="tok-cmd">library-insight callgraph Retrofit.Builder.build</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-accent">  METHOD INVOCATION CALL GRAPH  —  build</span>
+<span class="tok-dim">==================================================</span>
+<span class="tok-dim">▶ Starting entrypoint: retrofit2.Retrofit$Builder.build()Lretrofit2/Retrofit;</span>
+<span class="tok-ok">└── retrofit2.Retrofit.&lt;init&gt;()</span></code></pre>
 
         </div>
       </div>
@@ -590,6 +680,36 @@
             <h3>semver</h3>
             <p>Compares old and new indexes to audit SemVer compliance and flags unbumped breaking API changes.</p>
             <pre><code>library-insight semver &lt;old&gt; &lt;new&gt;</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>dsl-report</h3>
+            <p>Generates a dedicated Kotlin DSL surface report showing type aliases, @DslMarker scopes, extensions, and receivers.</p>
+            <pre><code>library-insight dsl-report</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>examples</h3>
+            <p>Generates typical usage boilerplate code blocks and guide examples extracted from documentation.</p>
+            <pre><code>library-insight examples &lt;class&gt;</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>health</h3>
+            <p>Generates package-level statistics, stability ratings (API Health Grade), package topologies, and complexity parameters.</p>
+            <pre><code>library-insight health</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>dependency-check</h3>
+            <p>Audits classpath transitive dependency bytecodes to detect potential runtime linkage compatibility conflicts.</p>
+            <pre><code>library-insight dependency-check [--dir &lt;project-dir&gt;]</code></pre>
+          </article>
+
+          <article class="command-card">
+            <h3>callgraph</h3>
+            <p>Traverses class nodes bytecode instruction trees recursively to build visual method invocation flow trees.</p>
+            <pre><code>library-insight callgraph &lt;class.method&gt;</code></pre>
           </article>
 
           <article class="command-card">

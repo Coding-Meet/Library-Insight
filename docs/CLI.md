@@ -31,7 +31,14 @@ Scan a JAR, AAR, local directory, or Maven coordinate. Use this first to build t
 
 ```bash
 library-insight scan com.squareup.retrofit2:retrofit:2.11.0
-library-insight scan com.squareup.okhttp3:okhttp:4.12.0
+
+# Optional Parameters:
+#   --db <file>             Path to save the JSON index database (default: build/library-insight-index.json)
+#   -s, --sources <file>    Path to sources JAR/AAR or source code folder to extract Javadoc/KDoc comments & guide examples
+#   --repo <url>            Additional Maven repository URL to download coordinates (multiple allowed)
+#   --lib-name <name>       Override the library name in the generated index
+#   --lib-version <version> Override the version tag in the generated index
+library-insight scan com.squareup.okhttp3:okhttp:4.12.0 --sources okhttp-sources.jar --repo https://maven.google.com
 ```
 
 **Example output:**
@@ -51,6 +58,10 @@ Search for packages, classes, methods, or properties in the saved index.
 
 ```bash
 library-insight search Retrofit
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+library-insight search "anno:Keep" --db custom-index.json
 ```
 
 **Example output:**
@@ -64,10 +75,14 @@ Found 2 matching classes:
 
 ## 3. `explain` — Explain a Class
 
-Print detailed structural information (modifiers, superclass, constructors, properties, methods, and Javadoc/KDoc) for a specific class.
+Print detailed structural information (modifiers, superclass, constructors, properties, methods, Javadoc/KDoc, and nested usage guide examples extracted from README/Dokka markdown files) for a specific class.
 
 ```bash
-library-insight explain Retrofit
+library-insight explain HtmlBuilder
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+library-insight explain HtmlBuilder --db custom-index.json
 ```
 
 **Example output:**
@@ -115,6 +130,10 @@ Compare two versions and get a structured migration report showing removed, depr
 
 ```bash
 library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+
+# Optional Parameters:
+#   --repo <url>            Additional Maven repository URLs to resolve coordinates (multiple allowed)
+library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0 --repo https://repo.maven.apache.org/maven2
 ```
 
 **Example output:**
@@ -144,6 +163,11 @@ Export the scanned index to Markdown or JSON.
 ```bash
 library-insight export markdown
 library-insight export json
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+#   -o, --output <file>     Target output file path to write export content to
+library-insight export markdown --db custom-index.json -o API_REFERENCE.md
 ```
 
 ---
@@ -154,6 +178,11 @@ Splits the scanned database into a token-efficient directory structure under `bu
 
 ```bash
 library-insight ai-export
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+#   -o, --output-dir <dir>  Target output directory to save AI context files (default: build/ai-context/)
+library-insight ai-export --db custom-index.json -o custom-ai-context/
 ```
 
 ---
@@ -341,3 +370,155 @@ library-insight dsl-report --package io.ktor.client
 
 > **Note for DSL library authors:** If your library uses `@DslMarker` and the annotation is bundled in the same JAR, Library Insight will group all DSL builder scopes by their marker annotation — making it easy for AI agents and developers to understand which builders can safely nest.
 ```
+
+---
+
+## 18. `examples` — API Usage Examples Generator
+
+Generate idiomatic Kotlin code examples showing typical usage patterns for a specific class. Automatically scans bytecode signatures to determine target design patterns (Constructor, Builder, Factory, Singleton) and extracts nested guide examples from README/Dokka markdown files.
+
+```bash
+library-insight examples HtmlBuilder
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+library-insight examples HtmlBuilder --db custom-index.json
+```
+
+**Example output:**
+```
+==================================================
+  API USAGE EXAMPLES GENERATOR  —  HtmlBuilder
+==================================================
+// Target API: com.meet.sample.HtmlBuilder
+
+Detected Usage Patterns:
+  ✓ Constructor
+  ✗ Builder
+  ✗ Factory
+  ✗ Singleton
+==================================================
+
+// Pattern: Guide Examples (from README/Dokka)
+val result = html {
+    head {
+        title("My Page")
+    }
+    div {
+        p("Welcome to Library Insight!")
+    }
+}
+
+// Pattern: Constructor Instantiation
+val htmlbuilder = com.meet.sample.HtmlBuilder()
+
+// API Invocation Examples
+  htmlbuilder.p(text = "example") // returns: kotlin.Unit
+  htmlbuilder.h1(text = "example") // returns: kotlin.Unit
+  htmlbuilder.div(block = { }) // returns: kotlin.Unit
+  htmlbuilder.build() // returns: kotlin.String
+==================================================
+```
+
+---
+
+## 19. `health` — Package Health & Complexity Report
+
+Generate a detailed report showing public API statistics, deprecation ratios, topo package sizes, and structural complexity metrics (largest classes, deepest inheritance hierarchies, generic density).
+
+```bash
+library-insight health
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+library-insight health --db custom-index.json
+```
+
+**Example output:**
+```
+==================================================
+    PACKAGE HEALTH & COMPLEXITY REPORT
+==================================================
+Library Target : sample-1.1.0 (1.0.0)
+API Health Grade: A (Deprecation ratio: 1.11%)
+==================================================
+
+▶ API Distribution
+  Total Public APIs   : 90
+  ├─ Classes/Objects  : 16
+  ├─ Constructors     : 13
+  ├─ Methods          : 37
+  ├─ Properties       : 21
+  └─ Type Aliases     : 3
+  Deprecated APIs     : 1
+  Experimental APIs   : 0
+
+▶ Package Topology
+  Largest Package     : com.meet.sample (16 classes)
+  Most Deprecated Pkg : com.meet.sample (1 deprecated methods)
+
+▶ API Complexity Metrics
+  Largest Class       : com.meet.sample.SampleLibraryKt (9 methods)
+  Longest Signature   : com.meet.sample.User.copy (3 parameters)
+  Deepest Inheritance : com.meet.sample.AppConfig (1 supertypes: kotlin.Any)
+  Most Generic Class  : com.meet.sample.SampleLibraryKt$retry$1 (1 parameters: <T>)
+==================================================
+```
+
+---
+
+## 20. `dependency-check` — Transitive ABI Dependency Conflict Detector
+
+Scan all Gradle build dependencies and verify classpath bytecode references against resolved dependency JARs. Flags potential runtime `LinkageError` and `NoSuchFieldError` issues before deployment.
+
+```bash
+library-insight dependency-check
+
+# Specify a custom target project directory
+library-insight dependency-check --dir /path/to/my-android-project
+```
+
+**Example output:**
+```
+==================================================
+    DEPENDENCY CONFLICT & ABI DETECTOR
+==================================================
+Analyzing 5 dependencies on classpath...
+Defined classes in classpath: 39
+Defined methods: 582
+Analyzing references for ABI linkage conflicts...
+
+🚨 Potential ABI Method Conflicts (LinkageError risk):
+  [Method Missing] class org.objectweb.asm.CurrentFrame (from asm-9.7.jar)
+   └── Calls missing method: org.objectweb.asm.CurrentFrame.merge(...)
+
+==================================================
+Analysis Complete: ❌ 12 potential linkage conflicts detected.
+==================================================
+```
+
+---
+
+## 21. `callgraph` — Method Call Graph Generator
+
+Generate a recursive tree representation showing all internal library methods called by a specific method node. Uses ASM instructions analysis to map actual execution paths.
+
+```bash
+library-insight callgraph AppConfigBuilder.database
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+library-insight callgraph AppConfigBuilder.database --db custom-index.json
+```
+
+**Example output:**
+```
+==================================================
+  METHOD INVOCATION CALL GRAPH  —  database
+==================================================
+
+▶ Starting entrypoint: com.meet.sample.AppConfigBuilder.database(Lkotlin/jvm/functions/Function1;)V
+└── com.meet.sample.DatabaseConfigBuilder.<init>()
+==================================================
+```
+

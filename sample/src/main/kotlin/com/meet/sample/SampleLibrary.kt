@@ -135,7 +135,17 @@ data class User(
     val id: Int,
     var name: String,
     val email: String? = null
-)
+) {
+    class Builder {
+        private var id: Int = 0
+        private var name: String = ""
+        private var email: String? = null
+        fun id(id: Int) = apply { this.id = id }
+        fun name(name: String) = apply { this.name = name }
+        fun email(email: String) = apply { this.email = email }
+        fun build(): User = User(id, name, email)
+    }
+}
 
 /**
  * Core interface for greeting users.
@@ -150,6 +160,7 @@ interface Greeter {
 object AppConfig {
     const val VERSION: String = "1.0.0"
     var debugMode: Boolean = false
+    fun printConfig() = println("Version: $VERSION, Debug: $debugMode")
 }
 
 /**
@@ -159,6 +170,7 @@ class Calculator : Greeter {
 
     companion object {
         const val PI = 3.1415926535
+        @JvmStatic
         fun create(): Calculator = Calculator()
     }
 

@@ -23,6 +23,10 @@ Use it when you need to:
 - **Version-Correct API Lookup**: Scans the exact artifact you point it at, so AI agents and developers see the real public API for that dependency version.
 - **Deep Metadata Extraction**: Classes, constructors, methods, properties, generics, Kotlin metadata, suspend keywords, annotations.
 - **Migration Advisor**: Compares two versions and reports removed, deprecated, and replacement APIs — great for Retrofit, OkHttp, Compose, and Kotlin upgrades.
+- **API Usage Examples**: Auto-generates typical instantiation, builder usage, and method-call code examples from bytecode, and extracts real guide usage examples from README/Dokka markdown files.
+- **Package Health & Complexity**: Reports API Health Grades, package topology, largest classes, deep inheritance levels, and generic density parameters.
+- **Dependency Conflict/ABI Detector**: Scans transitive bytecode call instructions to highlight potential runtime `LinkageError` and `NoSuchFieldError` conflicts.
+- **API Call Graph**: Generates a recursive tree of internal library methods invoked by a target method using bytecode instructions traversal.
 - **Dependency API Audit**: Scans project Gradle dependencies and reports deprecated APIs found in installed bytecode.
 - **Dependency Graph**: Renders a recursive visual tree of transitive dependencies from POM descriptors.
 - **SemVer Checker**: Lints version bumps against actual code changes to catch unbumped breaking changes.
@@ -203,9 +207,21 @@ library-insight mcp
 
 # 8. Get a Kotlin DSL surface report (type aliases, @DslMarker scopes, lambda receivers)
 library-insight dsl-report
+
+# 9. Generate typical API usage examples for a class from signatures
+library-insight examples Retrofit
+
+# 10. Generate a detailed Package Health & Complexity Report
+library-insight health
+
+# 11. Verify all transitive dependencies for ABI/linkage compatibility conflicts
+library-insight dependency-check
+
+# 12. Renders a recursive method invocation call graph
+library-insight callgraph Retrofit.Builder.build
 ```
 
-→ See **[docs/CLI.md](docs/CLI.md)** for the complete command reference (all 17 commands with examples and output).
+→ See **[docs/CLI.md](docs/CLI.md)** for the complete command reference (all 21 commands with examples and output).
 
 ---
 
