@@ -2,6 +2,7 @@ package com.meet.libraryinsight.cli.commands
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.meet.libraryinsight.cli.DatabaseHelper
+import com.meet.libraryinsight.common.LocalArtifacts
 import com.meet.libraryinsight.common.MavenResolver
 import com.meet.libraryinsight.core.LibraryAnalyzer
 import com.meet.libraryinsight.search.SearchEngine
@@ -121,7 +122,9 @@ class McpCommand : CliktCommand(
                             if (!file.exists()) {
                                 "Error: path '$pathOrCoordinate' does not exist."
                             } else {
-                                LibraryAnalyzer.analyze(file, file.nameWithoutExtension, "1.0.0", null)
+                                val parsed = LocalArtifacts.parseNameAndVersion(file.nameWithoutExtension)
+                                val sources = LocalArtifacts.findSiblingSources(file)
+                                LibraryAnalyzer.analyze(file, parsed.name, parsed.version ?: "1.0.0", sources)
                             }
                         }
                         if (index is LibraryApiIndex) {
