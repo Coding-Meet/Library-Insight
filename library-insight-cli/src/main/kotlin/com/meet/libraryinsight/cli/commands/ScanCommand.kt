@@ -7,6 +7,7 @@ import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.meet.libraryinsight.cli.DatabaseHelper
+import com.meet.libraryinsight.common.LocalArtifacts
 import com.meet.libraryinsight.common.MavenResolver
 import com.meet.libraryinsight.core.LibraryAnalyzer
 import com.meet.libraryinsight.common.Logger
@@ -54,9 +55,13 @@ class ScanCommand : CliktCommand(
                 }
                 echo("Scanning: ${file.absolutePath}")
                 Logger.info("Analyzing local path: ${file.absolutePath}")
-                val name = libName ?: file.nameWithoutExtension
-                val version = libVersion ?: "1.0.0"
-                LibraryAnalyzer.analyze(file, name, version, sources)
+                val parsed = LocalArtifacts.parseNameAndVersion(file.nameWithoutExtension)
+                val name = libName ?: parsed.name
+                val version = libVersion ?: parsed.version ?: "1.0.0"
+                val sourcesFile = sources ?: LocalArtifacts.findSiblingSources(file)?.also {
+                    echo("  -> Using sibling sources archive: ${it.name}")
+                }
+                LibraryAnalyzer.analyze(file, name, version, sourcesFile)
             }
             
             val classesCount = index.packages.flatMap { it.classes }.size
