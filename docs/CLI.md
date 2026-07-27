@@ -261,6 +261,10 @@ Start the Model Context Protocol server on stdio. Connect Cursor, Claude Desktop
 
 ```bash
 library-insight mcp
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from and write to (default: build/library-insight-index.json)
+library-insight mcp --db /path/to/project/custom-index.json
 ```
 
 > **MCP vs CLI:** If an MCP server is already configured in your IDE, prefer it over running CLI commands directly.
