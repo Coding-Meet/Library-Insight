@@ -1,7 +1,7 @@
 # Library Insight — Complete Command Reference
 
 > This file contains the full CLI command reference.
-> For installation and quick start, see the [README](../README.md).
+> For installation and quick start, see the [Getting Started](getting-started.md) guide.
 
 ---
 
