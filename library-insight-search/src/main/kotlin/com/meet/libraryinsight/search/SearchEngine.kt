@@ -126,13 +126,14 @@ object SearchEngine {
                             if (method.flags.isInline) append("inline ")
                             if (method.flags.isStatic) append("static ")
                         }
+                        val receiverPrefix = method.extensionReceiverType?.let { "$it." } ?: ""
                         results.add(
                             SearchResult(
                                 type = MatchType.METHOD,
                                 packageName = pkg.name,
                                 className = clazz.name,
                                 name = method.name,
-                                details = "${method.visibility.name.lowercase()} ${modStr}fun ${method.name}(${method.parameters.joinToString { it.type }}): ${method.returnType}"
+                                details = "${method.visibility.name.lowercase()} ${modStr}fun $receiverPrefix${method.name}(${method.parameters.joinToString { it.type }}): ${method.returnType}"
                             )
                         )
                     }
