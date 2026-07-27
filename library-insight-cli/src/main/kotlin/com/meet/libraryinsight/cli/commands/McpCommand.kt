@@ -2,6 +2,7 @@ package com.meet.libraryinsight.cli.commands
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.meet.libraryinsight.cli.DatabaseHelper
+import com.meet.libraryinsight.cli.DslReportGenerator
 import com.meet.libraryinsight.common.MavenResolver
 import com.meet.libraryinsight.core.LibraryAnalyzer
 import com.meet.libraryinsight.search.SearchEngine
@@ -79,6 +80,19 @@ class McpCommand : CliktCommand(
                                             }
                                         }
                                         putJsonArray("required") { add("className") }
+                                    }
+                                }
+                                addJsonObject {
+                                    put("name", "dsl_report")
+                                    put("description", "Generate a Kotlin DSL surface report for the active library index: type aliases, @DslMarker scopes, extension functions, lambda-with-receiver builders, and inline reified functions.")
+                                    putJsonObject("inputSchema") {
+                                        put("type", "object")
+                                        putJsonObject("properties") {
+                                            putJsonObject("packageFilter") {
+                                                put("type", "string")
+                                                put("description", "Optional package name prefix to filter the report (e.g. io.ktor.client)")
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -214,6 +228,15 @@ class McpCommand : CliktCommand(
                             }
                         }
                     }
+                }
+            }
+            "dsl_report" -> {
+                val packageFilter = arguments["packageFilter"]?.jsonPrimitive?.content
+                val index = DatabaseHelper.loadIndex(dbFile)
+                if (index == null) {
+                    "Error: No library index database found. Please call scan_library tool first."
+                } else {
+                    DslReportGenerator.generate(index, packageFilter)
                 }
             }
             else -> "Error: Unknown tool name '$toolName'."
