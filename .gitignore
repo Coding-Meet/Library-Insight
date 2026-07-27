@@ -23,6 +23,9 @@ Thumbs.db
 # Local AI Context exports
 ai-context/
 
+# MkDocs local build output
+site/
+
 # Local properties
 local.properties
 
