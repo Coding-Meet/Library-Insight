@@ -61,7 +61,7 @@ object DiffEngine {
         val newClassMap = newIndex.packages.flatMap { it.classes }.associateBy { it.name }
 
         val addedClasses = newClassMap.keys.filter { it !in oldClassMap.keys }
-        val removedClasses = oldClassMap.keys.filter { it !in oldClassMap.keys }
+        val removedClasses = oldClassMap.keys.filter { it !in newClassMap.keys }
 
         val changedClasses = mutableListOf<ClassDiff>()
 
@@ -78,7 +78,7 @@ object DiffEngine {
         val newAliasMap = newIndex.packages.flatMap { it.typeAliases }.associateBy { it.name }
 
         val addedAliases = newAliasMap.keys.filter { it !in oldAliasMap.keys }
-        val removedAliases = oldAliasMap.keys.filter { it !in oldAliasMap.keys }
+        val removedAliases = oldAliasMap.keys.filter { it !in newAliasMap.keys }
         val changedAliases = mutableListOf<TypeAliasDiff>()
         var breakingAliasChange = false
 
