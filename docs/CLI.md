@@ -257,7 +257,7 @@ library-insight semver com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrof
 
 ## 12. `mcp` — MCP Server
 
-Start the Model Context Protocol server on stdio. Connect Cursor, Claude Desktop, or any MCP-compatible IDE to use `scan_library`, `search_symbols`, and `explain_class` tools natively.
+Start the Model Context Protocol server on stdio. Connect Cursor, Claude Desktop, or any MCP-compatible IDE to use `scan_library`, `search_symbols`, `explain_class`, and `dsl_report` tools natively.
 
 ```bash
 library-insight mcp
