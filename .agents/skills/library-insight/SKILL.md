@@ -37,42 +37,43 @@ The command line tool `library-insight` can be executed globally by:
 * Installing via installer script: `curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh | bash`
 * Running local build: `~/.library-insight/bin/library-insight` (linked globally as `library-insight`)
 
-## Available scripts
+### 1. `scan` — Scan a Library
 
-- **`scripts/install-cli.sh`** — Installs the `library-insight` command globally on the host system if not already available.
-  ```bash
-  bash scripts/install-cli.sh
-  ```
+Scan a JAR, AAR, local directory, or Maven coordinate. Use this first to build the local index.
 
-### 1. Scan Dependencies (`scan`)
-Scans a local JAR/AAR file, a directory of JARs, or resolves a Maven coordinate over HTTP, downloading it and its corresponding `-sources.jar` automatically from repositories (Maven Central, Google Maven, SoftBank).
+> **Offline-First & Smart Caching:**
+>
+> - Checks your Gradle cache (`~/.gradle/caches/`) first before downloading.
+> - Inside a Gradle project, downloaded artifacts land in `build/library-insight/cache/`.
 
-*(Note: In Gradle/Kotlin project directories, downloaded artifacts are saved locally to `build/library-insight/cache/`. To run fully offline, the scanner automatically references the local machine's Gradle caches (`~/.gradle/caches/modules-2/files-2.1/`) directly without copying, saving disk space).*
+```bash
+library-insight scan com.squareup.retrofit2:retrofit:2.11.0
 
-* **Scan Maven Coordinate**:
-  ```bash
-  library-insight scan com.squareup.retrofit2:retrofit:2.11.0
+# Optional Parameters:
+#   --db <file>             Path to save the JSON index database (default: build/library-insight-index.json)
+#   -s, --sources <file>    Path to sources JAR/AAR or source code folder to extract Javadoc/KDoc comments & guide examples
+#   --repo <url>            Additional Maven repository URL to download coordinates (multiple allowed)
+#   --lib-name <name>       Override the library name in the generated index
+#   --lib-version <version> Override the version tag in the generated index
+library-insight scan com.squareup.okhttp3:okhttp:4.12.0 --sources okhttp-sources.jar --repo https://maven.google.com
+```
 
-  # Optional Parameters:
-  #   --db <file>             Path to save the JSON index database (default: build/library-insight-index.json)
-  #   -s, --sources <file>    Path to sources JAR/AAR or source code folder to extract Javadoc/KDoc comments & guide examples
-  #   --repo <url>            Additional Maven repository URL to download coordinates (multiple allowed)
-  #   --lib-name <name>       Override the library name in the generated index
-  #   --lib-version <version> Override the version tag in the generated index
-  library-insight scan com.squareup.okhttp3:okhttp:4.12.0 --sources okhttp-sources.jar --repo https://maven.google.com
-  ```
+**Example output:**
 
-**Example Output:**
-```text
+```
 Detected Maven coordinate: com.squareup.retrofit2:retrofit:2.11.0
   -> Using cached binary JAR from Gradle cache: retrofit-2.11.0.jar
   -> Using cached sources JAR from Gradle cache: retrofit-2.11.0-sources.jar
 Scan complete! Found 113 classes across 3 packages.
-Saved API index to: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight-index.json
+Saved API index to: build/library-insight-index.json
 ```
 
-### 2. Search Symbols (`search`)
-Search for classes, packages, methods, or properties in the saved index.
+---
+
+### 2. `search` — Search Symbols
+
+Search for packages, classes, methods, or properties in the saved index.
+
 ```bash
 library-insight search Retrofit
 
@@ -81,65 +82,59 @@ library-insight search Retrofit
 library-insight search "anno:Keep" --db custom-index.json
 ```
 
-**Example Output:**
-```text
+**Example output:**
+
+```
 Found 2 matching classes:
   - retrofit2.Retrofit
   - retrofit2.Retrofit$Builder
 ```
 
-### 3. Explain Class (`explain`)
-Print detailed structural details (modifiers, superclasses, constructors, properties, and methods) with their documentation.
+---
+
+### 3. `explain` — Explain a Class
+
+Print detailed structural information (modifiers, superclass, constructors, properties, methods, Javadoc/KDoc, and nested usage guide examples extracted from README/Dokka markdown files) for a specific class.
+
 ```bash
-library-insight explain Retrofit
+library-insight explain HtmlBuilder
 
 # Optional Parameters:
 #   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
 library-insight explain HtmlBuilder --db custom-index.json
 ```
 
-**Example Output:**
-```text
+**Example output:**
+
+```
 Class: retrofit2.Retrofit (public class)
   Constructors:
-    + public constructor(okhttp3.Call$Factory, okhttp3.HttpUrl, java.util.List<retrofit2.Converter$Factory>, java.util.List<retrofit2.CallAdapter$Factory>, java.util.concurrent.Executor, boolean)
+    + public constructor(okhttp3.Call$Factory, ...)
   Methods:
     + public fun <T> create(java.lang.Class<T>): T
     + public fun baseUrl(): okhttp3.HttpUrl
+    + public fun callFactory(): okhttp3.Call$Factory
 ```
 
-### 4. Export Index (`export`)
-Export the index database to pretty JSON or structured Markdown reference sheets.
-*(Note: For large libraries, single Markdown sheets are huge; use `ai-export` for AI context instead).*
-```bash
-library-insight export markdown
+---
 
-# Optional Parameters:
-#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
-#   -o, --output <file>     Target output file path to write export content to
-library-insight export markdown --db custom-index.json -o API_REFERENCE.md
-```
+### 4. `diff` — Compare Versions
 
-**Example Output:**
-```text
-Exported MARKDOWN to: /Users/meet/AndroidStudioProjects/Library-Insight/build/API_REFERENCE.md
-```
+Compare two library archives to check for added, removed, and changed APIs including breaking changes.
 
-### 5. Diff Library Versions (`diff`)
-Compare two library versions to check for changes and potential breaking changes.
 ```bash
 library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar
+# Or via Maven coordinates:
+library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
 ```
 
-**Example Output:**
-```text
+**Example output:**
+
+```
 ==================================================
  LIBRARY INSIGHT API DIFF REPORT
 ==================================================
-Old: retrofit-2.9.0
-New: retrofit-2.11.0
 Breaking Changes Found: NO
-==================================================
 ➕ Added Classes:
   - retrofit2.Reflection
 📝 Changed Classes:
@@ -148,8 +143,61 @@ Breaking Changes Found: NO
       + fun service(): java.lang.Class<?>
 ```
 
-### 6. Export AI Context (`ai-export`)
-**Recommended for AI Integration.** Instead of a single giant `API_REFERENCE.md` file, this splits the scanned database into a token-efficient directory structure under `build/ai-context/`. AI agents can inspect `metadata.json` first, and then load only the specific class JSON files they need, reducing token usage by 95%+:
+---
+
+### 5. `migrate` — Migration Advisor
+
+Compare two versions and get a structured migration report showing removed, deprecated, and replacement APIs.
+
+```bash
+library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+
+# Optional Parameters:
+#   --repo <url>            Additional Maven repository URLs to resolve coordinates (multiple allowed)
+library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0 --repo https://repo.maven.apache.org/maven2
+```
+
+**Example output:**
+
+```
+==================================================
+        Library Insight Migration Report
+==================================================
+Old Version : 2.9.0
+New Version : 2.11.0
+
+❌ Removed Classes
+  - retrofit2.Platform$Android
+❌ Removed Methods
+  - fun retrofit2.Platform.defaultCallbackExecutor(): Executor
+
+Binary Compatibility: ❌ BREAKING CHANGES DETECTED
+```
+
+---
+
+### 6. `export` — Export Index
+
+Export the scanned index to Markdown or JSON.
+
+> For large libraries, Markdown files can be huge. Use `ai-export` for AI prompts instead.
+
+```bash
+library-insight export markdown
+library-insight export json
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+#   -o, --output <file>     Target output file path to write export content to
+library-insight export markdown --db custom-index.json -o API_REFERENCE.md
+```
+
+---
+
+### 7. `ai-export` — AI Context Export (Recommended for AI prompts)
+
+Splits the scanned database into a token-efficient directory structure under `build/ai-context/`. AI agents read `metadata.json` first, then load only the class files they need — reducing token usage by 95%+.
+
 ```bash
 library-insight ai-export
 
@@ -159,45 +207,83 @@ library-insight ai-export
 library-insight ai-export --db custom-index.json -o custom-ai-context/
 ```
 
-**Example Output:**
-```text
-Generated compact LLM context directory structure at: /Users/meet/AndroidStudioProjects/Library-Insight/build/ai-context
-```
+---
 
-### 7. Clear Cache (`clear-cache`)
-Clears all downloaded cached Maven binaries and sources from local storage.
+### 8. `audit` — Dependency API Audit
+
+Scan all project Gradle dependencies recursively (`build.gradle.kts`, `libs.versions.toml`) and report deprecated classes, methods, and properties found in the bytecode.
+
 ```bash
-library-insight clear-cache
+library-insight audit
 ```
 
-**Example Output:**
-```text
-Cache cleared successfully. Deleted 2.45 MB.
+**Example output:**
+
+```
+==================================================
+      Library Insight Dependency Audit
+==================================================
+Found 10 dependencies to audit.
+Auditing org.ow2.asm:asm:9.7...
+  - Status: ⚠️  Deprecations detected
+    * Deprecated Methods    : 2
+    * Deprecated Properties : 2
+Audit Summary: Scanned 10 libraries. Total Deprecated APIs: 1819
 ```
 
-### 8. Diagnostics & Doctor (`doctor`)
-Run diagnostic checks for the Java runtime, local cache directory, and verify all global AI Agent skill configurations.
+---
+
+### 9. `search-central` — Search Maven Central
+
+Search Maven Central dynamically for matching coordinates and versions.
+
 ```bash
-library-insight doctor
+library-insight search-central retrofit
+library-insight search-central clikt
 ```
 
-**Example Output:**
-```text
-[Library Insight Diagnostics]
-1. Java Runtime Environment (JRE):
-   - Path: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java
-   - Version: 17.0.7
-   - Status: OK (Java 17+ verified)
-2. Local Cache Directory:
-   - Path: /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight/cache
-   - Status: OK
-3. AI Agent Skill Registrations:
-   - Gemini Config Skill: ACTIVE (registered)
-   - Cursor Skill: ACTIVE (registered)
+---
+
+### 10. `dependency-graph` — Dependency Tree
+
+Print a visual recursive tree of transitive dependencies from POM descriptors.
+
+```bash
+library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
 ```
 
-### 9. Model Context Protocol Server (`mcp`)
-Start the Model Context Protocol (MCP) server listening on stdio. Allows external AI clients (like Cursor, Claude Desktop, or VS Code) to invoke `scan_library`, `search_symbols`, `explain_class`, and `dsl_report` tools natively.
+**Example output:**
+
+```
+com.github.ajalt.clikt:clikt-jvm:4.4.0
+│   ├── com.github.ajalt.mordant:mordant-jvm:2.5.0
+│   │   ├── com.github.ajalt.colormath:colormath-jvm:3.5.0
+│   │   │   ├── org.jetbrains.kotlin:kotlin-stdlib:1.9.21
+```
+
+---
+
+### 11. `semver` — SemVer Compliance Check
+
+Verify that the version number bump between two releases correctly reflects the bytecode changes (breaking change requires major bump, added APIs require minor bump).
+
+```bash
+library-insight semver com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+```
+
+**Example output:**
+
+```
+🚨 SemVer Violation: Version bump does not match API changes!
+  ❌ API Breaking Change detected but MAJOR version was not incremented!
+```
+
+---
+
+### 12. `mcp` — MCP Server
+
+Start the Model Context Protocol server on stdio. Connect Cursor, Claude Desktop, or any MCP-compatible IDE to use `scan_library`, `search_symbols`, `explain_class`, and `dsl_report` tools natively.
+
 ```bash
 library-insight mcp
 
@@ -206,77 +292,71 @@ library-insight mcp
 library-insight mcp --db /path/to/project/custom-index.json
 ```
 
-### 10. Initialize Workspace Skill (`init`)
+> **MCP vs CLI:** If an MCP server is already configured in your IDE, prefer it over running CLI commands directly.
+
+---
+
+### 13. `init` — Initialize Workspace Skill
+
 Write a `SKILL.md` into `.agents/skills/library-insight/` so local AI agents auto-discover the CLI.
+
 ```bash
 library-insight init
 ```
 
-### 11. Manage Agent Skills (`skills`)
-Add or list AI agent skills registration details in detected IDE configuration directories.
+---
+
+### 14. `skills` — Manage Agent Skills
+
 ```bash
-library-insight skills add
-library-insight skills list
+library-insight skills add    # Add skill to current workspace
+library-insight skills list   # List registered skills
 ```
 
-### 12. Dependency API Audit (`audit`)
-Scan and audit all Gradle build file dependencies recursively to find deprecated classes, methods, and properties inside active versions.
+---
+
+### 15. `clear-cache` — Clear Local Cache
+
+Delete all locally downloaded Maven artifacts.
+
 ```bash
-library-insight audit
+library-insight clear-cache
 ```
 
-**Example Output:**
-```text
-==================================================
-      Library Insight Dependency Audit
-==================================================
-Detected Gradle Version Catalog at gradle/libs.versions.toml
-Scanning 11 Gradle build file(s)...
-Found 10 dependencies to audit.
-...
-Audit Summary: Scanned 10 libraries successfully.
-Total Deprecated APIs found: 1819
-==================================================
-```
+---
 
-### 13. API Migration Advisor (`migrate`)
-Compare two library versions and output a migration advisor report showing removed, deprecated, and replacement APIs.
+### 16. `doctor` — Diagnostics
+
+Check Java version, cache directory, and active AI agent skill configurations.
+
 ```bash
-library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
-
-# Optional Parameters:
-#   --repo <url>            Additional Maven repository URLs to resolve coordinates (multiple allowed)
-library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0 --repo https://repo.maven.apache.org/maven2
+library-insight doctor
 ```
 
-### 14. Search Maven Central (`search-central`)
-Search Maven Central Solr repository indices dynamically for matching packages and versions:
-```bash
-library-insight search-central retrofit
+**Example output:**
+
+```
+[Library Insight Diagnostics]
+1. Java Runtime Environment (JRE):
+   - Version: 17.0.7
+   - Status: OK (Java 17+ verified)
+2. Local Cache Directory:
+   - Status: OK
+3. AI Agent Skill Registrations:
+   - Gemini Config Skill: ACTIVE
 ```
 
-### 15. Dependency Graph (`dependency-graph`)
-Renders a visual hierarchical tree of dependencies resolved recursively from `.pom` XML package descriptors:
-```bash
-library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
-```
+---
 
-### 16. SemVer Compliance (`semver`)
-Lints version bumps against actual bytecode modifications to enforce Semantic Versioning (SemVer) compliance:
-```bash
-library-insight semver com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
-```
+### 17. `dsl-report` — Kotlin DSL Surface Report
 
-### 17. Kotlin DSL Surface Report (`dsl-report`)
+Generate a dedicated Kotlin DSL surface report for DSL-heavy libraries. Shows:
 
-Generates a structured report of the library's Kotlin DSL API surface. Essential for DSL-heavy libraries.
-
-Report sections:
-- **Type aliases** — extracted from Kotlin package metadata
-- **DSL scopes** — classes carrying `@DslMarker`-annotated annotations (grouped by marker)
-- **Extension functions** — all receiver-typed functions
-- **Lambda-with-receiver parameters** — DSL builder functions
-- **Inline reified functions**
+- **Type aliases** extracted from package metadata
+- **DSL scopes** — classes annotated with `@DslMarker` markers, grouped by marker
+- **Extension functions** — all `ReceiverType.function()` signatures
+- **Lambda-with-receiver parameters** — DSL builder functions (`block: Builder.() -> Unit`)
+- **Inline reified functions** — functions with `reified` type parameters
 
 ```bash
 library-insight dsl-report
@@ -287,9 +367,49 @@ library-insight dsl-report
 library-insight dsl-report --package io.ktor.client --db custom-index.json
 ```
 
-### 18. API Usage Examples Generator (`examples`)
+**Example output:**
 
-Auto-generates typical instantiation, builder usage, and method-call code examples from bytecode signatures, and extracts nested guide examples from README/Dokka markdown files:
+```
+==================================================
+  DSL SURFACE REPORT  —  ktor-client-core-jvm 2.3.12
+==================================================
+
+▶ Type Aliases (3)
+  typealias HttpClientConfig<T> = T.() -> Unit
+  typealias ResponseValidator = suspend (response: HttpResponse) -> Unit
+  typealias HeadersBuilder = StringValuesBuilder
+
+▶ DSL Scopes — @DslMarker annotated classes (5)
+  @KtorDsl → HttpClientConfig, HttpRequestBuilder, HeadersBuilder
+
+▶ Extension Functions (24)
+  fun HttpClient.get(urlString: String, block: (String) -> Unit): HttpResponse
+  fun HttpRequestBuilder.contentType(contentType: ContentType): Unit
+  ...
+
+▶ Lambda-with-Receiver Parameters — DSL builder functions (12)
+  fun httpClient([config: HttpClientConfig<*>.() -> Unit]): HttpClient
+  fun HttpRequestBuilder.headers([block: HeadersBuilder.() -> Unit]): Unit
+  ...
+
+▶ Inline Reified Functions (3)
+  inline fun <reified T> HttpClient.get(url: String): T
+  inline fun <reified T> HttpResponse.body(): T
+  ...
+
+==================================================
+  Tip: run 'explain <ClassName>' for full API details on any class above.
+==================================================
+```
+
+> **Note for DSL library authors:** If your library uses `@DslMarker` and the annotation is bundled in the same JAR, Library Insight will group all DSL builder scopes by their marker annotation — making it easy for AI agents and developers to understand which builders can safely nest.
+
+---
+
+### 18. `examples` — API Usage Examples Generator
+
+Generate idiomatic Kotlin code examples showing typical usage patterns for a specific class. Automatically scans bytecode signatures to determine target design patterns (Constructor, Builder, Factory, Singleton) and extracts nested guide examples from README/Dokka markdown files.
+
 ```bash
 library-insight examples HtmlBuilder
 
@@ -298,9 +418,48 @@ library-insight examples HtmlBuilder
 library-insight examples HtmlBuilder --db custom-index.json
 ```
 
-### 19. Package Health & Complexity Report (`health`)
+**Example output:**
 
-Generates public API statistics, deprecation ratios, topo package sizes, and structural complexity metrics:
+```
+==================================================
+  API USAGE EXAMPLES GENERATOR  —  HtmlBuilder
+==================================================
+// Target API: com.meet.sample.HtmlBuilder
+
+Detected Usage Patterns:
+  ✓ Constructor
+  ✗ Builder
+  ✗ Factory
+  ✗ Singleton
+==================================================
+
+// Pattern: Guide Examples (from README/Dokka)
+val result = html {
+    head {
+        title("My Page")
+    }
+    div {
+        p("Welcome to Library Insight!")
+    }
+}
+
+// Pattern: Constructor Instantiation
+val htmlbuilder = com.meet.sample.HtmlBuilder()
+
+// API Invocation Examples
+  htmlbuilder.p(text = "example") // returns: kotlin.Unit
+  htmlbuilder.h1(text = "example") // returns: kotlin.Unit
+  htmlbuilder.div(block = { }) // returns: kotlin.Unit
+  htmlbuilder.build() // returns: kotlin.String
+==================================================
+```
+
+---
+
+### 19. `health` — Package Health & Complexity Report
+
+Generate a detailed report showing public API statistics, deprecation ratios, topo package sizes, and structural complexity metrics (largest classes, deepest inheritance hierarchies, generic density).
+
 ```bash
 library-insight health
 
@@ -309,24 +468,94 @@ library-insight health
 library-insight health --db custom-index.json
 ```
 
-### 20. Transitive Dependency Conflict Detector (`dependency-check`)
+**Example output:**
 
-Scans transitive classpath bytecode call instructions to highlight potential runtime LinkageError and NoSuchFieldError conflicts:
+```
+==================================================
+    PACKAGE HEALTH & COMPLEXITY REPORT
+==================================================
+Library Target : sample-1.1.0 (1.0.0)
+API Health Grade: A (Deprecation ratio: 1.11%)
+==================================================
+
+▶ API Distribution
+  Total Public APIs   : 90
+  ├─ Classes/Objects  : 16
+  ├─ Constructors     : 13
+  ├─ Methods          : 37
+  ├─ Properties       : 21
+  └─ Type Aliases     : 3
+  Deprecated APIs     : 1
+  Experimental APIs   : 0
+
+▶ Package Topology
+  Largest Package     : com.meet.sample (16 classes)
+  Most Deprecated Pkg : com.meet.sample (1 deprecated methods)
+
+▶ API Complexity Metrics
+  Largest Class       : com.meet.sample.SampleLibraryKt (9 methods)
+  Longest Signature   : com.meet.sample.User.copy (3 parameters)
+  Deepest Inheritance : com.meet.sample.AppConfig (1 supertypes: kotlin.Any)
+  Most Generic Class  : com.meet.sample.SampleLibraryKt$retry$1 (1 parameters: <T>)
+==================================================
+```
+
+---
+
+### 20. `dependency-check` — Transitive ABI Dependency Conflict Detector
+
+Scan all Gradle build dependencies and verify classpath bytecode references against resolved dependency JARs. Flags potential runtime `LinkageError` and `NoSuchFieldError` issues before deployment.
+
 ```bash
 library-insight dependency-check
 
 # Optional Parameters:
 #   --dir <project-dir>     Target project directory to scan (default: current directory)
-library-insight dependency-check --dir <project-dir>
+library-insight dependency-check --dir /path/to/my-android-project
 ```
 
-### 21. Method Call Graph Generator (`callgraph`)
+**Example output:**
 
-Generates a recursive tree of internal library methods called by a specific method node:
+```
+==================================================
+    DEPENDENCY CONFLICT & ABI DETECTOR
+==================================================
+Analyzing 5 dependencies on classpath...
+Defined classes in classpath: 39
+Defined methods: 582
+Analyzing references for ABI linkage conflicts...
+
+🚨 Potential ABI Method Conflicts (LinkageError risk):
+  [Method Missing] class org.objectweb.asm.CurrentFrame (from asm-9.7.jar)
+   └── Calls missing method: org.objectweb.asm.CurrentFrame.merge(...)
+
+==================================================
+Analysis Complete: ❌ 12 potential linkage conflicts detected.
+==================================================
+```
+
+---
+
+### 21. `callgraph` — Method Call Graph Generator
+
+Generate a recursive tree representation showing all internal library methods called by a specific method node. Uses ASM instructions analysis to map actual execution paths.
+
 ```bash
-library-insight callgraph Retrofit.Builder.build
+library-insight callgraph AppConfigBuilder.database
 
 # Optional Parameters:
 #   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
-library-insight callgraph Retrofit.Builder.build --db custom-index.json
+library-insight callgraph AppConfigBuilder.database --db custom-index.json
+```
+
+**Example output:**
+
+```
+==================================================
+  METHOD INVOCATION CALL GRAPH  —  database
+==================================================
+
+▶ Starting entrypoint: com.meet.sample.AppConfigBuilder.database(Lkotlin/jvm/functions/Function1;)V
+└── com.meet.sample.DatabaseConfigBuilder.<init>()
+==================================================
 ```

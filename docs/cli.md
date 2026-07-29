@@ -22,6 +22,7 @@ library-insight <command> [options]
 
 ---
 
+<!-- --8<-- [start:commands] -->
 ## 1. `scan` — Scan a Library
 
 Scan a JAR, AAR, local directory, or Maven coordinate. Use this first to build the local index.
@@ -544,3 +545,4 @@ library-insight callgraph AppConfigBuilder.database --db custom-index.json
 └── com.meet.sample.DatabaseConfigBuilder.<init>()
 ==================================================
 ```
+<!-- --8<-- [end:commands] -->

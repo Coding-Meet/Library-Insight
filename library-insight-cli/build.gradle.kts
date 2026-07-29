@@ -22,4 +22,7 @@ dependencies {
 
 tasks.processResources {
     from(rootProject.file(".agents/skills/library-insight/SKILL.md"))
+    from(rootProject.file(".agents/skills/library-insight/scripts")) {
+        into("scripts")
+    }
 }

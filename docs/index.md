@@ -1,25 +1,10 @@
-# Library Insight 🔍
-
-### Works as both a standalone CLI and an MCP server for AI IDEs like Cursor and Claude Desktop.
-
-AI coding assistants often guess Java/Kotlin library APIs from old docs, latest web examples, or a different version than the one installed in your project. That leads to missing methods, deprecated usage, wrong signatures, and wasted debugging time.
-
-**Library Insight** fixes that by scanning the exact JAR/AAR, Gradle output, or Maven version you use. It reads compiled `.class` structures (using ASM) and Kotlin `@Metadata` annotations (using `kotlin-metadata-jvm`) to build a searchable, version-correct public API index.
-
-Because it analyzes the compiled artifacts actually used by your project, the reported APIs always match the installed version rather than online documentation or outdated examples.
+--8<-- "README.md:intro"
 
 ---
 
 ## Key Features
 
-- 🔍 Search packages, classes, methods, and properties
-- 📖 Explain APIs with signatures, documentation, and examples
-- 🔄 Compare library versions and detect breaking changes
-- 🚀 Generate migration reports
-- 🧩 Analyze Kotlin DSLs and fluent APIs
-- 🌳 Visualize dependency graphs and method call graphs
-- 🚨 Detect dependency ABI conflicts before runtime
-- 🤖 Integrate with Cursor, Claude Desktop, and other AI IDEs via MCP
+--8<-- "README.md:features"
 
 ---
 
@@ -98,8 +83,4 @@ graph TD
 
 ## 🚀 Roadmap
 
-We plan to expand Library Insight into a unified **Kotlin Multiplatform (KMP)** API explorer:
-
-- **KLib Metadata Reader**: Parse `.klib` metadata to extract signatures for iOS/Native, JS, and Wasm targets directly (bypassing JVM bytecode dependencies).
-- **Platform-Aware Indexing**: Store platform target markers (`common`, `jvm`, `ios`, `js`, `wasm`) in the database schema so AI agents know exactly where APIs are available.
-- **KMP Coordinate Resolution**: Auto-resolve platform split coordinates (e.g. `ktor-client-core-iosarm64`) from the root KMP library Maven coordinate.
+--8<-- "README.md:roadmap"
