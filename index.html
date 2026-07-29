@@ -469,10 +469,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#works-as-both-a-standalone-cli-and-an-mcp-server-for-ai-ides-like-cursor-and-claude-desktop" class="md-nav__link">
+  <a href="#jvm-api-explorer-mcp-server" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Works as both a standalone CLI and an MCP server for AI IDEs like Cursor and Claude Desktop.
+        JVM API Explorer &amp; MCP Server
       
     </span>
   </a>
@@ -731,10 +731,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#works-as-both-a-standalone-cli-and-an-mcp-server-for-ai-ides-like-cursor-and-claude-desktop" class="md-nav__link">
+  <a href="#jvm-api-explorer-mcp-server" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Works as both a standalone CLI and an MCP server for AI IDEs like Cursor and Claude Desktop.
+        JVM API Explorer &amp; MCP Server
       
     </span>
   </a>
@@ -830,21 +830,24 @@
 
 
 <h1 id="library-insight">Library Insight 🔍<a class="headerlink" href="#library-insight" title="Link to this section">&para;</a></h1>
-<h3 id="works-as-both-a-standalone-cli-and-an-mcp-server-for-ai-ides-like-cursor-and-claude-desktop">Works as both a standalone CLI and an MCP server for AI IDEs like Cursor and Claude Desktop.<a class="headerlink" href="#works-as-both-a-standalone-cli-and-an-mcp-server-for-ai-ides-like-cursor-and-claude-desktop" title="Link to this section">&para;</a></h3>
-<p>AI coding assistants often guess Java/Kotlin library APIs from old docs, latest web examples, or a different version than the one installed in your project. That leads to missing methods, deprecated usage, wrong signatures, and wasted debugging time.</p>
-<p><strong>Library Insight</strong> fixes that by scanning the exact JAR/AAR, Gradle output, or Maven version you use. It reads compiled <code>.class</code> structures (using ASM) and Kotlin <code>@Metadata</code> annotations (using <code>kotlin-metadata-jvm</code>) to build a searchable, version-correct public API index.</p>
-<p>Because it analyzes the compiled artifacts actually used by your project, the reported APIs always match the installed version rather than online documentation or outdated examples.</p>
+<h3 id="jvm-api-explorer-mcp-server">JVM API Explorer &amp; MCP Server<a class="headerlink" href="#jvm-api-explorer-mcp-server" title="Link to this section">&para;</a></h3>
+<p>Analyze Java &amp; Kotlin libraries with a standalone CLI or integrate directly into AI IDEs via MCP.</p>
+<p>AI coding assistants often guess Java/Kotlin library APIs from outdated documentation, web examples, or a different version than the one installed in your project. That leads to missing methods, deprecated usage, incorrect signatures, and wasted debugging time.</p>
+<p><strong>Library Insight</strong> solves this by scanning the exact JAR, AAR, Gradle output, or Maven dependency used by your project. It reads compiled <code>.class</code> structures and Kotlin <code>@Metadata</code> annotations to build a searchable, version-correct public API index, ensuring the reported APIs always match the installed version instead of outdated documentation or web examples.</p>
 <hr />
 <h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Link to this section">&para;</a></h2>
 <ul>
-<li>🔍 Search packages, classes, methods, and properties</li>
-<li>📖 Explain APIs with signatures, documentation, and examples</li>
-<li>🔄 Compare library versions and detect breaking changes</li>
-<li>🚀 Generate migration reports</li>
-<li>🧩 Analyze Kotlin DSLs and fluent APIs</li>
-<li>🌳 Visualize dependency graphs and method call graphs</li>
-<li>🚨 Detect dependency ABI conflicts before runtime</li>
-<li>🤖 Integrate with Cursor, Claude Desktop, and other AI IDEs via MCP</li>
+<li><strong>MCP Server</strong>: Connect Cursor, Claude Desktop, or any MCP-compatible IDE to query APIs directly.</li>
+<li><strong>Version-Correct API Lookup</strong>: Scans the exact library version in your project to prevent AI hallucinations.</li>
+<li><strong>Deep Metadata Extraction</strong>: Extracts classes, constructors, methods, properties, nullability flags, generics, and annotations.</li>
+<li><strong>Kotlin DSL &amp; Fluent API Mapping</strong>: Scans <code>@DslMarker</code> scopes, type aliases, lambda parameter builders, and inline reified functions.</li>
+<li><strong>Method Call Graph Generator</strong>: Recursively traces and renders method call trees inside bytecode to analyze internal invocations.</li>
+<li><strong>Automatic Usage Examples</strong>: Auto-generates standard boilerplate usage patterns and extracts guide examples from docs.</li>
+<li><strong>API Health &amp; Complexity Audits</strong>: Computes public API count distributions, complexity indices, and deprecation ratio scores.</li>
+<li><strong>Linkage Conflict &amp; ABI Detector</strong>: Scans your classpath for classpath mismatches that could trigger <code>LinkageError</code> or <code>NoSuchMethodError</code>.</li>
+<li><strong>Migration Advisor</strong>: Compares two versions and lists deprecated, added, and replacement APIs.</li>
+<li><strong>Dependency API Audit</strong>: Scans project dependencies and highlights deprecated library APIs inside bytecode.</li>
+<li><strong>Exporter Tools</strong>: Exports indexes to JSON, readable Markdown reference docs, or token-optimized AI context packages.</li>
 </ul>
 <hr />
 <h2 id="why-library-insight">Why Library Insight?<a class="headerlink" href="#why-library-insight" title="Link to this section">&para;</a></h2>
