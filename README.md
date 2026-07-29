@@ -69,6 +69,15 @@ For setup instructions in Cursor or Claude Desktop, see the [MCP Integration Gui
 
 ---
 
+## 🚀 Roadmap
+
+We plan to expand Library Insight into a unified **Kotlin Multiplatform (KMP)** API explorer:
+*   **KLib Metadata Reader**: Parse `.klib` metadata to extract signatures for iOS/Native, JS, and Wasm targets directly (bypassing JVM bytecode dependencies).
+*   **Platform-Aware Indexing**: Store platform target markers (`common`, `jvm`, `ios`, `js`, `wasm`) in the database schema so AI agents know exactly where APIs are available.
+*   **KMP Coordinate Resolution**: Auto-resolve platform split coordinates (e.g. `ktor-client-core-iosarm64`) from the root KMP library Maven coordinate.
+
+---
+
 ## License
 
 Copyright 2026 Library Insight Authors. Licensed under the Apache License, Version 2.0.
