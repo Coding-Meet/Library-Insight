@@ -7,6 +7,7 @@ When connected, the AI agent gains access to the following tools:
 *   `scan_library`: Scan and index a JAR/AAR or Maven coordinate.
 *   `search_symbols`: Query the API index for classes, methods, or properties matching a name.
 *   `explain_class`: Retrieve the exact public API signature and documentation for a class.
+*   `dsl_report`: Generate a Kotlin DSL surface report for the active library index (type aliases, `@DslMarker` scopes, extension functions, builders, and inline reified entry points).
 
 ---
 
