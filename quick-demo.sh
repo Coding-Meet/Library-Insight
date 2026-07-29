@@ -115,9 +115,9 @@ echo ""
 # 10. CALLGRAPH
 # ------------------------------------------------------------------
 echo ">> [10/11] CALLGRAPH — Generate method call graph visual tree"
-echo "   library-insight callgraph Retrofit.Builder.build"
+echo "   library-insight callgraph HtmlBuilder.div"
 echo ""
-library-insight callgraph Retrofit.Builder.build
+library-insight callgraph HtmlBuilder.div
 echo ""
 
 # ------------------------------------------------------------------
