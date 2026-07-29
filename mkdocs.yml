@@ -1,0 +1,114 @@
+site_name: Library Insight
+site_url: https://Coding-Meet.github.io/Library-Insight/
+repo_name: Coding-Meet/Library-Insight
+repo_url: https://github.com/Coding-Meet/Library-Insight
+edit_uri: edit/main/docs/
+site_description: Version-correct JVM API explorer and MCP server for AI IDEs.
+
+theme:
+  name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: slate
+      accent: light blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: light blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - search.share
+    - code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - content.action.edit
+    - content.action.view
+    - toc.follow
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+markdown_extensions:
+  - toc:
+      permalink: true
+      permalink_title: Link to this section
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Coding-Meet
+      name: GitHub
+    - icon: fontawesome/solid/globe
+      link: https://codingmeet.com/
+      name: Portfolio
+    - icon: fontawesome/brands/youtube
+      link: https://youtube.com/@codingmeet26?si=_2Mu6ozuCdYuqihA
+      name: Youtube
+    - icon: fontawesome/solid/envelope
+      link: mailto:codingmeet26@gmail.com
+      name: Gmail
+    - icon: fontawesome/brands/medium
+      link: https://www.medium.com/@meet26
+      name: Medium
+    - icon: fontawesome/brands/stack-overflow
+      link: https://stackoverflow.com/users/13082664/meet
+      name: Stack Overflow
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/coding-meet
+      name: LinkedIn
+    - icon: fontawesome/brands/instagram
+      link: https://www.instagram.com/codingmeet26/
+      name: Instagram
+    - icon: fontawesome/brands/twitter
+      link: https://www.twitter.com/CodingMeet
+      name: Twitter
+    - icon: fontawesome/brands/telegram
+      link: https://www.telegram.me/Meetb26
+      name: Telegram
+    - icon: fontawesome/solid/coffee
+      link: https://www.buymeacoffee.com/CodingMeet
+      name: Buy Me Coffee
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Architecture: architecture.md
+  - Command Reference: cli.md
+  - MCP Integration: mcp.md
+  - AI Agent Integration: ai-agents.md
+  - Release Notes: releases.md
