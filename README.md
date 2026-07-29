@@ -20,6 +20,11 @@ The complete documentation, architecture diagrams, command reference, and integr
 *   **MCP Server**: Connect Cursor, Claude Desktop, or any MCP-compatible IDE to query APIs directly.
 *   **Version-Correct API Lookup**: Scans the exact library version in your project to prevent AI hallucinations.
 *   **Deep Metadata Extraction**: Extracts classes, constructors, methods, properties, nullability flags, generics, and annotations.
+*   **Kotlin DSL & Fluent API Mapping**: Scans `@DslMarker` scopes, type aliases, lambda parameter builders, and inline reified functions.
+*   **Method Call Graph Generator**: Recursively traces and renders method call trees inside bytecode to analyze internal invocations.
+*   **Automatic Usage Examples**: Auto-generates standard boilerplate usage patterns and extracts guide examples from docs.
+*   **API Health & Complexity Audits**: Computes public API count distributions, complexity indices, and deprecation ratio scores.
+*   **Linkage Conflict & ABI Detector**: Scans your classpath for classpath mismatches that could trigger `LinkageError` or `NoSuchMethodError`.
 *   **Migration Advisor**: Compares two versions and lists deprecated, added, and replacement APIs.
 *   **Dependency API Audit**: Scans project dependencies and highlights deprecated library APIs inside bytecode.
 *   **Exporter Tools**: Exports indexes to JSON, readable Markdown reference docs, or token-optimized AI context packages.
@@ -61,6 +66,15 @@ library-insight mcp
 ```
 
 For setup instructions in Cursor or Claude Desktop, see the [MCP Integration Guide](https://Coding-Meet.github.io/Library-Insight/mcp/).
+
+---
+
+## 🚀 Roadmap
+
+We plan to expand Library Insight into a unified **Kotlin Multiplatform (KMP)** API explorer:
+*   **KLib Metadata Reader**: Parse `.klib` metadata to extract signatures for iOS/Native, JS, and Wasm targets directly (bypassing JVM bytecode dependencies).
+*   **Platform-Aware Indexing**: Store platform target markers (`common`, `jvm`, `ios`, `js`, `wasm`) in the database schema so AI agents know exactly where APIs are available.
+*   **KMP Coordinate Resolution**: Auto-resolve platform split coordinates (e.g. `ktor-client-core-iosarm64`) from the root KMP library Maven coordinate.
 
 ---
 

@@ -43,9 +43,6 @@ theme:
     - content.action.view
     - toc.follow
 
-extra_css:
-  - assets/stylesheets/extra.css
-
 markdown_extensions:
   - toc:
       permalink: true

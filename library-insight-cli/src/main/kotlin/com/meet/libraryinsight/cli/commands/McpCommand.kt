@@ -1,7 +1,12 @@
 package com.meet.libraryinsight.cli.commands
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.file
 import com.meet.libraryinsight.cli.DatabaseHelper
+import com.meet.libraryinsight.cli.DslReportGenerator
+import com.meet.libraryinsight.common.LocalArtifacts
 import com.meet.libraryinsight.common.MavenResolver
 import com.meet.libraryinsight.core.LibraryAnalyzer
 import com.meet.libraryinsight.search.SearchEngine
@@ -13,7 +18,10 @@ class McpCommand : CliktCommand(
     name = "mcp",
     help = "Start the Model Context Protocol (MCP) server listening on stdio."
 ) {
-    private val dbFile = File("build/library-insight-index.json")
+    private val dbFile by option(
+        "--db",
+        help = "Index database JSON file path to read from and write to"
+    ).file().default(File("build/library-insight-index.json"))
 
     override fun run() {
         val scanner = java.util.Scanner(System.`in`)
@@ -81,6 +89,19 @@ class McpCommand : CliktCommand(
                                         putJsonArray("required") { add("className") }
                                     }
                                 }
+                                addJsonObject {
+                                    put("name", "dsl_report")
+                                    put("description", "Generate a Kotlin DSL surface report for the active library index: type aliases, @DslMarker scopes, extension functions, lambda-with-receiver builders, and inline reified functions.")
+                                    putJsonObject("inputSchema") {
+                                        put("type", "object")
+                                        putJsonObject("properties") {
+                                            putJsonObject("packageFilter") {
+                                                put("type", "string")
+                                                put("description", "Optional package name prefix to filter the report (e.g. io.ktor.client)")
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         })
                     }
@@ -121,13 +142,15 @@ class McpCommand : CliktCommand(
                             if (!file.exists()) {
                                 "Error: path '$pathOrCoordinate' does not exist."
                             } else {
-                                LibraryAnalyzer.analyze(file, file.nameWithoutExtension, "1.0.0", null)
+                                val parsed = LocalArtifacts.parseNameAndVersion(file.nameWithoutExtension)
+                                val sources = LocalArtifacts.findSiblingSources(file)
+                                LibraryAnalyzer.analyze(file, parsed.name, parsed.version ?: "1.0.0", sources)
                             }
                         }
                         if (index is LibraryApiIndex) {
                             DatabaseHelper.saveIndex(index, dbFile)
                             val classesCount = index.packages.flatMap { it.classes }.size
-                            "SUCCESS: Scanned library $pathOrCoordinate. Found $classesCount classes across ${index.packages.size} packages. Index saved to build/library-insight-index.json."
+                            "SUCCESS: Scanned library $pathOrCoordinate. Found $classesCount classes across ${index.packages.size} packages. Index saved to ${dbFile.path}."
                         } else {
                             "Error: Failed to analyze library structure."
                         }
@@ -214,6 +237,15 @@ class McpCommand : CliktCommand(
                             }
                         }
                     }
+                }
+            }
+            "dsl_report" -> {
+                val packageFilter = arguments["packageFilter"]?.jsonPrimitive?.content
+                val index = DatabaseHelper.loadIndex(dbFile)
+                if (index == null) {
+                    "Error: No library index database found. Please call scan_library tool first."
+                } else {
+                    DslReportGenerator.generate(index, packageFilter)
                 }
             }
             else -> "Error: Unknown tool name '$toolName'."

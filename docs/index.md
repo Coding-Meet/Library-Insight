@@ -78,3 +78,12 @@ graph TD
 *   `library-insight-export`: JSON, Markdown, and AI context formatters.
 *   `library-insight-core`: Orchestrates scan flows and implements the semantic API diffing engine.
 *   `library-insight-cli`: Command Line Interface definitions using **Clikt**.
+
+---
+
+## 🚀 Roadmap
+
+We plan to expand Library Insight into a unified **Kotlin Multiplatform (KMP)** API explorer:
+- **KLib Metadata Reader**: Parse `.klib` metadata to extract signatures for iOS/Native, JS, and Wasm targets directly (bypassing JVM bytecode dependencies).
+- **Platform-Aware Indexing**: Store platform target markers (`common`, `jvm`, `ios`, `js`, `wasm`) in the database schema so AI agents know exactly where APIs are available.
+- **KMP Coordinate Resolution**: Auto-resolve platform split coordinates (e.g. `ktor-client-core-iosarm64`) from the root KMP library Maven coordinate.

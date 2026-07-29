@@ -33,7 +33,12 @@ fun main(args: Array<String>) {
                 MigrateCommand(),
                 SearchCentralCommand(),
                 GraphCommand(),
-                CheckCompatCommand()
+                CheckCompatCommand(),
+                DslReportCommand(),
+                ExamplesCommand(),
+                HealthCommand(),
+                DependencyCheckCommand(),
+                CallGraphCommand()
             )
             .main(args)
         Logger.info("Library-Insight CLI completed successfully")

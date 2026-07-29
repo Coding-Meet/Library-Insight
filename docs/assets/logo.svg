@@ -1,10 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
   <title id="title">Library Insight</title>
-  <desc id="desc">Minimal API index and search lens mark.</desc>
-  <rect width="128" height="128" rx="26" fill="#0b1220"/>
-  <path d="M33 30h43c8 0 14 6 14 14v14" fill="none" stroke="#e2e8f0" stroke-width="8" stroke-linecap="round"/>
-  <path d="M33 30v68h39" fill="none" stroke="#e2e8f0" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M49 50h25M49 66h18M49 82h13" fill="none" stroke="#7dd3fc" stroke-width="7" stroke-linecap="round"/>
-  <circle cx="82" cy="80" r="19" fill="none" stroke="#38bdf8" stroke-width="8"/>
-  <path d="M96 94l16 16" fill="none" stroke="#38bdf8" stroke-width="9" stroke-linecap="round"/>
+  <desc id="desc">A clean API document with a search lens.</desc>
+  <rect width="128" height="128" rx="26" fill="#0f172a"/>
+  <path d="M35 25h43l17 17v55c0 5-4 9-9 9H35c-5 0-9-4-9-9V34c0-5 4-9 9-9Z" fill="#f8fafc"/>
+  <path d="M78 25v18h17" fill="#dbeafe"/>
+  <path d="M78 25v18h17" fill="none" stroke="#bfdbfe" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M45 51h27M45 66h23M45 81h16" fill="none" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="81" cy="79" r="18" fill="#0f172a" stroke="#93c5fd" stroke-width="8"/>
+  <path d="M95 93l17 17" fill="none" stroke="#93c5fd" stroke-width="9" stroke-linecap="round"/>
 </svg>

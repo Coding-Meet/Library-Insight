@@ -18,7 +18,9 @@ data class RawClassData(
 
 data class RawAnnotation(
     val desc: String,
-    val values: Map<String, Any?>
+    val values: Map<String, Any?>,
+    /** Annotations present on the annotation class itself (e.g. @DslMarker on a custom @HtmlDsl). */
+    val metaAnnotations: List<RawAnnotation> = emptyList()
 )
 
 data class RawField(

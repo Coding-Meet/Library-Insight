@@ -22,6 +22,11 @@ This tool extracts all classes, interfaces, methods, properties, and Javadoc/KDo
 > - Use **`library-insight dependency-graph <coord>`** to visualize dependency trees.
 > - Use **`library-insight semver <old> <new>`** to lint Semantic Versioning API compliance.
 > - Use **`library-insight mcp`** to communicate as a Model Context Protocol (MCP) server.
+> - Use **`library-insight dsl-report [--package <pkg>]`** to generate a Kotlin DSL surface report (type aliases, `@DslMarker` scopes, extension functions, lambda receivers, reified functions).
+> - Use **`library-insight examples <class>`** to generate typical usage code examples from bytecode signatures.
+> - Use **`library-insight health`** to generate a Package Health & API Complexity Report.
+> - Use **`library-insight dependency-check`** to audit all transitive classpath dependencies for runtime conflicts.
+> - Use **`library-insight callgraph <class.method>`** to trace internal library method invocation call graphs recursively.
 >
 > **MCP Integration Rule:**
 > If an MCP server is already configured and available (e.g., in Cursor, Claude Desktop, or another IDE with MCP support), **prefer the MCP server over shelling out to the CLI**. The MCP server exposes `scan_library`, `search_symbols`, and `explain_class` tools natively without subprocess overhead.
@@ -47,7 +52,14 @@ Scans a local JAR/AAR file, a directory of JARs, or resolves a Maven coordinate 
 * **Scan Maven Coordinate**:
   ```bash
   library-insight scan com.squareup.retrofit2:retrofit:2.11.0
-  ```
+
+  # Optional Parameters:
+  #   --db <file>             Path to save the JSON index database (default: build/library-insight-index.json)
+  #   -s, --sources <file>    Path to sources JAR/AAR or source code folder to extract Javadoc/KDoc comments & guide examples
+  #   --repo <url>            Additional Maven repository URL to download coordinates (multiple allowed)
+  #   --lib-name <name>       Override the library name in the generated index
+  #   --lib-version <version> Override the version tag in the generated index
+  library-insight scan com.squareup.okhttp3:okhttp:4.12.0 --sources okhttp-sources.jar --repo https://maven.google.com
 
 **Example Output:**
 ```text
@@ -62,7 +74,10 @@ Saved API index to: /Users/meet/AndroidStudioProjects/Library-Insight/build/libr
 Search for classes, packages, methods, or properties in the saved index.
 ```bash
 library-insight search Retrofit
-```
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+library-insight search "anno:Keep" --db custom-index.json
 
 **Example Output:**
 ```text
@@ -75,7 +90,10 @@ Found 2 matching classes:
 Print detailed structural details (modifiers, superclasses, constructors, properties, and methods) with their documentation.
 ```bash
 library-insight explain Retrofit
-```
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+library-insight explain HtmlBuilder --db custom-index.json
 
 **Example Output:**
 ```text
@@ -92,7 +110,11 @@ Export the index database to pretty JSON or structured Markdown reference sheets
 *(Note: For large libraries, single Markdown sheets are huge; use `ai-export` for AI context instead).*
 ```bash
 library-insight export markdown
-```
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+#   -o, --output <file>     Target output file path to write export content to
+library-insight export markdown --db custom-index.json -o API_REFERENCE.md
 
 **Example Output:**
 ```text
@@ -126,7 +148,11 @@ Breaking Changes Found: NO
 **Recommended for AI Integration.** Instead of a single giant `API_REFERENCE.md` file, this splits the scanned database into a token-efficient directory structure under `build/ai-context/`. AI agents can inspect `metadata.json` first, and then load only the specific class JSON files they need, reducing token usage by 95%+:
 ```bash
 library-insight ai-export
-```
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+#   -o, --output-dir <dir>  Target output directory to save AI context files (default: build/ai-context/)
+library-insight ai-export --db custom-index.json -o custom-ai-context/
 
 **Example Output:**
 ```text
@@ -166,12 +192,29 @@ library-insight doctor
 ```
 
 ### 9. Model Context Protocol Server (`mcp`)
-Start the Model Context Protocol (MCP) server listening on stdio. Allows external AI clients (like Cursor or Claude Desktop) to invoke `scan_library`, `search_symbols`, and `explain_class` tools directly.
+Start the Model Context Protocol (MCP) server listening on stdio. Allows external AI clients (like Cursor, Claude Desktop, or VS Code) to invoke `scan_library`, `search_symbols`, `explain_class`, and `dsl_report` tools natively.
 ```bash
 library-insight mcp
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from and write to (default: build/library-insight-index.json)
+library-insight mcp --db /path/to/project/custom-index.json
 ```
 
-### 10. Dependency API Audit (`audit`)
+### 10. Initialize Workspace Skill (`init`)
+Write a `SKILL.md` into `.agents/skills/library-insight/` so local AI agents auto-discover the CLI.
+```bash
+library-insight init
+```
+
+### 11. Manage Agent Skills (`skills`)
+Add or list AI agent skills registration details in detected IDE configuration directories.
+```bash
+library-insight skills add
+library-insight skills list
+```
+
+### 12. Dependency API Audit (`audit`)
 Scan and audit all Gradle build file dependencies recursively to find deprecated classes, methods, and properties inside active versions.
 ```bash
 library-insight audit
@@ -189,27 +232,80 @@ Found 10 dependencies to audit.
 Audit Summary: Scanned 10 libraries successfully.
 Total Deprecated APIs found: 1819
 ==================================================
+```
 
-### 11. API Migration Advisor (`migrate`)
+### 13. API Migration Advisor (`migrate`)
 Compare two library versions and output a migration advisor report showing removed, deprecated, and replacement APIs.
 ```bash
 library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+
+# Optional Parameters:
+#   --repo <url>            Additional Maven repository URLs to resolve coordinates (multiple allowed)
+library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0 --repo https://repo.maven.apache.org/maven2
 ```
 
-### 12. Search Maven Central (`search-central`)
+### 14. Search Maven Central (`search-central`)
 Search Maven Central Solr repository indices dynamically for matching packages and versions:
 ```bash
 library-insight search-central retrofit
 ```
 
-### 13. Dependency Graph (`dependency-graph`)
+### 15. Dependency Graph (`dependency-graph`)
 Renders a visual hierarchical tree of dependencies resolved recursively from `.pom` XML package descriptors:
 ```bash
 library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
 ```
 
-### 14. SemVer Compliance (`semver`)
+### 16. SemVer Compliance (`semver`)
 Lints version bumps against actual bytecode modifications to enforce Semantic Versioning (SemVer) compliance:
 ```bash
 library-insight semver com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+```
+
+### 17. Kotlin DSL Surface Report (`dsl-report`)
+
+Generates a structured report of the library's Kotlin DSL API surface. Essential for DSL-heavy libraries.
+
+Report sections:
+- **Type aliases** — extracted from Kotlin package metadata
+- **DSL scopes** — classes carrying `@DslMarker`-annotated annotations (grouped by marker)
+- **Extension functions** — all receiver-typed functions
+- **Lambda-with-receiver parameters** — DSL builder functions
+- **Inline reified functions**
+
+```bash
+library-insight dsl-report
+library-insight dsl-report --package io.ktor.client --db custom-index.json
+```
+
+### 18. API Usage Examples Generator (`examples`)
+
+Auto-generates typical instantiation, builder usage, and method-call code examples from bytecode signatures, and extracts nested guide examples from README/Dokka markdown files:
+```bash
+library-insight examples HtmlBuilder
+library-insight examples HtmlBuilder --db custom-index.json
+```
+
+### 19. Package Health & Complexity Report (`health`)
+
+Generates public API statistics, deprecation ratios, topo package sizes, and structural complexity metrics:
+```bash
+library-insight health
+library-insight health --db custom-index.json
+```
+
+### 20. Transitive Dependency Conflict Detector (`dependency-check`)
+
+Scans transitive classpath bytecode call instructions to highlight potential runtime LinkageError and NoSuchFieldError conflicts:
+```bash
+library-insight dependency-check
+library-insight dependency-check --dir <project-dir>
+```
+
+### 21. Method Call Graph Generator (`callgraph`)
+
+Generates a recursive tree of internal library methods called by a specific method node:
+```bash
+library-insight callgraph Retrofit.Builder.build
+library-insight callgraph Retrofit.Builder.build --db custom-index.json
 ```

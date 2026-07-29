@@ -1,15 +1,24 @@
 package com.meet.libraryinsight.core
 
 import com.meet.libraryinsight.common.ArchiveUtils
+import com.meet.libraryinsight.common.Logger
 import com.meet.libraryinsight.kotlin.KotlinMetadataEnricher
 import com.meet.libraryinsight.kotlin.KotlinMetadataParser
 import com.meet.libraryinsight.model.ClassApi
 import com.meet.libraryinsight.model.LibraryApiIndex
 import com.meet.libraryinsight.model.PackageApi
+import com.meet.libraryinsight.model.TypeAliasApi
 import com.meet.libraryinsight.parser.BytecodeParser
+import com.meet.libraryinsight.parser.RawAnnotation
+import com.meet.libraryinsight.parser.RawClassData
 import java.io.File
 
 object LibraryAnalyzer {
+
+    private val logger = Logger
+
+    /** JVM descriptor of kotlin.DslMarker annotation. */
+    private const val DSL_MARKER_DESC = "Lkotlin/DslMarker;"
 
     /**
      * Scans and parses a library input (JAR, AAR, or Directory) and constructs a complete [LibraryApiIndex].
@@ -22,30 +31,73 @@ object LibraryAnalyzer {
         sourcesFile: File? = null
     ): LibraryApiIndex {
         val classBytesMap = ArchiveUtils.extractClasses(file)
-        val classApis = mutableListOf<ClassApi>()
 
+        // --- Pass 1: Parse all raw class data ---
+        val rawClasses = mutableListOf<RawClassData>()
         for ((_, bytes) in classBytesMap) {
             try {
-                // 1. Parse raw bytecode structures
-                val rawClass = BytecodeParser.parseClass(bytes)
+                rawClasses.add(BytecodeParser.parseClass(bytes))
+            } catch (e: Exception) {
+                logger.warn("Failed to parse class bytes: ${e.message}")
+            }
+        }
 
-                // 2. Parse Kotlin metadata if available
+        // --- Pass 1b: Build @DslMarker annotation descriptor set ---
+        // An annotation class is "DslMarker-annotated" if its own visible/invisible annotations
+        // include Lkotlin/DslMarker;. We build a set of their descriptors for O(1) lookup.
+        val dslMarkerAnnotationDescs: Set<String> = rawClasses
+            .filter { raw ->
+                raw.annotations.any { it.desc == DSL_MARKER_DESC }
+            }
+            .map { raw -> "L${raw.internalName};" }
+            .toSet()
+
+        logger.info("Found ${dslMarkerAnnotationDescs.size} @DslMarker annotation types: $dslMarkerAnnotationDescs")
+
+        // --- Pass 1c: Enrich RawAnnotations with meta-annotations for @DslMarker ---
+        // Re-annotate each raw class's annotation list with metaAnnotations populated.
+        val enrichedRawClasses = rawClasses.map { rawClass ->
+            rawClass.copy(
+                annotations = rawClass.annotations.map { annotation ->
+                    if (annotation.desc in dslMarkerAnnotationDescs) {
+                        annotation.copy(
+                            metaAnnotations = listOf(RawAnnotation(DSL_MARKER_DESC, emptyMap()))
+                        )
+                    } else {
+                        annotation
+                    }
+                }
+            )
+        }
+
+        // --- Pass 2: Build ClassApis + collect typeAliases ---
+        val classApis = mutableListOf<ClassApi>()
+        // Map: packageName -> list of type aliases found in FileFacade classes in that package
+        val packageTypeAliases = mutableMapOf<String, MutableList<TypeAliasApi>>()
+
+        for (rawClass in enrichedRawClasses) {
+            try {
                 val metadata = KotlinMetadataParser.parseMetadata(rawClass)
 
-                // 3. Build enriched ClassApi
                 val classApi = if (metadata != null) {
+                    // Extract type aliases from FileFacade/MultiFileClassPart
+                    val aliases = KotlinMetadataEnricher.extractTypeAliases(rawClass, metadata)
+                    if (aliases.isNotEmpty()) {
+                        val pkgName = rawClass.name.substringBeforeLast('.')
+                        packageTypeAliases.getOrPut(pkgName) { mutableListOf() }.addAll(aliases)
+                    }
                     KotlinMetadataEnricher.enrich(rawClass, metadata)
                 } else {
                     KotlinMetadataEnricher.fallbackToJava(rawClass)
                 }
-                
+
                 classApis.add(classApi)
             } catch (e: Exception) {
-                // Skip or log corrupted classes
+                logger.warn("Failed to enrich class ${rawClass.name}: ${e.message}")
             }
         }
 
-        // 4. Enrich from sources if provided
+        // --- Pass 3: Enrich from sources if provided ---
         val finalClassApis = if (sourcesFile != null) {
             val sourcesMap = ArchiveUtils.extractSources(sourcesFile)
             classApis.map { clazz ->
@@ -91,8 +143,12 @@ object LibraryAnalyzer {
         // Centralized annotation clean-up to remove compiler-internal metadata
         val cleanedClassApis = finalClassApis.map { cleanClassAnnotations(it) }
 
-        // Group by package
-        val packageMap = cleanedClassApis.groupBy { classApi ->
+        // Scan for guide/README markdown examples and associate them
+        val markdownTexts = extractMarkdownContents(sourcesFile)
+        val enrichedClassApis = associateMarkdownExamples(cleanedClassApis, markdownTexts)
+
+        // Group by package and attach typeAliases
+        val packageMap = enrichedClassApis.groupBy { classApi ->
             val fullName = classApi.name
             if (fullName.contains('.')) {
                 fullName.substringBeforeLast('.')
@@ -104,15 +160,90 @@ object LibraryAnalyzer {
         val packages = packageMap.map { (pkgName, classes) ->
             PackageApi(
                 name = pkgName,
-                classes = classes.sortedBy { it.name }
+                classes = classes.sortedBy { it.name },
+                typeAliases = packageTypeAliases[pkgName]?.distinctBy { it.name } ?: emptyList()
             )
         }.sortedBy { it.name }
+
+        logger.info("Analysis complete: ${packages.size} packages, ${enrichedClassApis.size} classes, " +
+                "${packageTypeAliases.values.sumOf { it.size }} type aliases")
 
         return LibraryApiIndex(
             libraryName = libraryName,
             version = version,
             packages = packages
         )
+    }
+
+    private fun extractMarkdownContents(sourcesFile: File?): List<String> {
+        val markdownTexts = mutableListOf<String>()
+        
+        // 1. Try extracting from local directory if the workspace is local
+        val localDocsDirs = listOf(File("."), File(".."), File("./docs"), File("../docs"))
+        for (dir in localDocsDirs) {
+            if (dir.exists() && dir.isDirectory) {
+                dir.listFiles()?.forEach { file ->
+                    if (file.isFile && file.extension == "md") {
+                        try {
+                            markdownTexts.add(file.readText(Charsets.UTF_8))
+                        } catch (e: Exception) {}
+                    }
+                }
+            }
+        }
+
+        // 2. Extract from the sourcesFile directory if provided
+        if (sourcesFile != null && sourcesFile.exists() && sourcesFile.isDirectory) {
+            sourcesFile.walkTopDown().forEach { file ->
+                if (file.isFile && file.extension == "md") {
+                    try {
+                        markdownTexts.add(file.readText(Charsets.UTF_8))
+                    } catch (e: Exception) {}
+                }
+            }
+        }
+
+        // 3. Extract from the sourcesFile JAR/ZIP if provided
+        if (sourcesFile != null && sourcesFile.exists() && 
+            (sourcesFile.name.endsWith(".jar") || sourcesFile.name.endsWith(".zip") || sourcesFile.name.endsWith(".aar"))) {
+            try {
+                java.util.zip.ZipFile(sourcesFile).use { zip ->
+                    val entries = zip.entries()
+                    while (entries.hasMoreElements()) {
+                        val entry = entries.nextElement()
+                        if (!entry.isDirectory && entry.name.endsWith(".md", ignoreCase = true)) {
+                            zip.getInputStream(entry).use { stream ->
+                                markdownTexts.add(String(stream.readBytes(), Charsets.UTF_8))
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {}
+        }
+        return markdownTexts
+    }
+
+    private fun associateMarkdownExamples(classes: List<ClassApi>, markdownTexts: List<String>): List<ClassApi> {
+        if (markdownTexts.isEmpty()) return classes
+
+        val codeBlockRegex = Regex("```(?:kotlin|java)\\n([\\s\\S]*?)```", RegexOption.IGNORE_CASE)
+        val allExamples = markdownTexts.flatMap { text ->
+            codeBlockRegex.findAll(text).map { it.groupValues[1].trim() }
+        }.filter { it.isNotEmpty() }
+
+        if (allExamples.isEmpty()) return classes
+
+        return classes.map { clazz ->
+            val matchingExamples = allExamples.filter { example ->
+                example.contains(clazz.simpleName, ignoreCase = true) || 
+                example.contains(clazz.name.replace('/', '.'), ignoreCase = true)
+            }
+            if (matchingExamples.isNotEmpty()) {
+                clazz.copy(documentationExamples = clazz.documentationExamples + matchingExamples)
+            } else {
+                clazz
+            }
+        }
     }
 
     private fun cleanClassAnnotations(clazz: ClassApi): ClassApi {
