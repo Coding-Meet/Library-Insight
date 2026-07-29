@@ -60,6 +60,7 @@ Scans a local JAR/AAR file, a directory of JARs, or resolves a Maven coordinate 
   #   --lib-name <name>       Override the library name in the generated index
   #   --lib-version <version> Override the version tag in the generated index
   library-insight scan com.squareup.okhttp3:okhttp:4.12.0 --sources okhttp-sources.jar --repo https://maven.google.com
+  ```
 
 **Example Output:**
 ```text
@@ -78,6 +79,7 @@ library-insight search Retrofit
 # Optional Parameters:
 #   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
 library-insight search "anno:Keep" --db custom-index.json
+```
 
 **Example Output:**
 ```text
@@ -94,6 +96,7 @@ library-insight explain Retrofit
 # Optional Parameters:
 #   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
 library-insight explain HtmlBuilder --db custom-index.json
+```
 
 **Example Output:**
 ```text
@@ -115,6 +118,7 @@ library-insight export markdown
 #   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
 #   -o, --output <file>     Target output file path to write export content to
 library-insight export markdown --db custom-index.json -o API_REFERENCE.md
+```
 
 **Example Output:**
 ```text
@@ -153,6 +157,7 @@ library-insight ai-export
 #   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
 #   -o, --output-dir <dir>  Target output directory to save AI context files (default: build/ai-context/)
 library-insight ai-export --db custom-index.json -o custom-ai-context/
+```
 
 **Example Output:**
 ```text
@@ -275,6 +280,10 @@ Report sections:
 
 ```bash
 library-insight dsl-report
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+#   -p, --package <pkg>     Filter results to a specific package name prefix
 library-insight dsl-report --package io.ktor.client --db custom-index.json
 ```
 
@@ -283,6 +292,9 @@ library-insight dsl-report --package io.ktor.client --db custom-index.json
 Auto-generates typical instantiation, builder usage, and method-call code examples from bytecode signatures, and extracts nested guide examples from README/Dokka markdown files:
 ```bash
 library-insight examples HtmlBuilder
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
 library-insight examples HtmlBuilder --db custom-index.json
 ```
 
@@ -291,6 +303,9 @@ library-insight examples HtmlBuilder --db custom-index.json
 Generates public API statistics, deprecation ratios, topo package sizes, and structural complexity metrics:
 ```bash
 library-insight health
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
 library-insight health --db custom-index.json
 ```
 
@@ -299,6 +314,9 @@ library-insight health --db custom-index.json
 Scans transitive classpath bytecode call instructions to highlight potential runtime LinkageError and NoSuchFieldError conflicts:
 ```bash
 library-insight dependency-check
+
+# Optional Parameters:
+#   --dir <project-dir>     Target project directory to scan (default: current directory)
 library-insight dependency-check --dir <project-dir>
 ```
 
@@ -307,5 +325,8 @@ library-insight dependency-check --dir <project-dir>
 Generates a recursive tree of internal library methods called by a specific method node:
 ```bash
 library-insight callgraph Retrofit.Builder.build
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
 library-insight callgraph Retrofit.Builder.build --db custom-index.json
 ```

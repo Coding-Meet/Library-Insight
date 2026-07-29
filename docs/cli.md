@@ -346,8 +346,10 @@ Generate a dedicated Kotlin DSL surface report for DSL-heavy libraries. Shows:
 ```bash
 library-insight dsl-report
 
-# Filter to a specific package
-library-insight dsl-report --package io.ktor.client
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+#   -p, --package <pkg>     Filter results to a specific package name prefix
+library-insight dsl-report --package io.ktor.client --db custom-index.json
 ```
 
 **Example output:**
@@ -492,7 +494,8 @@ Scan all Gradle build dependencies and verify classpath bytecode references agai
 ```bash
 library-insight dependency-check
 
-# Specify a custom target project directory
+# Optional Parameters:
+#   --dir <project-dir>     Target project directory to scan (default: current directory)
 library-insight dependency-check --dir /path/to/my-android-project
 ```
 
