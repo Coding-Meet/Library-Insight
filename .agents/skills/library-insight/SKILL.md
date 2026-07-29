@@ -192,9 +192,13 @@ library-insight doctor
 ```
 
 ### 9. Model Context Protocol Server (`mcp`)
-Start the Model Context Protocol (MCP) server listening on stdio. Allows external AI clients (like Cursor or Claude Desktop) to invoke `scan_library`, `search_symbols`, and `explain_class` tools directly.
+Start the Model Context Protocol (MCP) server listening on stdio. Allows external AI clients (like Cursor, Claude Desktop, or VS Code) to invoke `scan_library`, `search_symbols`, `explain_class`, and `dsl_report` tools natively.
 ```bash
 library-insight mcp
+
+# Optional Parameters:
+#   --db <file>             Index database JSON file path to read from and write to (default: build/library-insight-index.json)
+library-insight mcp --db /path/to/project/custom-index.json
 ```
 
 ### 10. Initialize Workspace Skill (`init`)
@@ -228,6 +232,7 @@ Found 10 dependencies to audit.
 Audit Summary: Scanned 10 libraries successfully.
 Total Deprecated APIs found: 1819
 ==================================================
+```
 
 ### 13. API Migration Advisor (`migrate`)
 Compare two library versions and output a migration advisor report showing removed, deprecated, and replacement APIs.
