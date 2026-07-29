@@ -243,9 +243,9 @@ echo ""
 # Trace recursive internal method invocations
 # ------------------------------------------------------------------
 echo ">> [21/21] CALLGRAPH - Renders recursive method invocation tree"
-echo "   library-insight callgraph Retrofit.Builder.build"
+echo "   library-insight callgraph HtmlBuilder.div"
 echo ""
-library-insight callgraph Retrofit.Builder.build
+library-insight callgraph HtmlBuilder.div
 echo ""
 
 # ------------------------------------------------------------------
