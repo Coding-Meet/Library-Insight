@@ -32,7 +32,7 @@ echo ""
 # 1. SCAN
 # Scan a Maven coordinate, local JAR, or AAR from Gradle cache
 # ------------------------------------------------------------------
-echo ">> [1/20] SCAN - Analyze library and build API index"
+echo ">> [1/21] SCAN - Analyze library and build API index"
 echo "   library-insight scan $LIBRARY"
 echo ""
 library-insight scan $LIBRARY
@@ -42,7 +42,7 @@ echo ""
 # 2. SEARCH
 # Search for classes, interfaces, methods, or packages in the index
 # ------------------------------------------------------------------
-echo ">> [2/20] SEARCH - Find a class by name"
+echo ">> [2/21] SEARCH - Find a class by name"
 echo "   library-insight search Retrofit"
 echo ""
 library-insight search Retrofit
@@ -52,7 +52,7 @@ echo ""
 # 3. EXPLAIN
 # Print detailed structure of a class (constructors, methods, javadoc)
 # ------------------------------------------------------------------
-echo ">> [3/20] EXPLAIN - Inspect class structure and method signatures"
+echo ">> [3/21] EXPLAIN - Inspect class structure and method signatures"
 echo "   library-insight explain Retrofit"
 echo ""
 library-insight explain Retrofit
@@ -62,7 +62,7 @@ echo ""
 # 4. EXPORT MARKDOWN
 # Export the full API index to a readable Markdown reference sheet
 # ------------------------------------------------------------------
-echo ">> [4/20] EXPORT MARKDOWN - Save readable API reference to file"
+echo ">> [4/21] EXPORT MARKDOWN - Save readable API reference to file"
 echo "   library-insight export markdown"
 echo ""
 library-insight export markdown
@@ -72,7 +72,7 @@ echo ""
 # 5. EXPORT JSON
 # Export the full API index to raw JSON format
 # ------------------------------------------------------------------
-echo ">> [5/20] EXPORT JSON - Save raw JSON index to file"
+echo ">> [5/21] EXPORT JSON - Save raw JSON index to file"
 echo "   library-insight export json"
 echo ""
 library-insight export json
@@ -82,7 +82,7 @@ echo ""
 # 6. DIFF
 # Compare two library JAR versions and detect breaking changes & severity
 # ------------------------------------------------------------------
-echo ">> [6/20] DIFF - Compare two library versions for breaking changes & severity"
+echo ">> [6/21] DIFF - Compare two library versions for breaking changes & severity"
 echo "   library-insight diff $LIBRARY_OLD $LIBRARY_NEW"
 echo ""
 library-insight diff $LIBRARY_OLD $LIBRARY_NEW
@@ -92,7 +92,7 @@ echo ""
 # 7. AI-EXPORT
 # Generate compact per-class JSON files for AI token-efficient context
 # ------------------------------------------------------------------
-echo ">> [7/20] AI-EXPORT - Generate token-efficient AI context directory"
+echo ">> [7/21] AI-EXPORT - Generate token-efficient AI context directory"
 echo "   library-insight ai-export"
 echo ""
 library-insight ai-export
@@ -102,7 +102,7 @@ echo ""
 # 8. INIT
 # Write a workspace-scoped SKILL.md so local AI agents can discover the CLI
 # ------------------------------------------------------------------
-echo ">> [8/20] INIT - Initialize AI agent skill for this workspace"
+echo ">> [8/21] INIT - Initialize AI agent skill for this workspace"
 echo "   library-insight init"
 echo ""
 mkdir -p "$DEMO_WORKSPACE"
@@ -116,7 +116,7 @@ echo ""
 # 9. SKILLS ADD
 # Install or update the agent SKILL.md in the current workspace
 # ------------------------------------------------------------------
-echo ">> [9/20] SKILLS ADD - Install AI agent skill to current workspace"
+echo ">> [9/21] SKILLS ADD - Install AI agent skill to current workspace"
 echo "   library-insight skills add"
 echo ""
 (
@@ -130,7 +130,7 @@ echo ""
 # 10. CLEAR-CACHE
 # Delete all locally cached Maven artifacts to free up space
 # ------------------------------------------------------------------
-echo ">> [10/20] CLEAR-CACHE - Remove locally cached downloaded artifacts"
+echo ">> [10/21] CLEAR-CACHE - Remove locally cached downloaded artifacts"
 echo "   library-insight clear-cache"
 echo ""
 library-insight clear-cache
@@ -140,7 +140,7 @@ echo ""
 # 11. AUDIT
 # Scan and report deprecated APIs in project build files recursively
 # ------------------------------------------------------------------
-echo ">> [11/20] AUDIT - Scan project dependencies and audit deprecated APIs"
+echo ">> [11/21] AUDIT - Scan project dependencies and audit deprecated APIs"
 echo "   library-insight audit"
 echo ""
 library-insight audit
@@ -150,7 +150,7 @@ echo ""
 # 12. MIGRATE
 # Compare old/new coordinates and generate migration advisors with replacements
 # ------------------------------------------------------------------
-echo ">> [12/20] MIGRATE - Analyze version upgrade differences and suggest replacements"
+echo ">> [12/21] MIGRATE - Analyze version upgrade differences and suggest replacements"
 echo "   library-insight migrate $LIBRARY_OLD $LIBRARY_NEW"
 echo ""
 library-insight migrate $LIBRARY_OLD $LIBRARY_NEW
@@ -160,7 +160,7 @@ echo ""
 # 13. SEARCH MAVEN CENTRAL
 # Search Maven Central repository for matching coordinates
 # ------------------------------------------------------------------
-echo ">> [13/20] SEARCH-CENTRAL - Search Maven Central for package metadata"
+echo ">> [13/21] SEARCH-CENTRAL - Search Maven Central for package metadata"
 echo "   library-insight search-central clikt"
 echo ""
 library-insight search-central clikt
@@ -170,7 +170,7 @@ echo ""
 # 14. DEPENDENCY GRAPH
 # Generate an ASCII recursive transitive dependency graph
 # ------------------------------------------------------------------
-echo ">> [14/20] DEPENDENCY-GRAPH - Generate recursive transitive dependency tree"
+echo ">> [14/21] DEPENDENCY-GRAPH - Generate recursive transitive dependency tree"
 echo "   library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0"
 echo ""
 library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
@@ -180,7 +180,7 @@ echo ""
 # 15. SEMVER COMPLIANCE CHECKER
 # Verify that library modifications comply with SemVer version numbers
 # ------------------------------------------------------------------
-echo ">> [15/20] SEMVER - Verify Semantic Versioning compliance"
+echo ">> [15/21] SEMVER - Verify Semantic Versioning compliance"
 echo "   library-insight semver $LIBRARY_OLD $LIBRARY_NEW"
 echo ""
 library-insight semver $LIBRARY_OLD $LIBRARY_NEW
@@ -190,7 +190,7 @@ echo ""
 # 16. MCP (Model Context Protocol) Server Test
 # Start MCP server and feed it a tools/list request to verify stdio integration
 # ------------------------------------------------------------------
-echo ">> [16/20] MCP - Test Model Context Protocol tools list interface"
+echo ">> [16/21] MCP - Test Model Context Protocol tools list interface"
 echo "   echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | library-insight mcp"
 echo ""
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | library-insight mcp
@@ -200,7 +200,7 @@ echo ""
 # 17. DSL REPORT
 # Generate Kotlin DSL surface report: type aliases, @DslMarker scopes, etc.
 # ------------------------------------------------------------------
-echo ">> [17/20] DSL-REPORT - Generate Kotlin DSL surface report"
+echo ">> [17/21] DSL-REPORT - Generate Kotlin DSL surface report"
 echo "   library-insight dsl-report"
 echo ""
 library-insight dsl-report
