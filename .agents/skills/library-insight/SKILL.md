@@ -197,7 +197,20 @@ Start the Model Context Protocol (MCP) server listening on stdio. Allows externa
 library-insight mcp
 ```
 
-### 10. Dependency API Audit (`audit`)
+### 10. Initialize Workspace Skill (`init`)
+Write a `SKILL.md` into `.agents/skills/library-insight/` so local AI agents auto-discover the CLI.
+```bash
+library-insight init
+```
+
+### 11. Manage Agent Skills (`skills`)
+Add or list AI agent skills registration details in detected IDE configuration directories.
+```bash
+library-insight skills add
+library-insight skills list
+```
+
+### 12. Dependency API Audit (`audit`)
 Scan and audit all Gradle build file dependencies recursively to find deprecated classes, methods, and properties inside active versions.
 ```bash
 library-insight audit
@@ -216,7 +229,7 @@ Audit Summary: Scanned 10 libraries successfully.
 Total Deprecated APIs found: 1819
 ==================================================
 
-### 11. API Migration Advisor (`migrate`)
+### 13. API Migration Advisor (`migrate`)
 Compare two library versions and output a migration advisor report showing removed, deprecated, and replacement APIs.
 ```bash
 library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
@@ -224,26 +237,27 @@ library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retro
 # Optional Parameters:
 #   --repo <url>            Additional Maven repository URLs to resolve coordinates (multiple allowed)
 library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0 --repo https://repo.maven.apache.org/maven2
+```
 
-### 12. Search Maven Central (`search-central`)
+### 14. Search Maven Central (`search-central`)
 Search Maven Central Solr repository indices dynamically for matching packages and versions:
 ```bash
 library-insight search-central retrofit
 ```
 
-### 13. Dependency Graph (`dependency-graph`)
+### 15. Dependency Graph (`dependency-graph`)
 Renders a visual hierarchical tree of dependencies resolved recursively from `.pom` XML package descriptors:
 ```bash
 library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
 ```
 
-### 14. SemVer Compliance (`semver`)
+### 16. SemVer Compliance (`semver`)
 Lints version bumps against actual bytecode modifications to enforce Semantic Versioning (SemVer) compliance:
 ```bash
 library-insight semver com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
 ```
 
-### 15. Kotlin DSL Surface Report (`dsl-report`)
+### 17. Kotlin DSL Surface Report (`dsl-report`)
 
 Generates a structured report of the library's Kotlin DSL API surface. Essential for DSL-heavy libraries.
 
@@ -259,7 +273,7 @@ library-insight dsl-report
 library-insight dsl-report --package io.ktor.client --db custom-index.json
 ```
 
-### 16. API Usage Examples Generator (`examples`)
+### 18. API Usage Examples Generator (`examples`)
 
 Auto-generates typical instantiation, builder usage, and method-call code examples from bytecode signatures, and extracts nested guide examples from README/Dokka markdown files:
 ```bash
@@ -267,7 +281,7 @@ library-insight examples HtmlBuilder
 library-insight examples HtmlBuilder --db custom-index.json
 ```
 
-### 17. Package Health & Complexity Report (`health`)
+### 19. Package Health & Complexity Report (`health`)
 
 Generates public API statistics, deprecation ratios, topo package sizes, and structural complexity metrics:
 ```bash
@@ -275,7 +289,7 @@ library-insight health
 library-insight health --db custom-index.json
 ```
 
-### 18. Transitive Dependency Conflict Detector (`dependency-check`)
+### 20. Transitive Dependency Conflict Detector (`dependency-check`)
 
 Scans transitive classpath bytecode call instructions to highlight potential runtime LinkageError and NoSuchFieldError conflicts:
 ```bash
@@ -283,7 +297,7 @@ library-insight dependency-check
 library-insight dependency-check --dir <project-dir>
 ```
 
-### 19. Method Call Graph Generator (`callgraph`)
+### 21. Method Call Graph Generator (`callgraph`)
 
 Generates a recursive tree of internal library methods called by a specific method node:
 ```bash

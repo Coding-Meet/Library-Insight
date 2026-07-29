@@ -4,6 +4,67 @@ All releases for **Library Insight** are documented below.
 
 ---
 
+## v1.2.0
+
+_Released on July 29, 2026_
+
+This major update introduces deep Kotlin DSL analysis, bytecode call graph visualization, automated example generation, package health metrics, and compile-time ABI linkage checks to prevent runtime errors.
+
+### 🧩 Kotlin DSL & Fluent API Report (`dsl-report`)
+
+Expose the structure of DSL-heavy libraries. Scans and groups:
+- **Type aliases** — extracted from package metadata.
+- **DSL scopes** — classes carrying `@DslMarker` annotations.
+- **Extension functions** — mapped to their receiver types.
+- **Lambda builders** — functions taking lambda-with-receiver blocks.
+- **Inline reified entry points**.
+
+*Also registered as the `dsl_report` tool on the MCP server!*
+
+```bash
+library-insight dsl-report
+```
+
+### 🌳 Method Call Graph Generator (`callgraph`)
+
+Recursively traces method call instructions to render a visual tree of internal invocations inside the bytecode. Excellent for understanding execution flows and auditing internals.
+
+```bash
+library-insight callgraph HtmlBuilder.div
+```
+
+### 📝 Automatic Examples Generator (`examples`)
+
+Generates typical instantiation patterns (constructors, builders, factories, singletons) from bytecode signatures, and extracts code blocks from Dokka/README markdown files.
+
+```bash
+library-insight examples HtmlBuilder
+```
+
+### 🩺 Package Health & Complexity (`health`)
+
+Analyzes structural complexity indices, public API distributions (classes, methods, properties), and deprecation ratios to grade the library.
+
+```bash
+library-insight health
+```
+
+### 🚨 Classpath ABI Linkage Detector (`dependency-check`)
+
+Checks compiled transitive dependencies for method and field signatures missing from the classpath. Proactively flags runtime risks such as `NoSuchMethodError`, `NoSuchFieldError`, or `LinkageError`.
+
+```bash
+library-insight dependency-check
+```
+
+### ⚙️ MCP Server Enhancements
+
+- **`dsl_report` Tool**: AI assistants can query DSL structures natively.
+- **Dynamic Database (`--db`)**: Run multiple indices by passing custom database file paths.
+- **Smart Local Scans**: Parses local JAR filenames (`retrofit-2.11.0.jar` -> version `2.11.0`) and auto-detects sister `-sources` archives in the same directory.
+
+---
+
 ## v1.1.0
 
 _Released on July 25, 2026_

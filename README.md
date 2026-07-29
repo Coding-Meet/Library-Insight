@@ -20,6 +20,11 @@ The complete documentation, architecture diagrams, command reference, and integr
 *   **MCP Server**: Connect Cursor, Claude Desktop, or any MCP-compatible IDE to query APIs directly.
 *   **Version-Correct API Lookup**: Scans the exact library version in your project to prevent AI hallucinations.
 *   **Deep Metadata Extraction**: Extracts classes, constructors, methods, properties, nullability flags, generics, and annotations.
+*   **Kotlin DSL & Fluent API Mapping**: Scans `@DslMarker` scopes, type aliases, lambda parameter builders, and inline reified functions.
+*   **Method Call Graph Generator**: Recursively traces and renders method call trees inside bytecode to analyze internal invocations.
+*   **Automatic Usage Examples**: Auto-generates standard boilerplate usage patterns and extracts guide examples from docs.
+*   **API Health & Complexity Audits**: Computes public API count distributions, complexity indices, and deprecation ratio scores.
+*   **Linkage Conflict & ABI Detector**: Scans your classpath for classpath mismatches that could trigger `LinkageError` or `NoSuchMethodError`.
 *   **Migration Advisor**: Compares two versions and lists deprecated, added, and replacement APIs.
 *   **Dependency API Audit**: Scans project dependencies and highlights deprecated library APIs inside bytecode.
 *   **Exporter Tools**: Exports indexes to JSON, readable Markdown reference docs, or token-optimized AI context packages.
