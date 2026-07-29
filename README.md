@@ -1,10 +1,12 @@
 # Library Insight 🔍
 
-### JVM API Explorer & MCP Server for AI IDEs
+### JVM API Explorer & MCP Server
 
-AI coding assistants often guess Java/Kotlin library APIs from old docs, latest web examples, or a different version than the one installed in your project. That leads to missing methods, deprecated usage, wrong signatures, and wasted debugging time.
+Analyze Java & Kotlin libraries with a standalone CLI or integrate directly into AI IDEs via MCP.
 
-**Library Insight** fixes that by scanning the exact JAR/AAR, Gradle output, or Maven version you use. It reads compiled `.class` structures and Kotlin `@Metadata` annotations to build a searchable, version-correct public API index.
+AI coding assistants often guess Java/Kotlin library APIs from outdated documentation, web examples, or a different version than the one installed in your project. That leads to missing methods, deprecated usage, incorrect signatures, and wasted debugging time.
+
+**Library Insight** fixes that by scanning the exact JAR, AAR, Gradle output, or Maven artifact used by your project. It reads compiled `.class` structures and Kotlin `@Metadata` annotations to build a searchable, version-correct public API index.
 
 ---
 
