@@ -53,8 +53,6 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
-    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -740,6 +738,61 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#17-dsl-report-kotlin-dsl-surface-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. dsl-report — Kotlin DSL Surface Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#18-examples-api-usage-examples-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. examples — API Usage Examples Generator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#19-health-package-health-complexity-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19. health — Package Health &amp; Complexity Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#20-dependency-check-transitive-abi-dependency-conflict-detector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. dependency-check — Transitive ABI Dependency Conflict Detector
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#21-callgraph-method-call-graph-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21. callgraph — Method Call Graph Generator
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1042,6 +1095,61 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#17-dsl-report-kotlin-dsl-surface-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. dsl-report — Kotlin DSL Surface Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#18-examples-api-usage-examples-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. examples — API Usage Examples Generator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#19-health-package-health-complexity-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19. health — Package Health &amp; Complexity Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#20-dependency-check-transitive-abi-dependency-conflict-detector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. dependency-check — Transitive ABI Dependency Conflict Detector
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#21-callgraph-method-call-graph-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21. callgraph — Method Call Graph Generator
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1082,9 +1190,9 @@ For installation and quick start, see the <a href="../getting-started/">Getting 
 </blockquote>
 <hr />
 <h2 id="running-commands">Running commands<a class="headerlink" href="#running-commands" title="Link to this section">&para;</a></h2>
-<p>Once installed globally:
+<p>Once installed globally:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>library-insight<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>options<span class="o">]</span>
-</span></code></pre></div></p>
+</span></code></pre></div>
 <blockquote>
 <p>[!IMPORTANT]
 <strong>AI Agent Accuracy Rule:</strong>
@@ -1096,36 +1204,53 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 <h2 id="1-scan-scan-a-library">1. <code>scan</code> — Scan a Library<a class="headerlink" href="#1-scan-scan-a-library" title="Link to this section">&para;</a></h2>
 <p>Scan a JAR, AAR, local directory, or Maven coordinate. Use this first to build the local index.</p>
 <blockquote>
-<p><strong>Offline-First &amp; Smart Caching:</strong>
-- Checks your Gradle cache (<code>~/.gradle/caches/</code>) first before downloading.
-- Inside a Gradle project, downloaded artifacts land in <code>build/library-insight/cache/</code>.</p>
+<p><strong>Offline-First &amp; Smart Caching:</strong></p>
+<ul>
+<li>Checks your Gradle cache (<code>~/.gradle/caches/</code>) first before downloading.</li>
+<li>Inside a Gradle project, downloaded artifacts land in <code>build/library-insight/cache/</code>.</li>
+</ul>
 </blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>com.squareup.okhttp3:okhttp:4.12.0
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">#   --db &lt;file&gt;             Path to save the JSON index database (default: build/library-insight-index.json)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">#   -s, --sources &lt;file&gt;    Path to sources JAR/AAR or source code folder to extract Javadoc/KDoc comments &amp; guide examples</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1">#   --repo &lt;url&gt;            Additional Maven repository URL to download coordinates (multiple allowed)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">#   --lib-name &lt;name&gt;       Override the library name in the generated index</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1">#   --lib-version &lt;version&gt; Override the version tag in the generated index</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>com.squareup.okhttp3:okhttp:4.12.0<span class="w"> </span>--sources<span class="w"> </span>okhttp-sources.jar<span class="w"> </span>--repo<span class="w"> </span>https://maven.google.com
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Detected Maven coordinate: com.squareup.retrofit2:retrofit:2.11.0
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  -&gt; Using cached binary JAR from Gradle cache: retrofit-2.11.0.jar
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  -&gt; Using cached sources JAR from Gradle cache: retrofit-2.11.0-sources.jar
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>Scan complete! Found 113 classes across 3 packages.
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>Saved API index to: build/library-insight-index.json
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="2-search-search-symbols">2. <code>search</code> — Search Symbols<a class="headerlink" href="#2-search-search-symbols" title="Link to this section">&para;</a></h2>
 <p>Search for packages, classes, methods, or properties in the saved index.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>library-insight<span class="w"> </span>search<span class="w"> </span>Retrofit
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">#   --db &lt;file&gt;             Index database JSON file path to read from (default: build/library-insight-index.json)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>library-insight<span class="w"> </span>search<span class="w"> </span><span class="s2">&quot;anno:Keep&quot;</span><span class="w"> </span>--db<span class="w"> </span>custom-index.json
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Found 2 matching classes:
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  - retrofit2.Retrofit
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  - retrofit2.Retrofit$Builder
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="3-explain-explain-a-class">3. <code>explain</code> — Explain a Class<a class="headerlink" href="#3-explain-explain-a-class" title="Link to this section">&para;</a></h2>
-<p>Print detailed structural information (modifiers, superclass, constructors, properties, methods, and Javadoc/KDoc) for a specific class.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>Retrofit
+<p>Print detailed structural information (modifiers, superclass, constructors, properties, methods, Javadoc/KDoc, and nested usage guide examples extracted from README/Dokka markdown files) for a specific class.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>HtmlBuilder
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1">#   --db &lt;file&gt;             Index database JSON file path to read from (default: build/library-insight-index.json)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>HtmlBuilder<span class="w"> </span>--db<span class="w"> </span>custom-index.json
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Class: retrofit2.Retrofit (public class)
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  Constructors:
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    + public constructor(okhttp3.Call$Factory, ...)
@@ -1133,7 +1258,7 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 </span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    + public fun &lt;T&gt; create(java.lang.Class&lt;T&gt;): T
 </span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    + public fun baseUrl(): okhttp3.HttpUrl
 </span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    + public fun callFactory(): okhttp3.Call$Factory
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="4-diff-compare-versions">4. <code>diff</code> — Compare Versions<a class="headerlink" href="#4-diff-compare-versions" title="Link to this section">&para;</a></h2>
 <p>Compare two library archives to check for added, removed, and changed APIs including breaking changes.</p>
@@ -1141,7 +1266,7 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># Or via Maven coordinates:</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>library-insight<span class="w"> </span>diff<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>==================================================
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a> LIBRARY INSIGHT API DIFF REPORT
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>==================================================
@@ -1152,13 +1277,17 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 </span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>  Class: retrofit2.Invocation
 </span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    Added Methods:
 </span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>      + fun service(): java.lang.Class&lt;?&gt;
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="5-migrate-migration-advisor">5. <code>migrate</code> — Migration Advisor<a class="headerlink" href="#5-migrate-migration-advisor" title="Link to this section">&para;</a></h2>
 <p>Compare two versions and get a structured migration report showing removed, deprecated, and replacement APIs.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>library-insight<span class="w"> </span>migrate<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1">#   --repo &lt;url&gt;            Additional Maven repository URLs to resolve coordinates (multiple allowed)</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>library-insight<span class="w"> </span>migrate<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0<span class="w"> </span>--repo<span class="w"> </span>https://repo.maven.apache.org/maven2
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>==================================================
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>        Library Insight Migration Report
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>==================================================
@@ -1171,7 +1300,7 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 </span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>  - fun retrofit2.Platform.defaultCallbackExecutor(): Executor
 </span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
 </span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>Binary Compatibility: ❌ BREAKING CHANGES DETECTED
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="6-export-export-index">6. <code>export</code> — Export Index<a class="headerlink" href="#6-export-export-index" title="Link to this section">&para;</a></h2>
 <p>Export the scanned index to Markdown or JSON.</p>
@@ -1180,18 +1309,28 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 </blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>library-insight<span class="w"> </span><span class="nb">export</span><span class="w"> </span>markdown
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>library-insight<span class="w"> </span><span class="nb">export</span><span class="w"> </span>json
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1">#   --db &lt;file&gt;             Index database JSON file path to read from (default: build/library-insight-index.json)</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1">#   -o, --output &lt;file&gt;     Target output file path to write export content to</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>library-insight<span class="w"> </span><span class="nb">export</span><span class="w"> </span>markdown<span class="w"> </span>--db<span class="w"> </span>custom-index.json<span class="w"> </span>-o<span class="w"> </span>API_REFERENCE.md
 </span></code></pre></div>
 <hr />
 <h2 id="7-ai-export-ai-context-export-recommended-for-ai-prompts">7. <code>ai-export</code> — AI Context Export (Recommended for AI prompts)<a class="headerlink" href="#7-ai-export-ai-context-export-recommended-for-ai-prompts" title="Link to this section">&para;</a></h2>
 <p>Splits the scanned database into a token-efficient directory structure under <code>build/ai-context/</code>. AI agents read <code>metadata.json</code> first, then load only the class files they need — reducing token usage by 95%+.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>library-insight<span class="w"> </span>ai-export
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1">#   --db &lt;file&gt;             Index database JSON file path to read from (default: build/library-insight-index.json)</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1">#   -o, --output-dir &lt;dir&gt;  Target output directory to save AI context files (default: build/ai-context/)</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>library-insight<span class="w"> </span>ai-export<span class="w"> </span>--db<span class="w"> </span>custom-index.json<span class="w"> </span>-o<span class="w"> </span>custom-ai-context/
 </span></code></pre></div>
 <hr />
 <h2 id="8-audit-dependency-api-audit">8. <code>audit</code> — Dependency API Audit<a class="headerlink" href="#8-audit-dependency-api-audit" title="Link to this section">&para;</a></h2>
 <p>Scan all project Gradle dependencies recursively (<code>build.gradle.kts</code>, <code>libs.versions.toml</code>) and report deprecated classes, methods, and properties found in the bytecode.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>library-insight<span class="w"> </span>audit
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>==================================================
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>      Library Insight Dependency Audit
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>==================================================
@@ -1201,7 +1340,7 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 </span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    * Deprecated Methods    : 2
 </span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    * Deprecated Properties : 2
 </span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>Audit Summary: Scanned 10 libraries. Total Deprecated APIs: 1819
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="9-search-central-search-maven-central">9. <code>search-central</code> — Search Maven Central<a class="headerlink" href="#9-search-central-search-maven-central" title="Link to this section">&para;</a></h2>
 <p>Search Maven Central dynamically for matching coordinates and versions.</p>
@@ -1213,25 +1352,29 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 <p>Print a visual recursive tree of transitive dependencies from POM descriptors.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>library-insight<span class="w"> </span>dependency-graph<span class="w"> </span>com.github.ajalt.clikt:clikt-jvm:4.4.0
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>com.github.ajalt.clikt:clikt-jvm:4.4.0
 </span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>│   ├── com.github.ajalt.mordant:mordant-jvm:2.5.0
 </span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>│   │   ├── com.github.ajalt.colormath:colormath-jvm:3.5.0
 </span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>│   │   │   ├── org.jetbrains.kotlin:kotlin-stdlib:1.9.21
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="11-semver-semver-compliance-check">11. <code>semver</code> — SemVer Compliance Check<a class="headerlink" href="#11-semver-semver-compliance-check" title="Link to this section">&para;</a></h2>
 <p>Verify that the version number bump between two releases correctly reflects the bytecode changes (breaking change requires major bump, added APIs require minor bump).</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>library-insight<span class="w"> </span>semver<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>🚨 SemVer Violation: Version bump does not match API changes!
 </span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>  ❌ API Breaking Change detected but MAJOR version was not incremented!
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="12-mcp-mcp-server">12. <code>mcp</code> — MCP Server<a class="headerlink" href="#12-mcp-mcp-server" title="Link to this section">&para;</a></h2>
-<p>Start the Model Context Protocol server on stdio. Connect Cursor, Claude Desktop, or any MCP-compatible IDE to use <code>scan_library</code>, <code>search_symbols</code>, and <code>explain_class</code> tools natively.</p>
+<p>Start the Model Context Protocol server on stdio. Connect Cursor, Claude Desktop, or any MCP-compatible IDE to use <code>scan_library</code>, <code>search_symbols</code>, <code>explain_class</code>, and <code>dsl_report</code> tools natively.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>library-insight<span class="w"> </span>mcp
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1">#   --db &lt;file&gt;             Index database JSON file path to read from and write to (default: build/library-insight-index.json)</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>library-insight<span class="w"> </span>mcp<span class="w"> </span>--db<span class="w"> </span>/path/to/project/custom-index.json
 </span></code></pre></div>
 <blockquote>
 <p><strong>MCP vs CLI:</strong> If an MCP server is already configured in your IDE, prefer it over running CLI commands directly.</p>
@@ -1256,7 +1399,7 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 <p>Check Java version, cache directory, and active AI agent skill configurations.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>library-insight<span class="w"> </span>doctor
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>[Library Insight Diagnostics]
 </span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>1. Java Runtime Environment (JRE):
 </span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>   - Version: 17.0.7
@@ -1265,7 +1408,183 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 </span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>   - Status: OK
 </span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>3. AI Agent Skill Registrations:
 </span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>   - Gemini Config Skill: ACTIVE
-</span></code></pre></div></p>
+</span></code></pre></div>
+<hr />
+<h2 id="17-dsl-report-kotlin-dsl-surface-report">17. <code>dsl-report</code> — Kotlin DSL Surface Report<a class="headerlink" href="#17-dsl-report-kotlin-dsl-surface-report" title="Link to this section">&para;</a></h2>
+<p>Generate a dedicated Kotlin DSL surface report for DSL-heavy libraries. Shows:</p>
+<ul>
+<li><strong>Type aliases</strong> extracted from package metadata</li>
+<li><strong>DSL scopes</strong> — classes annotated with <code>@DslMarker</code> markers, grouped by marker</li>
+<li><strong>Extension functions</strong> — all <code>ReceiverType.function()</code> signatures</li>
+<li><strong>Lambda-with-receiver parameters</strong> — DSL builder functions (<code>block: Builder.() -&gt; Unit</code>)</li>
+<li><strong>Inline reified functions</strong> — functions with <code>reified</code> type parameters</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>library-insight<span class="w"> </span>dsl-report
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="c1">#   --db &lt;file&gt;             Index database JSON file path to read from (default: build/library-insight-index.json)</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="c1">#   -p, --package &lt;pkg&gt;     Filter results to a specific package name prefix</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>library-insight<span class="w"> </span>dsl-report<span class="w"> </span>--package<span class="w"> </span>io.ktor.client<span class="w"> </span>--db<span class="w"> </span>custom-index.json
+</span></code></pre></div>
+<p><strong>Example output:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>==================================================
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>  DSL SURFACE REPORT  —  ktor-client-core-jvm 2.3.12
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>==================================================
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>▶ Type Aliases (3)
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>  typealias HttpClientConfig&lt;T&gt; = T.() -&gt; Unit
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>  typealias ResponseValidator = suspend (response: HttpResponse) -&gt; Unit
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>  typealias HeadersBuilder = StringValuesBuilder
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>▶ DSL Scopes — @DslMarker annotated classes (5)
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>  @KtorDsl → HttpClientConfig, HttpRequestBuilder, HeadersBuilder
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a>
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>▶ Extension Functions (24)
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a>  fun HttpClient.get(urlString: String, block: (String) -&gt; Unit): HttpResponse
+</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a>  fun HttpRequestBuilder.contentType(contentType: ContentType): Unit
+</span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a>  ...
+</span><span id="__span-27-17"><a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a>
+</span><span id="__span-27-18"><a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a>▶ Lambda-with-Receiver Parameters — DSL builder functions (12)
+</span><span id="__span-27-19"><a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a>  fun httpClient([config: HttpClientConfig&lt;*&gt;.() -&gt; Unit]): HttpClient
+</span><span id="__span-27-20"><a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a>  fun HttpRequestBuilder.headers([block: HeadersBuilder.() -&gt; Unit]): Unit
+</span><span id="__span-27-21"><a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a>  ...
+</span><span id="__span-27-22"><a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a>
+</span><span id="__span-27-23"><a id="__codelineno-27-23" name="__codelineno-27-23" href="#__codelineno-27-23"></a>▶ Inline Reified Functions (3)
+</span><span id="__span-27-24"><a id="__codelineno-27-24" name="__codelineno-27-24" href="#__codelineno-27-24"></a>  inline fun &lt;reified T&gt; HttpClient.get(url: String): T
+</span><span id="__span-27-25"><a id="__codelineno-27-25" name="__codelineno-27-25" href="#__codelineno-27-25"></a>  inline fun &lt;reified T&gt; HttpResponse.body(): T
+</span><span id="__span-27-26"><a id="__codelineno-27-26" name="__codelineno-27-26" href="#__codelineno-27-26"></a>  ...
+</span><span id="__span-27-27"><a id="__codelineno-27-27" name="__codelineno-27-27" href="#__codelineno-27-27"></a>
+</span><span id="__span-27-28"><a id="__codelineno-27-28" name="__codelineno-27-28" href="#__codelineno-27-28"></a>==================================================
+</span><span id="__span-27-29"><a id="__codelineno-27-29" name="__codelineno-27-29" href="#__codelineno-27-29"></a>  Tip: run &#39;explain &lt;ClassName&gt;&#39; for full API details on any class above.
+</span><span id="__span-27-30"><a id="__codelineno-27-30" name="__codelineno-27-30" href="#__codelineno-27-30"></a>==================================================
+</span></code></pre></div>
+<blockquote>
+<p><strong>Note for DSL library authors:</strong> If your library uses <code>@DslMarker</code> and the annotation is bundled in the same JAR, Library Insight will group all DSL builder scopes by their marker annotation — making it easy for AI agents and developers to understand which builders can safely nest.</p>
+</blockquote>
+<hr />
+<h2 id="18-examples-api-usage-examples-generator">18. <code>examples</code> — API Usage Examples Generator<a class="headerlink" href="#18-examples-api-usage-examples-generator" title="Link to this section">&para;</a></h2>
+<p>Generate idiomatic Kotlin code examples showing typical usage patterns for a specific class. Automatically scans bytecode signatures to determine target design patterns (Constructor, Builder, Factory, Singleton) and extracts nested guide examples from README/Dokka markdown files.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>library-insight<span class="w"> </span>examples<span class="w"> </span>HtmlBuilder
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="c1">#   --db &lt;file&gt;             Index database JSON file path to read from (default: build/library-insight-index.json)</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>library-insight<span class="w"> </span>examples<span class="w"> </span>HtmlBuilder<span class="w"> </span>--db<span class="w"> </span>custom-index.json
+</span></code></pre></div>
+<p><strong>Example output:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>==================================================
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>  API USAGE EXAMPLES GENERATOR  —  HtmlBuilder
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>==================================================
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>// Target API: com.meet.sample.HtmlBuilder
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>Detected Usage Patterns:
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>  ✓ Constructor
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a>  ✗ Builder
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a>  ✗ Factory
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>  ✗ Singleton
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a>==================================================
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a>// Pattern: Guide Examples (from README/Dokka)
+</span><span id="__span-29-14"><a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a>val result = html {
+</span><span id="__span-29-15"><a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a>    head {
+</span><span id="__span-29-16"><a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a>        title(&quot;My Page&quot;)
+</span><span id="__span-29-17"><a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a>    }
+</span><span id="__span-29-18"><a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a>    div {
+</span><span id="__span-29-19"><a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a>        p(&quot;Welcome to Library Insight!&quot;)
+</span><span id="__span-29-20"><a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a>    }
+</span><span id="__span-29-21"><a id="__codelineno-29-21" name="__codelineno-29-21" href="#__codelineno-29-21"></a>}
+</span><span id="__span-29-22"><a id="__codelineno-29-22" name="__codelineno-29-22" href="#__codelineno-29-22"></a>
+</span><span id="__span-29-23"><a id="__codelineno-29-23" name="__codelineno-29-23" href="#__codelineno-29-23"></a>// Pattern: Constructor Instantiation
+</span><span id="__span-29-24"><a id="__codelineno-29-24" name="__codelineno-29-24" href="#__codelineno-29-24"></a>val htmlbuilder = com.meet.sample.HtmlBuilder()
+</span><span id="__span-29-25"><a id="__codelineno-29-25" name="__codelineno-29-25" href="#__codelineno-29-25"></a>
+</span><span id="__span-29-26"><a id="__codelineno-29-26" name="__codelineno-29-26" href="#__codelineno-29-26"></a>// API Invocation Examples
+</span><span id="__span-29-27"><a id="__codelineno-29-27" name="__codelineno-29-27" href="#__codelineno-29-27"></a>  htmlbuilder.p(text = &quot;example&quot;) // returns: kotlin.Unit
+</span><span id="__span-29-28"><a id="__codelineno-29-28" name="__codelineno-29-28" href="#__codelineno-29-28"></a>  htmlbuilder.h1(text = &quot;example&quot;) // returns: kotlin.Unit
+</span><span id="__span-29-29"><a id="__codelineno-29-29" name="__codelineno-29-29" href="#__codelineno-29-29"></a>  htmlbuilder.div(block = { }) // returns: kotlin.Unit
+</span><span id="__span-29-30"><a id="__codelineno-29-30" name="__codelineno-29-30" href="#__codelineno-29-30"></a>  htmlbuilder.build() // returns: kotlin.String
+</span><span id="__span-29-31"><a id="__codelineno-29-31" name="__codelineno-29-31" href="#__codelineno-29-31"></a>==================================================
+</span></code></pre></div>
+<hr />
+<h2 id="19-health-package-health-complexity-report">19. <code>health</code> — Package Health &amp; Complexity Report<a class="headerlink" href="#19-health-package-health-complexity-report" title="Link to this section">&para;</a></h2>
+<p>Generate a detailed report showing public API statistics, deprecation ratios, topo package sizes, and structural complexity metrics (largest classes, deepest inheritance hierarchies, generic density).</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>library-insight<span class="w"> </span>health
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="c1">#   --db &lt;file&gt;             Index database JSON file path to read from (default: build/library-insight-index.json)</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>library-insight<span class="w"> </span>health<span class="w"> </span>--db<span class="w"> </span>custom-index.json
+</span></code></pre></div>
+<p><strong>Example output:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>==================================================
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>    PACKAGE HEALTH &amp; COMPLEXITY REPORT
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>==================================================
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>Library Target : sample-1.1.0 (1.0.0)
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>API Health Grade: A (Deprecation ratio: 1.11%)
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>==================================================
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>▶ API Distribution
+</span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>  Total Public APIs   : 90
+</span><span id="__span-31-10"><a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a>  ├─ Classes/Objects  : 16
+</span><span id="__span-31-11"><a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>  ├─ Constructors     : 13
+</span><span id="__span-31-12"><a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a>  ├─ Methods          : 37
+</span><span id="__span-31-13"><a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a>  ├─ Properties       : 21
+</span><span id="__span-31-14"><a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a>  └─ Type Aliases     : 3
+</span><span id="__span-31-15"><a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a>  Deprecated APIs     : 1
+</span><span id="__span-31-16"><a id="__codelineno-31-16" name="__codelineno-31-16" href="#__codelineno-31-16"></a>  Experimental APIs   : 0
+</span><span id="__span-31-17"><a id="__codelineno-31-17" name="__codelineno-31-17" href="#__codelineno-31-17"></a>
+</span><span id="__span-31-18"><a id="__codelineno-31-18" name="__codelineno-31-18" href="#__codelineno-31-18"></a>▶ Package Topology
+</span><span id="__span-31-19"><a id="__codelineno-31-19" name="__codelineno-31-19" href="#__codelineno-31-19"></a>  Largest Package     : com.meet.sample (16 classes)
+</span><span id="__span-31-20"><a id="__codelineno-31-20" name="__codelineno-31-20" href="#__codelineno-31-20"></a>  Most Deprecated Pkg : com.meet.sample (1 deprecated methods)
+</span><span id="__span-31-21"><a id="__codelineno-31-21" name="__codelineno-31-21" href="#__codelineno-31-21"></a>
+</span><span id="__span-31-22"><a id="__codelineno-31-22" name="__codelineno-31-22" href="#__codelineno-31-22"></a>▶ API Complexity Metrics
+</span><span id="__span-31-23"><a id="__codelineno-31-23" name="__codelineno-31-23" href="#__codelineno-31-23"></a>  Largest Class       : com.meet.sample.SampleLibraryKt (9 methods)
+</span><span id="__span-31-24"><a id="__codelineno-31-24" name="__codelineno-31-24" href="#__codelineno-31-24"></a>  Longest Signature   : com.meet.sample.User.copy (3 parameters)
+</span><span id="__span-31-25"><a id="__codelineno-31-25" name="__codelineno-31-25" href="#__codelineno-31-25"></a>  Deepest Inheritance : com.meet.sample.AppConfig (1 supertypes: kotlin.Any)
+</span><span id="__span-31-26"><a id="__codelineno-31-26" name="__codelineno-31-26" href="#__codelineno-31-26"></a>  Most Generic Class  : com.meet.sample.SampleLibraryKt$retry$1 (1 parameters: &lt;T&gt;)
+</span><span id="__span-31-27"><a id="__codelineno-31-27" name="__codelineno-31-27" href="#__codelineno-31-27"></a>==================================================
+</span></code></pre></div>
+<hr />
+<h2 id="20-dependency-check-transitive-abi-dependency-conflict-detector">20. <code>dependency-check</code> — Transitive ABI Dependency Conflict Detector<a class="headerlink" href="#20-dependency-check-transitive-abi-dependency-conflict-detector" title="Link to this section">&para;</a></h2>
+<p>Scan all Gradle build dependencies and verify classpath bytecode references against resolved dependency JARs. Flags potential runtime <code>LinkageError</code> and <code>NoSuchFieldError</code> issues before deployment.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>library-insight<span class="w"> </span>dependency-check
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="c1">#   --dir &lt;project-dir&gt;     Target project directory to scan (default: current directory)</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>library-insight<span class="w"> </span>dependency-check<span class="w"> </span>--dir<span class="w"> </span>/path/to/my-android-project
+</span></code></pre></div>
+<p><strong>Example output:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>==================================================
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>    DEPENDENCY CONFLICT &amp; ABI DETECTOR
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>==================================================
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>Analyzing 5 dependencies on classpath...
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>Defined classes in classpath: 39
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>Defined methods: 582
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>Analyzing references for ABI linkage conflicts...
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a>
+</span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a>🚨 Potential ABI Method Conflicts (LinkageError risk):
+</span><span id="__span-33-10"><a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>  [Method Missing] class org.objectweb.asm.CurrentFrame (from asm-9.7.jar)
+</span><span id="__span-33-11"><a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a>   └── Calls missing method: org.objectweb.asm.CurrentFrame.merge(...)
+</span><span id="__span-33-12"><a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a>
+</span><span id="__span-33-13"><a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a>==================================================
+</span><span id="__span-33-14"><a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a>Analysis Complete: ❌ 12 potential linkage conflicts detected.
+</span><span id="__span-33-15"><a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a>==================================================
+</span></code></pre></div>
+<hr />
+<h2 id="21-callgraph-method-call-graph-generator">21. <code>callgraph</code> — Method Call Graph Generator<a class="headerlink" href="#21-callgraph-method-call-graph-generator" title="Link to this section">&para;</a></h2>
+<p>Generate a recursive tree representation showing all internal library methods called by a specific method node. Uses ASM instructions analysis to map actual execution paths.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>library-insight<span class="w"> </span>callgraph<span class="w"> </span>AppConfigBuilder.database
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="c1"># Optional Parameters:</span>
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="c1">#   --db &lt;file&gt;             Index database JSON file path to read from (default: build/library-insight-index.json)</span>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>library-insight<span class="w"> </span>callgraph<span class="w"> </span>AppConfigBuilder.database<span class="w"> </span>--db<span class="w"> </span>custom-index.json
+</span></code></pre></div>
+<p><strong>Example output:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>==================================================
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>  METHOD INVOCATION CALL GRAPH  —  database
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>==================================================
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>▶ Starting entrypoint: com.meet.sample.AppConfigBuilder.database(Lkotlin/jvm/functions/Function1;)V
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>└── com.meet.sample.DatabaseConfigBuilder.&lt;init&gt;()
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>==================================================
+</span></code></pre></div>
 
 
 

@@ -53,8 +53,6 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
-    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -808,6 +806,7 @@
 <li><code>scan_library</code>: Scan and index a JAR/AAR or Maven coordinate.</li>
 <li><code>search_symbols</code>: Query the API index for classes, methods, or properties matching a name.</li>
 <li><code>explain_class</code>: Retrieve the exact public API signature and documentation for a class.</li>
+<li><code>dsl_report</code>: Generate a Kotlin DSL surface report for the active library index (type aliases, <code>@DslMarker</code> scopes, extension functions, builders, and inline reified entry points).</li>
 </ul>
 <hr />
 <h2 id="how-to-connect">How to Connect<a class="headerlink" href="#how-to-connect" title="Link to this section">&para;</a></h2>
