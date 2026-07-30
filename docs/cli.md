@@ -23,6 +23,7 @@ library-insight <command> [options]
 ---
 
 <!-- --8<-- [start:commands] -->
+
 ## 1. `scan` — Scan a Library
 
 Scan a JAR, AAR, local directory, or Maven coordinate. Use this first to build the local index.
@@ -34,13 +35,19 @@ Scan a JAR, AAR, local directory, or Maven coordinate. Use this first to build t
 
 ```bash
 library-insight scan com.squareup.retrofit2:retrofit:2.11.0
+```
 
-# Optional Parameters:
-#   --db <file>             Path to save the JSON index database (default: build/library-insight-index.json)
-#   -s, --sources <file>    Path to sources JAR/AAR or source code folder to extract Javadoc/KDoc comments & guide examples
-#   --repo <url>            Additional Maven repository URL to download coordinates (multiple allowed)
-#   --lib-name <name>       Override the library name in the generated index
-#   --lib-version <version> Override the version tag in the generated index
+**Optional Parameters:**
+
+- `--db <file>`: Path to save the JSON index database (default: `build/library-insight-index.json`)
+- `-s, --sources <file>`: Path to sources JAR/AAR or source code folder to extract Javadoc/KDoc comments & guide examples
+- `--repo <url>`: Additional Maven repository URL to download coordinates (multiple allowed)
+- `--lib-name <name>`: Override the library name in the generated index
+- `--lib-version <version>`: Override the version tag in the generated index
+
+**Example with options:**
+
+```bash
 library-insight scan com.squareup.okhttp3:okhttp:4.12.0 --sources okhttp-sources.jar --repo https://maven.google.com
 ```
 
@@ -62,9 +69,15 @@ Search for packages, classes, methods, or properties in the saved index.
 
 ```bash
 library-insight search Retrofit
+```
 
-# Optional Parameters:
-#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+**Optional Parameters:**
+
+- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
+
+**Example with options:**
+
+```bash
 library-insight search "anno:Keep" --db custom-index.json
 ```
 
@@ -84,9 +97,15 @@ Print detailed structural information (modifiers, superclass, constructors, prop
 
 ```bash
 library-insight explain HtmlBuilder
+```
 
-# Optional Parameters:
-#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+**Optional Parameters:**
+
+- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
+
+**Example with options:**
+
+```bash
 library-insight explain HtmlBuilder --db custom-index.json
 ```
 
@@ -110,7 +129,11 @@ Compare two library archives to check for added, removed, and changed APIs inclu
 
 ```bash
 library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar
-# Or via Maven coordinates:
+```
+
+**Or via Maven coordinates:**
+
+```bash
 library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
 ```
 
@@ -137,9 +160,15 @@ Compare two versions and get a structured migration report showing removed, depr
 
 ```bash
 library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+```
 
-# Optional Parameters:
-#   --repo <url>            Additional Maven repository URLs to resolve coordinates (multiple allowed)
+**Optional Parameters:**
+
+- `--repo <url>`: Additional Maven repository URLs to resolve coordinates (multiple allowed)
+
+**Example with options:**
+
+```bash
 library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0 --repo https://repo.maven.apache.org/maven2
 ```
 
@@ -168,14 +197,32 @@ Export the scanned index to Markdown or JSON.
 
 > For large libraries, Markdown files can be huge. Use `ai-export` for AI prompts instead.
 
+**Export to Markdown format:**
+
 ```bash
 library-insight export markdown
-library-insight export json
+```
 
-# Optional Parameters:
-#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
-#   -o, --output <file>     Target output file path to write export content to
-library-insight export markdown --db custom-index.json -o API_REFERENCE.md
+**Export to JSON format:**
+
+```bash
+library-insight export json
+```
+
+**Positional Arguments:**
+- `[output-file]`: Optional target output file path to write export content to. If not specified, defaults to `build/API_REFERENCE.md` or `build/library-insight-index.json`. Use `-` to print to stdout.
+
+**Optional Parameters:**
+- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
+
+**Example with options:**
+```bash
+library-insight export markdown API_REFERENCE.md --db custom-index.json
+```
+
+**Example output:**
+```
+Exported MARKDOWN to: build/API_REFERENCE.md
 ```
 
 ---
@@ -186,11 +233,22 @@ Splits the scanned database into a token-efficient directory structure under `bu
 
 ```bash
 library-insight ai-export
+```
 
-# Optional Parameters:
-#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
-#   -o, --output-dir <dir>  Target output directory to save AI context files (default: build/ai-context/)
-library-insight ai-export --db custom-index.json -o custom-ai-context/
+**Positional Arguments:**
+- `[output-dir]`: Optional target output directory to save AI context files (default: `build/ai-context/`)
+
+**Optional Parameters:**
+- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
+
+**Example with options:**
+```bash
+library-insight ai-export custom-ai-context/ --db custom-index.json
+```
+
+**Example output:**
+```
+Generated compact LLM context directory structure at: build/ai-context
 ```
 
 ---
@@ -223,9 +281,33 @@ Audit Summary: Scanned 10 libraries. Total Deprecated APIs: 1819
 
 Search Maven Central dynamically for matching coordinates and versions.
 
+**Search for Retrofit on Maven Central:**
+
 ```bash
 library-insight search-central retrofit
+```
+
+**Or search for another library like Clikt:**
+
+```bash
 library-insight search-central clikt
+```
+
+**Example output:**
+```
+Searching Maven Central for 'clikt'...
+
+Found 10 matching libraries on Maven Central:
+
+📦 Coordinate: com.github.ajalt.clikt:clikt:5.0.3
+   Repository: central
+   Group:      com.github.ajalt.clikt
+   Artifact:   clikt
+--------------------------------------------------
+📦 Coordinate: com.github.ajalt:clikt:2.8.0
+   Repository: central
+   Group:      com.github.ajalt
+   Artifact:   clikt
 ```
 
 ---
@@ -272,10 +354,38 @@ Start the Model Context Protocol server on stdio. Connect Cursor, Claude Desktop
 
 ```bash
 library-insight mcp
+```
 
-# Optional Parameters:
-#   --db <file>             Index database JSON file path to read from and write to (default: build/library-insight-index.json)
+**Optional Parameters:**
+
+- `--db <file>`: Index database JSON file path to read from and write to (default: `build/library-insight-index.json`)
+
+**Example with options:**
+
+```bash
 library-insight mcp --db /path/to/project/custom-index.json
+```
+
+**Example output (JSON-RPC tools list response):**
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [
+      {
+        "name": "scan_library",
+        "description": "Scans a Java/Kotlin library and creates an API index.",
+        "inputSchema": { "type": "object", "properties": { "pathOrCoordinate": { "type": "string" } } }
+      },
+      {
+        "name": "search_symbols",
+        "description": "Search for symbols in the active library index.",
+        "inputSchema": { "type": "object", "properties": { "query": { "type": "string" } } }
+      }
+    ]
+  }
+}
 ```
 
 > **MCP vs CLI:** If an MCP server is already configured in your IDE, prefer it over running CLI commands directly.
@@ -290,13 +400,33 @@ Write a `SKILL.md` into `.agents/skills/library-insight/` so local AI agents aut
 library-insight init
 ```
 
+**Example output:**
+```
+Initializing Library Insight agent environment...
+Creating directory: .agents/skills/library-insight/
+Successfully initialized workspace skill instructions!
+```
+
 ---
 
 ## 14. `skills` — Manage Agent Skills
 
+**Add skill to the current workspace:**
+
 ```bash
-library-insight skills add    # Add skill to current workspace
-library-insight skills list   # List registered skills
+library-insight skills add
+```
+
+**List registered skills in the current workspace:**
+
+```bash
+library-insight skills list
+```
+
+**Example output (skills list):**
+```
+Workspace AI Agent Skills:
+  - [Installed] library-insight
 ```
 
 ---
@@ -307,6 +437,12 @@ Delete all locally downloaded Maven artifacts.
 
 ```bash
 library-insight clear-cache
+```
+
+**Example output:**
+```
+Clearing local cache at: ~/.library-insight/cache...
+Cache cleared successfully. Deleted 12.4 MB.
 ```
 
 ---
@@ -322,14 +458,28 @@ library-insight doctor
 **Example output:**
 
 ```
-[Library Insight Diagnostics]
+==================================================
+      Library Insight Diagnostics & Doctor
+==================================================
+
 1. Java Runtime Environment (JRE):
-   - Version: 17.0.7
+   - Version: 17.0.17
+   - Vendor: Microsoft
    - Status: OK (Java 17+ verified)
-2. Local Cache Directory:
+
+2. Local Download Cache:
+   - Path: ~/.library-insight/cache
    - Status: OK
-3. AI Agent Skill Registrations:
-   - Gemini Config Skill: ACTIVE
+
+3. Global AI Agent Skill Configurations:
+   - Cursor               : INSTALLED (Verified)
+   - Gemini Config        : INSTALLED (Verified)
+   - Claude Desktop       : INSTALLED (Verified)
+   - Antigravity Agents   : INSTALLED (Verified)
+   - GitHub Copilot       : INSTALLED (Verified)
+
+==================================================
+Diagnostics completed.
 ```
 
 ---
@@ -346,10 +496,16 @@ Generate a dedicated Kotlin DSL surface report for DSL-heavy libraries. Shows:
 
 ```bash
 library-insight dsl-report
+```
 
-# Optional Parameters:
-#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
-#   -p, --package <pkg>     Filter results to a specific package name prefix
+**Optional Parameters:**
+
+- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
+- `-p, --package <pkg>`: Filter results to a specific package name prefix
+
+**Example with options:**
+
+```bash
 library-insight dsl-report --package io.ktor.client --db custom-index.json
 ```
 
@@ -398,9 +554,15 @@ Generate idiomatic Kotlin code examples showing typical usage patterns for a spe
 
 ```bash
 library-insight examples HtmlBuilder
+```
 
-# Optional Parameters:
-#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+**Optional Parameters:**
+
+- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
+
+**Example with options:**
+
+```bash
 library-insight examples HtmlBuilder --db custom-index.json
 ```
 
@@ -448,9 +610,15 @@ Generate a detailed report showing public API statistics, deprecation ratios, to
 
 ```bash
 library-insight health
+```
 
-# Optional Parameters:
-#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+**Optional Parameters:**
+
+- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
+
+**Example with options:**
+
+```bash
 library-insight health --db custom-index.json
 ```
 
@@ -494,9 +662,15 @@ Scan all Gradle build dependencies and verify classpath bytecode references agai
 
 ```bash
 library-insight dependency-check
+```
 
-# Optional Parameters:
-#   --dir <project-dir>     Target project directory to scan (default: current directory)
+**Optional Parameters:**
+
+- `--dir <project-dir>`: Target project directory to scan (default: current directory)
+
+**Example with options:**
+
+```bash
 library-insight dependency-check --dir /path/to/my-android-project
 ```
 
@@ -528,9 +702,15 @@ Generate a recursive tree representation showing all internal library methods ca
 
 ```bash
 library-insight callgraph AppConfigBuilder.database
+```
 
-# Optional Parameters:
-#   --db <file>             Index database JSON file path to read from (default: build/library-insight-index.json)
+**Optional Parameters:**
+
+- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
+
+**Example with options:**
+
+```bash
 library-insight callgraph AppConfigBuilder.database --db custom-index.json
 ```
 
@@ -545,4 +725,5 @@ library-insight callgraph AppConfigBuilder.database --db custom-index.json
 └── com.meet.sample.DatabaseConfigBuilder.<init>()
 ==================================================
 ```
+
 <!-- --8<-- [end:commands] -->
