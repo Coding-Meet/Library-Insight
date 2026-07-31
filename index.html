@@ -532,6 +532,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="🚀 Roadmap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#source-analysis-engine-planned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 Source Analysis Engine (Planned)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clean-architectural-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏗️ Clean Architectural Layers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kotlin-multiplatform-kmp-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📦 Kotlin Multiplatform (KMP) Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -794,6 +833,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="🚀 Roadmap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#source-analysis-engine-planned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 Source Analysis Engine (Planned)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clean-architectural-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏗️ Clean Architectural Layers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kotlin-multiplatform-kmp-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📦 Kotlin Multiplatform (KMP) Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -831,23 +909,23 @@
 
 <h1 id="library-insight">Library Insight 🔍<a class="headerlink" href="#library-insight" title="Link to this section">&para;</a></h1>
 <h3 id="jvm-api-explorer-mcp-server">JVM API Explorer &amp; MCP Server<a class="headerlink" href="#jvm-api-explorer-mcp-server" title="Link to this section">&para;</a></h3>
-<p>Analyze Java &amp; Kotlin libraries with a standalone CLI or integrate directly into AI IDEs via MCP.</p>
-<p>AI coding assistants often guess Java/Kotlin library APIs from outdated documentation, web examples, or a different version than the one installed in your project. That leads to missing methods, deprecated usage, incorrect signatures, and wasted debugging time.</p>
-<p><strong>Library Insight</strong> solves this by scanning the exact JAR, AAR, Gradle output, or Maven dependency used by your project. It reads compiled <code>.class</code> structures and Kotlin <code>@Metadata</code> annotations to build a searchable, version-correct public API index, ensuring the reported APIs always match the installed version instead of outdated documentation or web examples.</p>
+<p>Analyze Java &amp; Kotlin libraries and source code with a standalone CLI or integrate directly into AI IDEs via MCP.</p>
+<p>AI coding assistants often guess Java/Kotlin APIs from outdated documentation, web examples, or a different version than the one used in your project. That leads to missing methods, deprecated usage, incorrect signatures, and wasted debugging time.</p>
+<p><strong>Library Insight</strong> solves this by analyzing the exact JAR, AAR, Maven dependency, Gradle output, or local Java/Kotlin source code used by your project. It builds a searchable, version-aware API index from compiled bytecode (including Kotlin <code>@Metadata</code>) or source code, allowing you to explore APIs, generate AI-ready context, and understand your codebase using the exact code you're working with—not outdated documentation or web examples.</p>
 <hr />
 <h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Link to this section">&para;</a></h2>
 <ul>
 <li><strong>MCP Server</strong>: Connect Cursor, Claude Desktop, or any MCP-compatible IDE to query APIs directly.</li>
-<li><strong>Version-Correct API Lookup</strong>: Scans the exact library version in your project to prevent AI hallucinations.</li>
-<li><strong>Deep Metadata Extraction</strong>: Extracts classes, constructors, methods, properties, nullability flags, generics, and annotations.</li>
-<li><strong>Kotlin DSL &amp; Fluent API Mapping</strong>: Scans <code>@DslMarker</code> scopes, type aliases, lambda parameter builders, and inline reified functions.</li>
-<li><strong>Method Call Graph Generator</strong>: Recursively traces and renders method call trees inside bytecode to analyze internal invocations.</li>
-<li><strong>Automatic Usage Examples</strong>: Auto-generates standard boilerplate usage patterns and extracts guide examples from docs.</li>
-<li><strong>API Health &amp; Complexity Audits</strong>: Computes public API count distributions, complexity indices, and deprecation ratio scores.</li>
-<li><strong>Linkage Conflict &amp; ABI Detector</strong>: Scans your classpath for classpath mismatches that could trigger <code>LinkageError</code> or <code>NoSuchMethodError</code>.</li>
-<li><strong>Migration Advisor</strong>: Compares two versions and lists deprecated, added, and replacement APIs.</li>
-<li><strong>Dependency API Audit</strong>: Scans project dependencies and highlights deprecated library APIs inside bytecode.</li>
-<li><strong>Exporter Tools</strong>: Exports indexes to JSON, readable Markdown reference docs, or token-optimized AI context packages.</li>
+<li><strong>Local Source Code Scanner (<code>scan-source</code>)</strong>: Analyze Kotlin and Java source projects without compilation, preserving KDoc/Javadoc, imports, and declaration source locations (<code>file:line</code>).</li>
+<li><strong>Version-Correct API Lookup</strong>: Build an API index from the exact JAR, AAR, Maven dependency, Gradle output, or source code used by your project to prevent AI hallucinations.</li>
+<li><strong>Deep Metadata Extraction</strong>: Extract classes, constructors, methods, properties, nullability, generics, annotations, modifiers, and source metadata.</li>
+<li><strong>Kotlin DSL &amp; Fluent API Mapping</strong>: Detect <code>@DslMarker</code> scopes, type aliases, lambda builders, extension functions, and inline reified functions.</li>
+<li><strong>Method Call Graph Generator</strong>: Trace and visualize method call trees to understand internal bytecode invocations.</li>
+<li><strong>Automatic Usage Examples</strong>: Generate common usage patterns and extract examples from available documentation.</li>
+<li><strong>API Health &amp; Complexity Reports</strong>: Measure public API size, complexity metrics, and deprecation ratios.</li>
+<li><strong>Dependency &amp; ABI Analysis</strong>: Detect classpath conflicts, linkage issues (<code>LinkageError</code>, <code>NoSuchMethodError</code>), and deprecated dependency APIs.</li>
+<li><strong>Migration Advisor</strong>: Compare two library versions and identify added, removed, deprecated, and replacement APIs.</li>
+<li><strong>Exporter Tools</strong>: Export API indexes as JSON, Markdown reference documentation, or token-optimized AI context packages.</li>
 </ul>
 <hr />
 <h2 id="why-library-insight">Why Library Insight?<a class="headerlink" href="#why-library-insight" title="Link to this section">&para;</a></h2>
@@ -904,7 +982,7 @@
 <ul>
 <li><code>library-insight-common</code>: Utility classes for ZIP/JAR/AAR extraction, Ktor async HTTP engine, and filesystem operations.</li>
 <li><code>library-insight-model</code>: Immutable Kotlin serialization structures representing the API index schema.</li>
-<li><code>library-insight-parser</code>: Raw bytecode structure extraction using <strong>ASM</strong> and JVM signature parsing.</li>
+<li><code>library-insight-parser</code>: Raw bytecode structure extraction using <strong>ASM</strong> and local source code parsing using <strong>JavaParser</strong> and <strong>Kotlin PSI</strong>.</li>
 <li><code>library-insight-kotlin</code>: Kotlin metadata parsing (<code>kotlin-metadata-jvm</code>) and JVM bytecode enrichment.</li>
 <li><code>library-insight-search</code>: Index search and query matching logic.</li>
 <li><code>library-insight-export</code>: JSON, Markdown, and AI context formatters.</li>
@@ -913,10 +991,25 @@
 </ul>
 <hr />
 <h2 id="roadmap">🚀 Roadmap<a class="headerlink" href="#roadmap" title="Link to this section">&para;</a></h2>
-<p>We plan to expand Library Insight into a unified <strong>Kotlin Multiplatform (KMP)</strong> API explorer:</p>
+<p>We plan to expand Library Insight with deep source-level analysis capabilities, a three-layer clean architecture, and unified Kotlin Multiplatform (KMP) support:</p>
+<h3 id="source-analysis-engine-planned">🔍 Source Analysis Engine (Planned)<a class="headerlink" href="#source-analysis-engine-planned" title="Link to this section">&para;</a></h3>
+<ul>
+<li><strong>References Engine</strong>: Build a symbol-to-usage index to locate references for any class, method, or property across the codebase (e.g. <code>library-insight references LoginRepository</code>).</li>
+<li><strong>Implementations</strong>: Query all interface implementations or subclass declarations (e.g. <code>library-insight implementations Repository</code> -&gt; <code>RoomRepository</code>, <code>NetworkRepository</code>).</li>
+<li><strong>Hierarchy</strong>: Render the visual inheritance tree for any base class or interface (e.g. <code>library-insight hierarchy BaseViewModel</code>).</li>
+<li><strong>Source Call Graph</strong>: Trace internal method execution paths using raw source file declaration locations.</li>
+</ul>
+<h3 id="clean-architectural-layers">🏗️ Clean Architectural Layers<a class="headerlink" href="#clean-architectural-layers" title="Link to this section">&para;</a></h3>
+<p>To simplify maintenance, we are partitioning the codebase into three clean layers:</p>
+<ol>
+<li><strong>Scanner Layer</strong> (<code>scan</code>, <code>scan-source</code>) — Processes raw inputs (bytecode, sources, metadata) and compiles them.</li>
+<li><strong>Unified Database</strong> — Serves as the single serialization schema and repository index.</li>
+<li><strong>Analysis &amp; Tooling Layer</strong> (<code>search</code>, <code>explain</code>, <code>references</code>, <code>implementations</code>, <code>hierarchy</code>, <code>callgraph</code>, <code>ai-export</code>, <code>export</code>) — Consumes the database and provides rich diagnostic tools.</li>
+</ol>
+<h3 id="kotlin-multiplatform-kmp-support">📦 Kotlin Multiplatform (KMP) Support<a class="headerlink" href="#kotlin-multiplatform-kmp-support" title="Link to this section">&para;</a></h3>
 <ul>
 <li><strong>KLib Metadata Reader</strong>: Parse <code>.klib</code> metadata to extract signatures for iOS/Native, JS, and Wasm targets directly (bypassing JVM bytecode dependencies).</li>
-<li><strong>Platform-Aware Indexing</strong>: Store platform target markers (<code>common</code>, <code>jvm</code>, <code>ios</code>, <code>js</code>, <code>wasm</code>) in the database schema so AI agents know exactly where APIs are available.</li>
+<li><strong>Platform-Aware Indexing</strong>: Store platform target markers (<code>common</code>, <code>jvm</code>, <code>ios</code>, <code>js</code>, <code>wasm</code>) in the database schema.</li>
 <li><strong>KMP Coordinate Resolution</strong>: Auto-resolve platform split coordinates (e.g. <code>ktor-client-core-iosarm64</code>) from the root KMP library Maven coordinate.</li>
 </ul>
 

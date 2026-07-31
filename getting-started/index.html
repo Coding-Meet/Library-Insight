@@ -543,10 +543,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-scan-a-library" class="md-nav__link">
+  <a href="#1-indexing-the-apis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Scan a Library
+        1. Indexing the APIs
       
     </span>
   </a>
@@ -576,10 +576,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-compare-versions" class="md-nav__link">
+  <a href="#4-compare-versions-bytecode-only" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Compare Versions
+        4. Compare Versions (Bytecode Only)
       
     </span>
   </a>
@@ -806,10 +806,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-scan-a-library" class="md-nav__link">
+  <a href="#1-indexing-the-apis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Scan a Library
+        1. Indexing the APIs
       
     </span>
   </a>
@@ -839,10 +839,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-compare-versions" class="md-nav__link">
+  <a href="#4-compare-versions-bytecode-only" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Compare Versions
+        4. Compare Versions (Bytecode Only)
       
     </span>
   </a>
@@ -929,23 +929,35 @@
 </span></code></pre></div>
 <hr />
 <h2 id="basic-workflow-quick-start">Basic Workflow / Quick Start<a class="headerlink" href="#basic-workflow-quick-start" title="Link to this section">&para;</a></h2>
-<p>Here is a typical flow when you add or inspect a library:</p>
-<h3 id="1-scan-a-library">1. Scan a Library<a class="headerlink" href="#1-scan-a-library" title="Link to this section">&para;</a></h3>
-<p>Scan a dependency from Maven Central (or picks it from your local Gradle cache).
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
+<p>Here is a typical flow when you add or inspect a library or project:</p>
+<h3 id="1-indexing-the-apis">1. Indexing the APIs<a class="headerlink" href="#1-indexing-the-apis" title="Link to this section">&para;</a></h3>
+<p>You can build an API index database using either of the two pipelines:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">A. Scan Local Source Projects</label><label for="__tabbed_2_2">B. Scan Compiled Libraries</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Scan a local raw source directory containing Kotlin (<code>.kt</code>) and Java (<code>.java</code>) files without compilation:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>library-insight<span class="w"> </span>scan-source<span class="w"> </span>app/src/main
 </span></code></pre></div></p>
+</div>
+<div class="tabbed-block">
+<p>Scan a compiled dependency from Maven Central (or pick it from your local Gradle cache):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
+</span></code></pre></div></p>
+</div>
+</div>
+</div>
 <h3 id="2-search-for-symbols">2. Search for Symbols<a class="headerlink" href="#2-search-for-symbols" title="Link to this section">&para;</a></h3>
-<p>Find a class, interface, or property in the compiled library index.
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>library-insight<span class="w"> </span>search<span class="w"> </span>Retrofit
-</span></code></pre></div></p>
+<p>Find a class, interface, or property in the index database.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>library-insight<span class="w"> </span>search<span class="w"> </span>LoginRepository
+</span></code></pre></div>
 <h3 id="3-explain-class-signatures">3. Explain class signatures<a class="headerlink" href="#3-explain-class-signatures" title="Link to this section">&para;</a></h3>
-<p>Inspect full API signatures and Kotlin/Java docs for a specific class.
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>Retrofit
-</span></code></pre></div></p>
-<h3 id="4-compare-versions">4. Compare Versions<a class="headerlink" href="#4-compare-versions" title="Link to this section">&para;</a></h3>
-<p>See what was added, removed, or changed between two versions.
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>library-insight<span class="w"> </span>diff<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
-</span></code></pre></div></p>
+<p>Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration source locations (file:line) for a class.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>LoginRepository
+</span></code></pre></div>
+<h3 id="4-compare-versions-bytecode-only">4. Compare Versions (Bytecode Only)<a class="headerlink" href="#4-compare-versions-bytecode-only" title="Link to this section">&para;</a></h3>
+<p>See what was added, removed, or changed between two versions of compiled library dependencies.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>library-insight<span class="w"> </span>diff<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
+</span></code></pre></div>
 
 
 

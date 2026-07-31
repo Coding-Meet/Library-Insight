@@ -793,6 +793,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#22-scan-source-local-source-directory-scanner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22. scan-source — Local Source Directory Scanner
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1150,6 +1161,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#22-scan-source-local-source-directory-scanner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22. scan-source — Local Source Directory Scanner
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1243,9 +1265,13 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>library-insight<span class="w"> </span>search<span class="w"> </span><span class="s2">&quot;anno:Keep&quot;</span><span class="w"> </span>--db<span class="w"> </span>custom-index.json
 </span></code></pre></div>
 <p><strong>Example output:</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Found 2 matching classes:
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  - retrofit2.Retrofit
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>  - retrofit2.Retrofit$Builder
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Found 2 matches for &#39;Retrofit&#39;:
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>--------------------------------------------------
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>[CLASS]     class retrofit2.Retrofit
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>           Source: src/main/java/retrofit2/Retrofit.java:18
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>[CLASS]     class retrofit2.Retrofit$Builder
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>           Source: src/main/java/retrofit2/Retrofit.java:82
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>--------------------------------------------------
 </span></code></pre></div>
 <hr />
 <h2 id="3-explain-explain-a-class">3. <code>explain</code> — Explain a Class<a class="headerlink" href="#3-explain-explain-a-class" title="Link to this section">&para;</a></h2>
@@ -1260,13 +1286,32 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>HtmlBuilder<span class="w"> </span>--db<span class="w"> </span>custom-index.json
 </span></code></pre></div>
 <p><strong>Example output:</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Class: retrofit2.Retrofit (public class)
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>  Constructors:
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    + public constructor(okhttp3.Call$Factory, ...)
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  Methods:
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    + public fun &lt;T&gt; create(java.lang.Class&lt;T&gt;): T
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    + public fun baseUrl(): okhttp3.HttpUrl
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    + public fun callFactory(): okhttp3.Call$Factory
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>==================================================
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a> CLASS EXPLAIN REPORT
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>==================================================
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>Class:       com.meet.sample.HtmlBuilder
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>Package:     com.meet.sample
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>Kind:        class
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>Visibility:  public
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>Source:      sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:25
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>Annotations: @HtmlDsl
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>==================================================
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>Imports:
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>  - kotlin.text.*
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>  - retrofit2.Retrofit
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>Properties:
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>  - private val children: Any (sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:27)
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>Methods:
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>  // /** Adds a paragraph element to the HTML output. */
+</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>  - public fun p(text: String): Unit (sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:29)
+</span><span id="__span-9-22"><a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>  // /** Adds a heading element. */
+</span><span id="__span-9-23"><a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>  - public fun h1(text: String): Unit (sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:32)
+</span><span id="__span-9-24"><a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>  // /** Adds a nested div block. */
+</span><span id="__span-9-25"><a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>  - public fun div(block: HtmlBuilder.() -&gt; Unit): Unit (sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:35)
+</span><span id="__span-9-26"><a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>  - public fun build(): String (sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:41)
 </span></code></pre></div>
 <hr />
 <h2 id="4-diff-compare-versions">4. <code>diff</code> — Compare Versions<a class="headerlink" href="#4-diff-compare-versions" title="Link to this section">&para;</a></h2>
@@ -1326,31 +1371,39 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 <p><strong>Export to JSON format:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>library-insight<span class="w"> </span><span class="nb">export</span><span class="w"> </span>json
 </span></code></pre></div>
-<p><strong>Positional Arguments:</strong>
-- <code>[output-file]</code>: Optional target output file path to write export content to. If not specified, defaults to <code>build/API_REFERENCE.md</code> or <code>build/library-insight-index.json</code>. Use <code>-</code> to print to stdout.</p>
-<p><strong>Optional Parameters:</strong>
-- <code>--db &lt;file&gt;</code>: Index database JSON file path to read from (default: <code>build/library-insight-index.json</code>)</p>
-<p><strong>Example with options:</strong>
+<p><strong>Positional Arguments:</strong></p>
+<ul>
+<li><code>[output-file]</code>: Optional target output file path to write export content to. If not specified, defaults to <code>build/API_REFERENCE.md</code> or <code>build/library-insight-index.json</code>. Use <code>-</code> to print to stdout.</li>
+</ul>
+<p><strong>Optional Parameters:</strong></p>
+<ul>
+<li><code>--db &lt;file&gt;</code>: Index database JSON file path to read from (default: <code>build/library-insight-index.json</code>)</li>
+</ul>
+<p><strong>Example with options:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>library-insight<span class="w"> </span><span class="nb">export</span><span class="w"> </span>markdown<span class="w"> </span>API_REFERENCE.md<span class="w"> </span>--db<span class="w"> </span>custom-index.json
-</span></code></pre></div></p>
-<p><strong>Example output:</strong>
+</span></code></pre></div>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>Exported MARKDOWN to: build/API_REFERENCE.md
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="7-ai-export-ai-context-export-recommended-for-ai-prompts">7. <code>ai-export</code> — AI Context Export (Recommended for AI prompts)<a class="headerlink" href="#7-ai-export-ai-context-export-recommended-for-ai-prompts" title="Link to this section">&para;</a></h2>
 <p>Splits the scanned database into a token-efficient directory structure under <code>build/ai-context/</code>. AI agents read <code>metadata.json</code> first, then load only the class files they need — reducing token usage by 95%+.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>library-insight<span class="w"> </span>ai-export
 </span></code></pre></div>
-<p><strong>Positional Arguments:</strong>
-- <code>[output-dir]</code>: Optional target output directory to save AI context files (default: <code>build/ai-context/</code>)</p>
-<p><strong>Optional Parameters:</strong>
-- <code>--db &lt;file&gt;</code>: Index database JSON file path to read from (default: <code>build/library-insight-index.json</code>)</p>
-<p><strong>Example with options:</strong>
+<p><strong>Positional Arguments:</strong></p>
+<ul>
+<li><code>[output-dir]</code>: Optional target output directory to save AI context files (default: <code>build/ai-context/</code>)</li>
+</ul>
+<p><strong>Optional Parameters:</strong></p>
+<ul>
+<li><code>--db &lt;file&gt;</code>: Index database JSON file path to read from (default: <code>build/library-insight-index.json</code>)</li>
+</ul>
+<p><strong>Example with options:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>library-insight<span class="w"> </span>ai-export<span class="w"> </span>custom-ai-context/<span class="w"> </span>--db<span class="w"> </span>custom-index.json
-</span></code></pre></div></p>
-<p><strong>Example output:</strong>
+</span></code></pre></div>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>Generated compact LLM context directory structure at: build/ai-context
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="8-audit-dependency-api-audit">8. <code>audit</code> — Dependency API Audit<a class="headerlink" href="#8-audit-dependency-api-audit" title="Link to this section">&para;</a></h2>
 <p>Scan all project Gradle dependencies recursively (<code>build.gradle.kts</code>, <code>libs.versions.toml</code>) and report deprecated classes, methods, and properties found in the bytecode.</p>
@@ -1376,7 +1429,7 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 <p><strong>Or search for another library like Clikt:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>library-insight<span class="w"> </span>search-central<span class="w"> </span>clikt
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>Searching Maven Central for &#39;clikt&#39;...
 </span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>
 </span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>Found 10 matching libraries on Maven Central:
@@ -1390,7 +1443,7 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 </span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>   Repository: central
 </span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a>   Group:      com.github.ajalt
 </span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>   Artifact:   clikt
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="10-dependency-graph-dependency-tree">10. <code>dependency-graph</code> — Dependency Tree<a class="headerlink" href="#10-dependency-graph-dependency-tree" title="Link to this section">&para;</a></h2>
 <p>Print a visual recursive tree of transitive dependencies from POM descriptors.</p>
@@ -1423,7 +1476,7 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 <p><strong>Example with options:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>library-insight<span class="w"> </span>mcp<span class="w"> </span>--db<span class="w"> </span>/path/to/project/custom-index.json
 </span></code></pre></div>
-<p><strong>Example output (JSON-RPC tools list response):</strong>
+<p><strong>Example output (JSON-RPC tools list response):</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="p">{</span>
 </span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="w">  </span><span class="nt">&quot;jsonrpc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
 </span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -1432,17 +1485,23 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 </span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="w">      </span><span class="p">{</span>
 </span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scan_library&quot;</span><span class="p">,</span>
 </span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a><span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Scans a Java/Kotlin library and creates an API index.&quot;</span><span class="p">,</span>
-</span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="w">        </span><span class="nt">&quot;inputSchema&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;pathOrCoordinate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="w">      </span><span class="p">},</span>
-</span><span id="__span-34-11"><a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="w">      </span><span class="p">{</span>
-</span><span id="__span-34-12"><a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a><span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;search_symbols&quot;</span><span class="p">,</span>
-</span><span id="__span-34-13"><a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a><span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Search for symbols in the active library index.&quot;</span><span class="p">,</span>
-</span><span id="__span-34-14"><a id="__codelineno-34-14" name="__codelineno-34-14" href="#__codelineno-34-14"></a><span class="w">        </span><span class="nt">&quot;inputSchema&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-34-15"><a id="__codelineno-34-15" name="__codelineno-34-15" href="#__codelineno-34-15"></a><span class="w">      </span><span class="p">}</span>
-</span><span id="__span-34-16"><a id="__codelineno-34-16" name="__codelineno-34-16" href="#__codelineno-34-16"></a><span class="w">    </span><span class="p">]</span>
-</span><span id="__span-34-17"><a id="__codelineno-34-17" name="__codelineno-34-17" href="#__codelineno-34-17"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-34-18"><a id="__codelineno-34-18" name="__codelineno-34-18" href="#__codelineno-34-18"></a><span class="p">}</span>
-</span></code></pre></div></p>
+</span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="w">        </span><span class="nt">&quot;inputSchema&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+</span><span id="__span-34-11"><a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="w">          </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;pathOrCoordinate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-34-12"><a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-34-13"><a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a><span class="w">      </span><span class="p">},</span>
+</span><span id="__span-34-14"><a id="__codelineno-34-14" name="__codelineno-34-14" href="#__codelineno-34-14"></a><span class="w">      </span><span class="p">{</span>
+</span><span id="__span-34-15"><a id="__codelineno-34-15" name="__codelineno-34-15" href="#__codelineno-34-15"></a><span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;search_symbols&quot;</span><span class="p">,</span>
+</span><span id="__span-34-16"><a id="__codelineno-34-16" name="__codelineno-34-16" href="#__codelineno-34-16"></a><span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Search for symbols in the active library index.&quot;</span><span class="p">,</span>
+</span><span id="__span-34-17"><a id="__codelineno-34-17" name="__codelineno-34-17" href="#__codelineno-34-17"></a><span class="w">        </span><span class="nt">&quot;inputSchema&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-34-18"><a id="__codelineno-34-18" name="__codelineno-34-18" href="#__codelineno-34-18"></a><span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+</span><span id="__span-34-19"><a id="__codelineno-34-19" name="__codelineno-34-19" href="#__codelineno-34-19"></a><span class="w">          </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-34-20"><a id="__codelineno-34-20" name="__codelineno-34-20" href="#__codelineno-34-20"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-34-21"><a id="__codelineno-34-21" name="__codelineno-34-21" href="#__codelineno-34-21"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-34-22"><a id="__codelineno-34-22" name="__codelineno-34-22" href="#__codelineno-34-22"></a><span class="w">    </span><span class="p">]</span>
+</span><span id="__span-34-23"><a id="__codelineno-34-23" name="__codelineno-34-23" href="#__codelineno-34-23"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-34-24"><a id="__codelineno-34-24" name="__codelineno-34-24" href="#__codelineno-34-24"></a><span class="p">}</span>
+</span></code></pre></div>
 <blockquote>
 <p><strong>MCP vs CLI:</strong> If an MCP server is already configured in your IDE, prefer it over running CLI commands directly.</p>
 </blockquote>
@@ -1451,11 +1510,11 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 <p>Write a <code>SKILL.md</code> into <code>.agents/skills/library-insight/</code> so local AI agents auto-discover the CLI.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>library-insight<span class="w"> </span>init
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>Initializing Library Insight agent environment...
 </span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>Creating directory: .agents/skills/library-insight/
 </span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>Successfully initialized workspace skill instructions!
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="14-skills-manage-agent-skills">14. <code>skills</code> — Manage Agent Skills<a class="headerlink" href="#14-skills-manage-agent-skills" title="Link to this section">&para;</a></h2>
 <p><strong>Add skill to the current workspace:</strong></p>
@@ -1464,19 +1523,19 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 <p><strong>List registered skills in the current workspace:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>library-insight<span class="w"> </span>skills<span class="w"> </span>list
 </span></code></pre></div>
-<p><strong>Example output (skills list):</strong>
+<p><strong>Example output (skills list):</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>Workspace AI Agent Skills:
 </span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>  - [Installed] library-insight
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="15-clear-cache-clear-local-cache">15. <code>clear-cache</code> — Clear Local Cache<a class="headerlink" href="#15-clear-cache-clear-local-cache" title="Link to this section">&para;</a></h2>
 <p>Delete all locally downloaded Maven artifacts.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>library-insight<span class="w"> </span>clear-cache
 </span></code></pre></div>
-<p><strong>Example output:</strong>
+<p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>Clearing local cache at: ~/.library-insight/cache...
 </span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>Cache cleared successfully. Deleted 12.4 MB.
-</span></code></pre></div></p>
+</span></code></pre></div>
 <hr />
 <h2 id="16-doctor-diagnostics">16. <code>doctor</code> — Diagnostics<a class="headerlink" href="#16-doctor-diagnostics" title="Link to this section">&para;</a></h2>
 <p>Check Java version, cache directory, and active AI agent skill configurations.</p>
@@ -1696,6 +1755,33 @@ Do NOT read raw <code>build/library-insight-index.json</code> or generated <code
 </span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a>▶ Starting entrypoint: com.meet.sample.AppConfigBuilder.database(Lkotlin/jvm/functions/Function1;)V
 </span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a>└── com.meet.sample.DatabaseConfigBuilder.&lt;init&gt;()
 </span><span id="__span-58-7"><a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a>==================================================
+</span></code></pre></div>
+<hr />
+<h2 id="22-scan-source-local-source-directory-scanner">22. <code>scan-source</code> — Local Source Directory Scanner<a class="headerlink" href="#22-scan-source-local-source-directory-scanner" title="Link to this section">&para;</a></h2>
+<p>Scan a local raw source directory containing Kotlin (<code>.kt</code>) and Java (<code>.java</code>) files to build an API index database.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>library-insight<span class="w"> </span>scan-source<span class="w"> </span>sample/src/main/kotlin
+</span></code></pre></div>
+<p><strong>Optional Parameters:</strong></p>
+<ul>
+<li><code>--db &lt;file&gt;</code>: Target index database JSON file path to write to (default: <code>build/library-insight-index.json</code>)</li>
+<li><code>--lib-name &lt;name&gt;</code>: Override the library name tag in the generated index</li>
+<li><code>--lib-version &lt;version&gt;</code>: Override the version tag in the generated index</li>
+</ul>
+<p><strong>Example with options:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-60-1"><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a>library-insight<span class="w"> </span>scan-source<span class="w"> </span>src/main/kotlin<span class="w"> </span>--db<span class="w"> </span>build/my-app-index.json<span class="w"> </span>--lib-name<span class="w"> </span>MyApp<span class="w"> </span>--lib-version<span class="w"> </span><span class="m">1</span>.0.0
+</span></code></pre></div>
+<p><strong>Example output:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a>Scanning source directory: /Users/meet/AndroidStudioProjects/Library-Insight/sample/src/main/kotlin
+</span><span id="__span-61-2"><a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a>
+</span><span id="__span-61-3"><a id="__codelineno-61-3" name="__codelineno-61-3" href="#__codelineno-61-3"></a>Detected:
+</span><span id="__span-61-4"><a id="__codelineno-61-4" name="__codelineno-61-4" href="#__codelineno-61-4"></a>  • Kotlin files : 1
+</span><span id="__span-61-5"><a id="__codelineno-61-5" name="__codelineno-61-5" href="#__codelineno-61-5"></a>  • Java files   : 0
+</span><span id="__span-61-6"><a id="__codelineno-61-6" name="__codelineno-61-6" href="#__codelineno-61-6"></a>
+</span><span id="__span-61-7"><a id="__codelineno-61-7" name="__codelineno-61-7" href="#__codelineno-61-7"></a>Scan complete!
+</span><span id="__span-61-8"><a id="__codelineno-61-8" name="__codelineno-61-8" href="#__codelineno-61-8"></a>Found 15 classes across 3 packages.
+</span><span id="__span-61-9"><a id="__codelineno-61-9" name="__codelineno-61-9" href="#__codelineno-61-9"></a>
+</span><span id="__span-61-10"><a id="__codelineno-61-10" name="__codelineno-61-10" href="#__codelineno-61-10"></a>Saved API index to:
+</span><span id="__span-61-11"><a id="__codelineno-61-11" name="__codelineno-61-11" href="#__codelineno-61-11"></a>/Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight-index.json
 </span></code></pre></div>
 
 

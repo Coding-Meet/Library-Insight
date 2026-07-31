@@ -631,6 +631,56 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v130" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v1.3.0
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v1.3.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#raw-source-directory-scanner-scan-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 Raw Source Directory Scanner (scan-source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#source-location-imports-indexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📍 Source Location &amp; Imports Indexing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-output-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🖥️ CLI Output Enhancements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v120" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -868,6 +918,56 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#v130" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v1.3.0
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v1.3.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#raw-source-directory-scanner-scan-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 Raw Source Directory Scanner (scan-source)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#source-location-imports-indexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📍 Source Location &amp; Imports Indexing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-output-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🖥️ CLI Output Enhancements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#v120" class="md-nav__link">
@@ -1110,6 +1210,38 @@
 <h1 id="release-notes">Release Notes<a class="headerlink" href="#release-notes" title="Link to this section">&para;</a></h1>
 <p>All releases for <strong>Library Insight</strong> are documented below.</p>
 <hr />
+<h2 id="v130">v1.3.0<a class="headerlink" href="#v130" title="Link to this section">&para;</a></h2>
+<p><em>Released on July 31, 2026</em></p>
+<p>This release introduces direct source code scanning for local Kotlin and Java project directories, mapping exact declaration source locations (file path, line, and column) and imports directly into the unified API database index.</p>
+<h3 id="raw-source-directory-scanner-scan-source">🔍 Raw Source Directory Scanner (<code>scan-source</code>)<a class="headerlink" href="#raw-source-directory-scanner-scan-source" title="Link to this section">&para;</a></h3>
+<p>Scan raw source code directories containing Kotlin (<code>.kt</code>) and Java (<code>.java</code>) files without compiling them. It generates the exact same unified API index database as the compiled <code>scan</code> pipeline, meaning all downstream commands (<code>search</code>, <code>explain</code>, <code>export</code>, <code>ai-export</code>) function seamlessly.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>library-insight<span class="w"> </span>scan-source<span class="w"> </span>app/src/main
+</span></code></pre></div>
+<p><strong>Features:</strong>
+- <strong>Java Parser Integration</strong>: Uses JavaParser to parse Java classes, interfaces, enums, records, constructors, methods, properties, modifiers, annotations, generics, and Javadocs.
+- <strong>Kotlin PSI Integration</strong>: Uses the official Kotlin compiler embeddable (<code>kotlin-compiler-embeddable</code>) and PSI parser to traverse syntax trees, preserving KDocs, class modifiers (data, sealed, value, inner, open, abstract), companion objects, secondary constructors, and extension receiver types.</p>
+<h3 id="source-location-imports-indexing">📍 Source Location &amp; Imports Indexing<a class="headerlink" href="#source-location-imports-indexing" title="Link to this section">&para;</a></h3>
+<ul>
+<li><strong>Source Pointers</strong>: Persists the relative file path, line number, and column for every class, constructor, method, and property.</li>
+<li><strong>Import Statements</strong>: Persists file-level import lists inside the class API model, helpful for dependency analysis and code structure auditing.</li>
+<li><strong>Backward-Compatible Database</strong>: Existing bytecode-scanned indices are backward-compatible and load seamlessly without schema validation breaks.</li>
+</ul>
+<h3 id="cli-output-enhancements">🖥️ CLI Output Enhancements<a class="headerlink" href="#cli-output-enhancements" title="Link to this section">&para;</a></h3>
+<ul>
+<li><strong><code>scan-source</code> statistics</strong>: The console prints clean statistics on scanned file types:
+  <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Scanning source directory: app/src/main
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Detected:
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  • Kotlin files : 82
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  • Java files   : 14
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>Scan complete!
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>Found 143 classes across 18 packages.
+</span></code></pre></div></li>
+<li><strong><code>search</code> source locations</strong>: Whenever available, search results display declaration files and line numbers directly below matched symbols.</li>
+<li><strong><code>explain</code> reports</strong>: The class explain template now displays <code>Source</code> file locations at the header, <code>Imports</code> imports list (if any), and source file/line markers next to each property and method.</li>
+</ul>
+<hr />
 <h2 id="v120">v1.2.0<a class="headerlink" href="#v120" title="Link to this section">&para;</a></h2>
 <p><em>Released on July 29, 2026</em></p>
 <p>This major update introduces deep Kotlin DSL analysis, bytecode call graph visualization, automated example generation, package health metrics, and compile-time ABI linkage checks to prevent runtime errors.</p>
@@ -1121,23 +1253,23 @@
 - <strong>Lambda builders</strong> — functions taking lambda-with-receiver blocks.
 - <strong>Inline reified entry points</strong>.</p>
 <p><em>Also registered as the <code>dsl_report</code> tool on the MCP server!</em></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>library-insight<span class="w"> </span>dsl-report
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>library-insight<span class="w"> </span>dsl-report
 </span></code></pre></div>
 <h3 id="method-call-graph-generator-callgraph">🌳 Method Call Graph Generator (<code>callgraph</code>)<a class="headerlink" href="#method-call-graph-generator-callgraph" title="Link to this section">&para;</a></h3>
 <p>Recursively traces method call instructions to render a visual tree of internal invocations inside the bytecode. Excellent for understanding execution flows and auditing internals.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>library-insight<span class="w"> </span>callgraph<span class="w"> </span>HtmlBuilder.div
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>library-insight<span class="w"> </span>callgraph<span class="w"> </span>HtmlBuilder.div
 </span></code></pre></div>
 <h3 id="automatic-examples-generator-examples">📝 Automatic Examples Generator (<code>examples</code>)<a class="headerlink" href="#automatic-examples-generator-examples" title="Link to this section">&para;</a></h3>
 <p>Generates typical instantiation patterns (constructors, builders, factories, singletons) from bytecode signatures, and extracts code blocks from Dokka/README markdown files.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>library-insight<span class="w"> </span>examples<span class="w"> </span>HtmlBuilder
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>library-insight<span class="w"> </span>examples<span class="w"> </span>HtmlBuilder
 </span></code></pre></div>
 <h3 id="package-health-complexity-health">🩺 Package Health &amp; Complexity (<code>health</code>)<a class="headerlink" href="#package-health-complexity-health" title="Link to this section">&para;</a></h3>
 <p>Analyzes structural complexity indices, public API distributions (classes, methods, properties), and deprecation ratios to grade the library.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>library-insight<span class="w"> </span>health
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>library-insight<span class="w"> </span>health
 </span></code></pre></div>
 <h3 id="classpath-abi-linkage-detector-dependency-check">🚨 Classpath ABI Linkage Detector (<code>dependency-check</code>)<a class="headerlink" href="#classpath-abi-linkage-detector-dependency-check" title="Link to this section">&para;</a></h3>
 <p>Checks compiled transitive dependencies for method and field signatures missing from the classpath. Proactively flags runtime risks such as <code>NoSuchMethodError</code>, <code>NoSuchFieldError</code>, or <code>LinkageError</code>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>library-insight<span class="w"> </span>dependency-check
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>library-insight<span class="w"> </span>dependency-check
 </span></code></pre></div>
 <h3 id="mcp-server-enhancements">⚙️ MCP Server Enhancements<a class="headerlink" href="#mcp-server-enhancements" title="Link to this section">&para;</a></h3>
 <ul>
@@ -1151,7 +1283,7 @@
 <p>This release evolves Library Insight from a CLI scanner into a full <strong>JVM API Explorer &amp; MCP Server</strong> — your AI IDE can now use it automatically, without any manual commands.</p>
 <h3 id="mcp-server-model-context-protocol">🔌 MCP Server (Model Context Protocol)<a class="headerlink" href="#mcp-server-model-context-protocol" title="Link to this section">&para;</a></h3>
 <p>Connect Cursor, Claude Desktop, or any MCP-compatible IDE directly. AI agents can call <code>scan_library</code>, <code>search_symbols</code>, and <code>explain_class</code> natively without leaving the editor.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>library-insight<span class="w"> </span>mcp
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>library-insight<span class="w"> </span>mcp
 </span></code></pre></div>
 <h3 id="migration-advisor-migrate">🔄 Migration Advisor (<code>migrate</code>)<a class="headerlink" href="#migration-advisor-migrate" title="Link to this section">&para;</a></h3>
 <p>Compare two library versions and get a structured report of:</p>
@@ -1161,23 +1293,23 @@
 <li>✅ Added APIs</li>
 </ul>
 <p>Perfect for upgrading Retrofit, OkHttp, Compose, or Kotlin.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>library-insight<span class="w"> </span>migrate<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>library-insight<span class="w"> </span>migrate<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
 </span></code></pre></div>
 <h3 id="dependency-api-audit-audit">🔍 Dependency API Audit (<code>audit</code>)<a class="headerlink" href="#dependency-api-audit-audit" title="Link to this section">&para;</a></h3>
 <p>Scan all project Gradle dependencies recursively and report deprecated classes, methods, and properties found in the actual bytecode.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>library-insight<span class="w"> </span>audit
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>library-insight<span class="w"> </span>audit
 </span></code></pre></div>
 <h3 id="dependency-graph-dependency-graph">🌳 Dependency Graph (<code>dependency-graph</code>)<a class="headerlink" href="#dependency-graph-dependency-graph" title="Link to this section">&para;</a></h3>
 <p>Print a visual recursive tree of transitive compile dependencies from POM descriptors.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>library-insight<span class="w"> </span>dependency-graph<span class="w"> </span>com.github.ajalt.clikt:clikt-jvm:4.4.0
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>library-insight<span class="w"> </span>dependency-graph<span class="w"> </span>com.github.ajalt.clikt:clikt-jvm:4.4.0
 </span></code></pre></div>
 <h3 id="search-maven-central-search-central">🔎 Search Maven Central (<code>search-central</code>)<a class="headerlink" href="#search-maven-central-search-central" title="Link to this section">&para;</a></h3>
 <p>Find Maven coordinates and versions without leaving the terminal.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>library-insight<span class="w"> </span>search-central<span class="w"> </span>retrofit
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>library-insight<span class="w"> </span>search-central<span class="w"> </span>retrofit
 </span></code></pre></div>
 <h3 id="semver-compliance-checker-semver">✅ SemVer Compliance Checker (<code>semver</code>)<a class="headerlink" href="#semver-compliance-checker-semver" title="Link to this section">&para;</a></h3>
 <p>Verify that a version bump correctly reflects the actual bytecode changes. Flags unbumped breaking changes.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>library-insight<span class="w"> </span>semver<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>library-insight<span class="w"> </span>semver<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
 </span></code></pre></div>
 <h3 id="other-improvements">📋 Other Improvements<a class="headerlink" href="#other-improvements" title="Link to this section">&para;</a></h3>
 <ul>
