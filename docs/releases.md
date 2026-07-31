@@ -8,41 +8,32 @@ All releases for **Library Insight** are documented below.
 
 _Released on July 31, 2026_
 
-This release introduces direct source code scanning for local Kotlin and Java project directories, mapping exact declaration source locations (file path, line, and column) and imports directly into the unified API database index.
+This release introduces scan-source, enabling Library Insight to analyze local Kotlin and Java source projects without compilation. Source declarations, documentation, imports, and precise source locations are indexed into the same unified API database used for compiled libraries.
 
 ### 🔍 Raw Source Directory Scanner (`scan-source`)
 
-Scan raw source code directories containing Kotlin (`.kt`) and Java (`.java`) files without compiling them. It generates the exact same unified API index database as the compiled `scan` pipeline, meaning all downstream commands (`search`, `explain`, `export`, `ai-export`) function seamlessly.
+Scan raw source code directories containing Kotlin (`.kt`) and Java (`.java`) files without compiling them. It generates the same unified API index as the existing scan command, allowing existing commands such as search, explain, export, and ai-export to work without any workflow changes.
 
 ```bash
 library-insight scan-source app/src/main
 ```
 
 **Features:**
-- **Java Parser Integration**: Uses JavaParser to parse Java classes, interfaces, enums, records, constructors, methods, properties, modifiers, annotations, generics, and Javadocs.
-- **Kotlin PSI Integration**: Uses the official Kotlin compiler embeddable (`kotlin-compiler-embeddable`) and PSI parser to traverse syntax trees, preserving KDocs, class modifiers (data, sealed, value, inner, open, abstract), companion objects, secondary constructors, and extension receiver types.
+
+- **Java Source Parsing**: Uses JavaParser to extract classes, interfaces, enums, records, constructors, methods, fields, generics, annotations, modifiers, and Javadocs.
+- **Kotlin Source Parsing**: Uses the official Kotlin compiler PSI (`kotlin-compiler-embeddable`) to extract KDoc, modifiers, companion objects, secondary constructors, extension receivers, generics, and Kotlin-specific language features.
 
 ### 📍 Source Location & Imports Indexing
 
-- **Source Pointers**: Persists the relative file path, line number, and column for every class, constructor, method, and property.
+- **Source Locations**: Stores the relative file path, line number, and column for every indexed class, constructor, method, and property.
 - **Import Statements**: Persists file-level import lists inside the class API model, helpful for dependency analysis and code structure auditing.
 - **Backward-Compatible Database**: Existing bytecode-scanned indices are backward-compatible and load seamlessly without schema validation breaks.
 
-### 🖥️ CLI Output Enhancements
+### 🖥️ CLI Improvements
 
-- **`scan-source` statistics**: The console prints clean statistics on scanned file types:
-  ```
-  Scanning source directory: app/src/main
-  
-  Detected:
-    • Kotlin files : 82
-    • Java files   : 14
-  
-  Scan complete!
-  Found 143 classes across 18 packages.
-  ```
-- **`search` source locations**: Whenever available, search results display declaration files and line numbers directly below matched symbols.
-- **`explain` reports**: The class explain template now displays `Source` file locations at the header, `Imports` imports list (if any), and source file/line markers next to each property and method.
+- scan-source displays Kotlin/Java file statistics and indexing progress.
+- search now shows declaration source locations when available.
+- explain now displays source locations, imports, and declaration locations for methods and properties.
 
 ---
 
@@ -55,13 +46,14 @@ This major update introduces deep Kotlin DSL analysis, bytecode call graph visua
 ### 🧩 Kotlin DSL & Fluent API Report (`dsl-report`)
 
 Expose the structure of DSL-heavy libraries. Scans and groups:
+
 - **Type aliases** — extracted from package metadata.
 - **DSL scopes** — classes carrying `@DslMarker` annotations.
 - **Extension functions** — mapped to their receiver types.
 - **Lambda builders** — functions taking lambda-with-receiver blocks.
 - **Inline reified entry points**.
 
-*Also registered as the `dsl_report` tool on the MCP server!*
+_Also registered as the `dsl_report` tool on the MCP server!_
 
 ```bash
 library-insight dsl-report
