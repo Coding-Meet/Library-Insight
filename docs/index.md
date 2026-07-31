@@ -72,7 +72,7 @@ graph TD
 
 - `library-insight-common`: Utility classes for ZIP/JAR/AAR extraction, Ktor async HTTP engine, and filesystem operations.
 - `library-insight-model`: Immutable Kotlin serialization structures representing the API index schema.
-- `library-insight-parser`: Raw bytecode structure extraction using **ASM** and JVM signature parsing.
+- `library-insight-parser`: Raw bytecode structure extraction using **ASM** and local source code parsing using **JavaParser** and **Kotlin PSI**.
 - `library-insight-kotlin`: Kotlin metadata parsing (`kotlin-metadata-jvm`) and JVM bytecode enrichment.
 - `library-insight-search`: Index search and query matching logic.
 - `library-insight-export`: JSON, Markdown, and AI context formatters.

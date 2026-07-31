@@ -32,3 +32,20 @@ library-insight skills add
 ```
 
 This creates `.agents/skills/library-insight/SKILL.md` inside your project root. AI coding assistants loaded in the workspace will automatically read this skill file to understand how to interact with the Library Insight tool tree.
+
+---
+
+## 3. Feeding Source Code Context to LLMs
+
+In addition to compiled dependencies, you can feed raw source code structures directly to AI agents:
+
+1. Scan your project's local source code:
+   ```bash
+   library-insight scan-source app/src/main
+   ```
+2. Export the index database into a token-optimized directory structure:
+   ```bash
+   library-insight ai-export
+   ```
+
+This generates a compact, token-efficient split structure under `build/ai-context/`. You can feed this directory into Cursor, Claude, or Gemini workspace chats, giving them full knowledge of your classes, properties, constructors, methods, Javadocs/KDocs, file imports, and declaration line locations without wasting context tokens on massive raw file reads.

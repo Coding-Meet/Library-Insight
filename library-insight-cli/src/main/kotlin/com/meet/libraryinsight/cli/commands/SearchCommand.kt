@@ -38,6 +38,9 @@ class SearchCommand : CliktCommand(
         for (res in results) {
             val typePrefix = "[${res.type.name}]".padEnd(10)
             echo("$typePrefix ${res.details}")
+            res.sourceLocation?.let { loc ->
+                echo("           Source: ${loc.file}:${loc.line}")
+            }
         }
         echo("--------------------------------------------------")
     }

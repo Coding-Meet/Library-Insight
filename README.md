@@ -4,11 +4,11 @@
 
 ### JVM API Explorer & MCP Server
 
-Analyze Java & Kotlin libraries with a standalone CLI or integrate directly into AI IDEs via MCP.
+Analyze Java & Kotlin libraries and source code with a standalone CLI or integrate directly into AI IDEs via MCP.
 
-AI coding assistants often guess Java/Kotlin library APIs from outdated documentation, web examples, or a different version than the one installed in your project. That leads to missing methods, deprecated usage, incorrect signatures, and wasted debugging time.
+AI coding assistants often guess Java/Kotlin APIs from outdated documentation, web examples, or a different version than the one used in your project. That leads to missing methods, deprecated usage, incorrect signatures, and wasted debugging time.
 
-**Library Insight** solves this by scanning the exact JAR, AAR, Gradle output, or Maven dependency used by your project. It reads compiled `.class` structures and Kotlin `@Metadata` annotations to build a searchable, version-correct public API index, ensuring the reported APIs always match the installed version instead of outdated documentation or web examples.
+**Library Insight** solves this by analyzing the exact JAR, AAR, Maven dependency, Gradle output, or local Java/Kotlin source code used by your project. It builds a searchable, version-aware API index from compiled bytecode (including Kotlin `@Metadata`) or source code, allowing you to explore APIs, generate AI-ready context, and understand your codebase using the exact code you're working with—not outdated documentation or web examples.
 
 <!-- --8<-- [end:intro] -->
 
@@ -26,16 +26,16 @@ The complete documentation, architecture diagrams, command reference, and integr
 <!-- --8<-- [start:features] -->
 
 - **MCP Server**: Connect Cursor, Claude Desktop, or any MCP-compatible IDE to query APIs directly.
-- **Version-Correct API Lookup**: Scans the exact library version in your project to prevent AI hallucinations.
-- **Deep Metadata Extraction**: Extracts classes, constructors, methods, properties, nullability flags, generics, and annotations.
-- **Kotlin DSL & Fluent API Mapping**: Scans `@DslMarker` scopes, type aliases, lambda parameter builders, and inline reified functions.
-- **Method Call Graph Generator**: Recursively traces and renders method call trees inside bytecode to analyze internal invocations.
-- **Automatic Usage Examples**: Auto-generates standard boilerplate usage patterns and extracts guide examples from docs.
-- **API Health & Complexity Audits**: Computes public API count distributions, complexity indices, and deprecation ratio scores.
-- **Linkage Conflict & ABI Detector**: Scans your classpath for classpath mismatches that could trigger `LinkageError` or `NoSuchMethodError`.
-- **Migration Advisor**: Compares two versions and lists deprecated, added, and replacement APIs.
-- **Dependency API Audit**: Scans project dependencies and highlights deprecated library APIs inside bytecode.
-- **Exporter Tools**: Exports indexes to JSON, readable Markdown reference docs, or token-optimized AI context packages.
+- **Local Source Code Scanner (`scan-source`)**: Analyze Kotlin and Java source projects without compilation, preserving KDoc/Javadoc, imports, and declaration source locations (`file:line`).
+- **Version-Correct API Lookup**: Build an API index from the exact JAR, AAR, Maven dependency, Gradle output, or source code used by your project to prevent AI hallucinations.
+- **Deep Metadata Extraction**: Extract classes, constructors, methods, properties, nullability, generics, annotations, modifiers, and source metadata.
+- **Kotlin DSL & Fluent API Mapping**: Detect `@DslMarker` scopes, type aliases, lambda builders, extension functions, and inline reified functions.
+- **Method Call Graph Generator**: Trace and visualize method call trees to understand internal bytecode invocations.
+- **Automatic Usage Examples**: Generate common usage patterns and extract examples from available documentation.
+- **API Health & Complexity Reports**: Measure public API size, complexity metrics, and deprecation ratios.
+- **Dependency & ABI Analysis**: Detect classpath conflicts, linkage issues (`LinkageError`, `NoSuchMethodError`), and deprecated dependency APIs.
+- **Migration Advisor**: Compare two library versions and identify added, removed, deprecated, and replacement APIs.
+- **Exporter Tools**: Export API indexes as JSON, Markdown reference documentation, or token-optimized AI context packages.
 <!-- --8<-- [end:features] -->
 
 ---
@@ -53,7 +53,10 @@ curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/in
 ### 2. Inspecting a Library
 
 ```bash
-# 1. Scan a library from Maven Central (or your Gradle cache)
+# 1. Scan a local source project directory
+library-insight scan-source src/main
+
+# Or scan a compiled library from Maven Central (or your Gradle cache)
 library-insight scan com.squareup.retrofit2:retrofit:2.11.0
 
 # 2. Search for a class
@@ -82,10 +85,23 @@ For setup instructions in Cursor or Claude Desktop, see the [MCP Integration Gui
 
 <!-- --8<-- [start:roadmap] -->
 
-We plan to expand Library Insight into a unified **Kotlin Multiplatform (KMP)** API explorer:
+We plan to expand Library Insight with deep source-level analysis capabilities, a three-layer clean architecture, and unified Kotlin Multiplatform (KMP) support:
 
+### 🔍 Source Analysis Engine (Planned)
+- **References Engine**: Build a symbol-to-usage index to locate references for any class, method, or property across the codebase (e.g. `library-insight references LoginRepository`).
+- **Implementations**: Query all interface implementations or subclass declarations (e.g. `library-insight implementations Repository` -> `RoomRepository`, `NetworkRepository`).
+- **Hierarchy**: Render the visual inheritance tree for any base class or interface (e.g. `library-insight hierarchy BaseViewModel`).
+- **Source Call Graph**: Trace internal method execution paths using raw source file declaration locations.
+
+### 🏗️ Clean Architectural Layers
+To simplify maintenance, we are partitioning the codebase into three clean layers:
+1. **Scanner Layer** (`scan`, `scan-source`) — Processes raw inputs (bytecode, sources, metadata) and compiles them.
+2. **Unified Database** — Serves as the single serialization schema and repository index.
+3. **Analysis & Tooling Layer** (`search`, `explain`, `references`, `implementations`, `hierarchy`, `callgraph`, `ai-export`, `export`) — Consumes the database and provides rich diagnostic tools.
+
+### 📦 Kotlin Multiplatform (KMP) Support
 - **KLib Metadata Reader**: Parse `.klib` metadata to extract signatures for iOS/Native, JS, and Wasm targets directly (bypassing JVM bytecode dependencies).
-- **Platform-Aware Indexing**: Store platform target markers (`common`, `jvm`, `ios`, `js`, `wasm`) in the database schema so AI agents know exactly where APIs are available.
+- **Platform-Aware Indexing**: Store platform target markers (`common`, `jvm`, `ios`, `js`, `wasm`) in the database schema.
 - **KMP Coordinate Resolution**: Auto-resolve platform split coordinates (e.g. `ktor-client-core-iosarm64`) from the root KMP library Maven coordinate.
 <!-- --8<-- [end:roadmap] -->
 
@@ -102,19 +118,25 @@ This project is licensed under the Apache License, Version 2.0. See the [LICENSE
 Quick reference commands for development, testing, documentation, and releasing:
 
 ### 1. Agent Skill Generation
+
 Regenerate [SKILL.md](file://.agents/skills/library-insight/SKILL.md) after editing [docs/cli.md](file://docs/cli.md):
+
 ```bash
 ./gradlew generateAgentSkill
 ```
 
 ### 2. Testing
+
 Run the complete unit test suite across all modules:
+
 ```bash
 ./gradlew test
 ```
 
 ### 3. Documentation Site (MkDocs)
+
 Manage the documentation website locally:
+
 ```bash
 # Preview the docs site locally with live-reload (default: http://localhost:8000)
 mkdocs serve --livereload
@@ -127,14 +149,18 @@ mkdocs gh-deploy --force
 ```
 
 ### 4. Releasing & Version Tagging
+
 Release and publish a new version tag to GitHub:
+
 ```bash
 git tag v1.2.0
 git push origin v1.2.0
 ```
 
 ### 5. Demos
+
 Run the command-line walkthrough scripts:
+
 ```bash
 # Run the 3-minute quick command suite demo
 ./quick-demo.sh
@@ -144,9 +170,9 @@ Run the command-line walkthrough scripts:
 ```
 
 ### 6. Build Distributions
+
 Generate application binary packages (ZIP, TAR, and local install distributions):
+
 ```bash
 ./gradlew installDist distZip distTar
 ```
-
-
