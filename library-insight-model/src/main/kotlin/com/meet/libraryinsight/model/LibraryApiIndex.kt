@@ -3,10 +3,23 @@ package com.meet.libraryinsight.model
 import kotlinx.serialization.Serializable
 
 @Serializable
+enum class ScanMode {
+    BYTECODE, SOURCE
+}
+
+@Serializable
+data class SourceLocation(
+    val file: String,
+    val line: Int,
+    val column: Int
+)
+
+@Serializable
 data class LibraryApiIndex(
     val libraryName: String,
     val version: String,
-    val packages: List<PackageApi>
+    val packages: List<PackageApi>,
+    val scanMode: ScanMode = ScanMode.BYTECODE
 )
 
 @Serializable
@@ -35,7 +48,9 @@ data class ClassApi(
     val dslMarkerAnnotations: List<String> = emptyList(),
     val doc: String? = null,
     val sourceCode: String? = null,
-    val documentationExamples: List<String> = emptyList()
+    val documentationExamples: List<String> = emptyList(),
+    val sourceLocation: SourceLocation? = null,
+    val imports: List<String> = emptyList()
 )
 
 @Serializable
@@ -59,7 +74,8 @@ data class ConstructorApi(
     val visibility: Visibility,
     val parameters: List<ParameterApi>,
     val annotations: List<AnnotationApi>,
-    val signature: String // JVM descriptor signature
+    val signature: String, // JVM descriptor signature
+    val sourceLocation: SourceLocation? = null
 )
 
 @Serializable
@@ -74,7 +90,8 @@ data class MethodApi(
     val signature: String, // JVM descriptor signature
     val typeParameters: List<TypeParameterApi> = emptyList(),
     val doc: String? = null,
-    val sourceCode: String? = null
+    val sourceCode: String? = null,
+    val sourceLocation: SourceLocation? = null
 )
 
 @Serializable
@@ -111,7 +128,8 @@ data class PropertyApi(
     val isConst: Boolean = false,
     val isLateinit: Boolean = false,
     val doc: String? = null,
-    val sourceCode: String? = null
+    val sourceCode: String? = null,
+    val sourceLocation: SourceLocation? = null
 )
 
 @Serializable

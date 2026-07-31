@@ -84,9 +84,13 @@ library-insight search "anno:Keep" --db custom-index.json
 **Example output:**
 
 ```
-Found 2 matching classes:
-  - retrofit2.Retrofit
-  - retrofit2.Retrofit$Builder
+Found 2 matches for 'Retrofit':
+--------------------------------------------------
+[CLASS]     class retrofit2.Retrofit
+           Source: src/main/java/retrofit2/Retrofit.java:18
+[CLASS]     class retrofit2.Retrofit$Builder
+           Source: src/main/java/retrofit2/Retrofit.java:82
+--------------------------------------------------
 ```
 
 ---
@@ -112,13 +116,32 @@ library-insight explain HtmlBuilder --db custom-index.json
 **Example output:**
 
 ```
-Class: retrofit2.Retrofit (public class)
-  Constructors:
-    + public constructor(okhttp3.Call$Factory, ...)
-  Methods:
-    + public fun <T> create(java.lang.Class<T>): T
-    + public fun baseUrl(): okhttp3.HttpUrl
-    + public fun callFactory(): okhttp3.Call$Factory
+==================================================
+ CLASS EXPLAIN REPORT
+==================================================
+Class:       com.meet.sample.HtmlBuilder
+Package:     com.meet.sample
+Kind:        class
+Visibility:  public
+Source:      sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:25
+Annotations: @HtmlDsl
+==================================================
+
+Imports:
+  - kotlin.text.*
+  - retrofit2.Retrofit
+
+Properties:
+  - private val children: Any (sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:27)
+
+Methods:
+  // /** Adds a paragraph element to the HTML output. */
+  - public fun p(text: String): Unit (sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:29)
+  // /** Adds a heading element. */
+  - public fun h1(text: String): Unit (sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:32)
+  // /** Adds a nested div block. */
+  - public fun div(block: HtmlBuilder.() -> Unit): Unit (sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:35)
+  - public fun build(): String (sample/src/main/kotlin/com/meet/sample/SampleLibrary.kt:41)
 ```
 
 ---
@@ -210,17 +233,21 @@ library-insight export json
 ```
 
 **Positional Arguments:**
+
 - `[output-file]`: Optional target output file path to write export content to. If not specified, defaults to `build/API_REFERENCE.md` or `build/library-insight-index.json`. Use `-` to print to stdout.
 
 **Optional Parameters:**
+
 - `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
 
 **Example with options:**
+
 ```bash
 library-insight export markdown API_REFERENCE.md --db custom-index.json
 ```
 
 **Example output:**
+
 ```
 Exported MARKDOWN to: build/API_REFERENCE.md
 ```
@@ -236,17 +263,21 @@ library-insight ai-export
 ```
 
 **Positional Arguments:**
+
 - `[output-dir]`: Optional target output directory to save AI context files (default: `build/ai-context/`)
 
 **Optional Parameters:**
+
 - `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
 
 **Example with options:**
+
 ```bash
 library-insight ai-export custom-ai-context/ --db custom-index.json
 ```
 
 **Example output:**
+
 ```
 Generated compact LLM context directory structure at: build/ai-context
 ```
@@ -294,6 +325,7 @@ library-insight search-central clikt
 ```
 
 **Example output:**
+
 ```
 Searching Maven Central for 'clikt'...
 
@@ -367,6 +399,7 @@ library-insight mcp --db /path/to/project/custom-index.json
 ```
 
 **Example output (JSON-RPC tools list response):**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -376,12 +409,18 @@ library-insight mcp --db /path/to/project/custom-index.json
       {
         "name": "scan_library",
         "description": "Scans a Java/Kotlin library and creates an API index.",
-        "inputSchema": { "type": "object", "properties": { "pathOrCoordinate": { "type": "string" } } }
+        "inputSchema": {
+          "type": "object",
+          "properties": { "pathOrCoordinate": { "type": "string" } }
+        }
       },
       {
         "name": "search_symbols",
         "description": "Search for symbols in the active library index.",
-        "inputSchema": { "type": "object", "properties": { "query": { "type": "string" } } }
+        "inputSchema": {
+          "type": "object",
+          "properties": { "query": { "type": "string" } }
+        }
       }
     ]
   }
@@ -401,6 +440,7 @@ library-insight init
 ```
 
 **Example output:**
+
 ```
 Initializing Library Insight agent environment...
 Creating directory: .agents/skills/library-insight/
@@ -424,6 +464,7 @@ library-insight skills list
 ```
 
 **Example output (skills list):**
+
 ```
 Workspace AI Agent Skills:
   - [Installed] library-insight
@@ -440,6 +481,7 @@ library-insight clear-cache
 ```
 
 **Example output:**
+
 ```
 Clearing local cache at: ~/.library-insight/cache...
 Cache cleared successfully. Deleted 12.4 MB.
@@ -724,6 +766,44 @@ library-insight callgraph AppConfigBuilder.database --db custom-index.json
 ▶ Starting entrypoint: com.meet.sample.AppConfigBuilder.database(Lkotlin/jvm/functions/Function1;)V
 └── com.meet.sample.DatabaseConfigBuilder.<init>()
 ==================================================
+```
+
+---
+
+## 22. `scan-source` — Local Source Directory Scanner
+
+Scan a local raw source directory containing Kotlin (`.kt`) and Java (`.java`) files to build an API index database.
+
+```bash
+library-insight scan-source sample/src/main/kotlin
+```
+
+**Optional Parameters:**
+
+- `--db <file>`: Target index database JSON file path to write to (default: `build/library-insight-index.json`)
+- `--lib-name <name>`: Override the library name tag in the generated index
+- `--lib-version <version>`: Override the version tag in the generated index
+
+**Example with options:**
+
+```bash
+library-insight scan-source src/main/kotlin --db build/my-app-index.json --lib-name MyApp --lib-version 1.0.0
+```
+
+**Example output:**
+
+```
+Scanning source directory: /Users/meet/AndroidStudioProjects/Library-Insight/sample/src/main/kotlin
+
+Detected:
+  • Kotlin files : 1
+  • Java files   : 0
+
+Scan complete!
+Found 15 classes across 3 packages.
+
+Saved API index to:
+/Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight-index.json
 ```
 
 <!-- --8<-- [end:commands] -->

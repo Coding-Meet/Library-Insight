@@ -59,6 +59,35 @@ graph TD
 *   `library-insight-core`: The main orchestration hub. It coordinates the parsing, metadata enrichment, search routines, and calculates API differences/compatibility alerts.
 *   `library-insight-cli`: Command Line Interface definitions using **Clikt** mapping option/argument configurations.
 
+## Unified API Indexing Pipelines
+
+Library Insight exposes two different parsing pipelines depending on the target input:
+
+1. **Bytecode Scan Pipeline (`scan` command)**: Extracts signatures from compiled `.class` files (inside JAR/AAR/Maven artifacts) using the ASM library, enriched by `kotlin-metadata-jvm`.
+2. **Source Scan Pipeline (`scan-source` command)**: Extracts signatures directly from raw Java (`.java`) and Kotlin (`.kt`) source project files using JavaParser and Kotlin PSI compiler APIs.
+
+Both pipelines converge into the same unified `LibraryApiIndex` schema, allowing existing downstream search, explain, and export subcommands to function identically without separate workflows.
+
+```mermaid
+flowchart TD
+    subgraph "Raw Source Code Input"
+        SRC[Source Project Directories] --> |scan-source| PARSE_SRC[Source Code Parser]
+        PARSE_SRC --> |JavaParser & Kotlin PSI| CONVERGE
+    end
+
+    subgraph "Compiled Binary Input"
+        BIN[JAR / AAR / Maven Coordinates] --> |scan| PARSE_BIN[Bytecode Parser]
+        PARSE_BIN --> |ASM & Kotlin Metadata| CONVERGE
+    end
+
+    CONVERGE{Unified API Model} --> |Serialize JSON| DB[(library-insight-index.json)]
+
+    DB --> SEARCH[search]
+    DB --> EXPLAIN[explain]
+    DB --> EXPORT[export]
+    DB --> AI_EXPORT[ai-export]
+```
+
 ---
 
 ## Directory Structure
@@ -113,6 +142,7 @@ Library-Insight/
 │   │                               ├── McpCommand.kt
 │   │                               ├── MigrateCommand.kt
 │   │                               ├── ScanCommand.kt
+│   │                               ├── ScanSourceCommand.kt
 │   │                               ├── SearchCommand.kt
 │   │                               ├── SearchCentralCommand.kt
 │   │                               └── SkillsCommand.kt
@@ -187,15 +217,19 @@ Library-Insight/
 │   │   │               └── libraryinsight/
 │   │   │                   └── parser/
 │   │   │                       ├── BytecodeParser.kt
+│   │   │                       ├── JavaSourceParser.kt
+│   │   │                       ├── KotlinSourceParser.kt
 │   │   │                       ├── RawClassData.kt
-│   │   │                       └── SignatureParser.kt
+│   │   │                       ├── SignatureParser.kt
+│   │   │                       └── SourceParser.kt
 │   │   └── test/
 │   │       └── kotlin/
 │   │           └── com/
 │   │               └── meet/
 │   │                   └── libraryinsight/
 │   │                       └── parser/
-│   │                           └── SignatureParserTest.kt
+│   │                           ├── SignatureParserTest.kt
+│   │                           └── SourceParserTest.kt
 │   └── build.gradle.kts
 ├── library-insight-search/
 │   ├── src/

@@ -44,6 +44,9 @@ class ExplainCommand : CliktCommand(
         echo("Package:     $pkgName")
         echo("Kind:        ${clazz.kind.name.lowercase()}")
         echo("Visibility:  ${clazz.visibility.name.lowercase()}")
+        clazz.sourceLocation?.let { loc ->
+            echo("Source:      ${loc.file}:${loc.line}")
+        }
         if (clazz.modifiers.isNotEmpty()) {
             echo("Modifiers:   ${clazz.modifiers.joinToString(", ")}")
         }
@@ -89,7 +92,8 @@ class ExplainCommand : CliktCommand(
                 }
                 val mut = if (prop.isMutable) "var" else "val"
                 val constStr = if (prop.isConst) "const " else ""
-                echo("  - ${prop.visibility.name.lowercase()} ${constStr}$mut ${prop.name}: ${prop.type}")
+                val locStr = prop.sourceLocation?.let { " (${it.file}:${it.line})" } ?: ""
+                echo("  - ${prop.visibility.name.lowercase()} ${constStr}$mut ${prop.name}: ${prop.type}$locStr")
             }
             echo("")
         }
@@ -122,7 +126,8 @@ class ExplainCommand : CliktCommand(
                     "${param.name}: ${param.type}$lambdaHint"
                 }
                 val receiver = if (method.extensionReceiverType != null) "${method.extensionReceiverType}." else ""
-                echo("  - ${method.visibility.name.lowercase()} ${modsStr}fun $typeParamStr$receiver${method.name}($params): ${method.returnType}")
+                val locStr = method.sourceLocation?.let { " (${it.file}:${it.line})" } ?: ""
+                echo("  - ${method.visibility.name.lowercase()} ${modsStr}fun $typeParamStr$receiver${method.name}($params): ${method.returnType}$locStr")
             }
             echo("")
         }
@@ -131,6 +136,14 @@ class ExplainCommand : CliktCommand(
             echo("Nested Classes:")
             for (nested in clazz.nestedClasses) {
                 echo("  - ${nested.substringAfterLast('$')}")
+            }
+            echo("")
+        }
+
+        if (clazz.imports.isNotEmpty()) {
+            echo("Imports:")
+            for (imp in clazz.imports) {
+                echo("  - $imp")
             }
             echo("")
         }

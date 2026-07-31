@@ -4,6 +4,48 @@ All releases for **Library Insight** are documented below.
 
 ---
 
+## v1.3.0
+
+_Released on July 31, 2026_
+
+This release introduces direct source code scanning for local Kotlin and Java project directories, mapping exact declaration source locations (file path, line, and column) and imports directly into the unified API database index.
+
+### 🔍 Raw Source Directory Scanner (`scan-source`)
+
+Scan raw source code directories containing Kotlin (`.kt`) and Java (`.java`) files without compiling them. It generates the exact same unified API index database as the compiled `scan` pipeline, meaning all downstream commands (`search`, `explain`, `export`, `ai-export`) function seamlessly.
+
+```bash
+library-insight scan-source app/src/main
+```
+
+**Features:**
+- **Java Parser Integration**: Uses JavaParser to parse Java classes, interfaces, enums, records, constructors, methods, properties, modifiers, annotations, generics, and Javadocs.
+- **Kotlin PSI Integration**: Uses the official Kotlin compiler embeddable (`kotlin-compiler-embeddable`) and PSI parser to traverse syntax trees, preserving KDocs, class modifiers (data, sealed, value, inner, open, abstract), companion objects, secondary constructors, and extension receiver types.
+
+### 📍 Source Location & Imports Indexing
+
+- **Source Pointers**: Persists the relative file path, line number, and column for every class, constructor, method, and property.
+- **Import Statements**: Persists file-level import lists inside the class API model, helpful for dependency analysis and code structure auditing.
+- **Backward-Compatible Database**: Existing bytecode-scanned indices are backward-compatible and load seamlessly without schema validation breaks.
+
+### 🖥️ CLI Output Enhancements
+
+- **`scan-source` statistics**: The console prints clean statistics on scanned file types:
+  ```
+  Scanning source directory: app/src/main
+  
+  Detected:
+    • Kotlin files : 82
+    • Java files   : 14
+  
+  Scan complete!
+  Found 143 classes across 18 packages.
+  ```
+- **`search` source locations**: Whenever available, search results display declaration files and line numbers directly below matched symbols.
+- **`explain` reports**: The class explain template now displays `Source` file locations at the header, `Imports` imports list (if any), and source file/line markers next to each property and method.
+
+---
+
 ## v1.2.0
 
 _Released on July 29, 2026_

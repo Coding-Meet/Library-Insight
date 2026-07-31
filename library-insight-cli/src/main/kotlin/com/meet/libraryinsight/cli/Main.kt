@@ -19,6 +19,7 @@ fun main(args: Array<String>) {
         LibraryInsightCommand()
             .subcommands(
                 ScanCommand(),
+                ScanSourceCommand(),
                 ExportCommand(),
                 SearchCommand(),
                 ExplainCommand(),

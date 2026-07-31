@@ -6,8 +6,8 @@ Get up and running with **Library Insight** to analyze JVM dependencies and enab
 
 ## Requirements
 
-*   **JDK 17 or higher** is required to execute the Java/Kotlin runtime engine.
-*   An active terminal environment (macOS/Linux/Windows).
+- **JDK 17 or higher** is required to execute the Java/Kotlin runtime engine.
+- An active terminal environment (macOS/Linux/Windows).
 
 ---
 
@@ -55,28 +55,46 @@ curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/un
 
 ## Basic Workflow / Quick Start
 
-Here is a typical flow when you add or inspect a library:
+Here is a typical flow when you add or inspect a library or project:
 
-### 1. Scan a Library
-Scan a dependency from Maven Central (or picks it from your local Gradle cache).
-```bash
-library-insight scan com.squareup.retrofit2:retrofit:2.11.0
-```
+### 1. Indexing the APIs
+
+You can build an API index database using either of the two pipelines:
+
+=== "A. Scan Local Source Projects"
+
+    Scan a local raw source directory containing Kotlin (`.kt`) and Java (`.java`) files without compilation:
+    ```bash
+    library-insight scan-source app/src/main
+    ```
+
+=== "B. Scan Compiled Libraries"
+
+    Scan a compiled dependency from Maven Central (or pick it from your local Gradle cache):
+    ```bash
+    library-insight scan com.squareup.retrofit2:retrofit:2.11.0
+    ```
 
 ### 2. Search for Symbols
-Find a class, interface, or property in the compiled library index.
+
+Find a class, interface, or property in the index database.
+
 ```bash
-library-insight search Retrofit
+library-insight search LoginRepository
 ```
 
 ### 3. Explain class signatures
-Inspect full API signatures and Kotlin/Java docs for a specific class.
+
+Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration source locations (file:line) for a class.
+
 ```bash
-library-insight explain Retrofit
+library-insight explain LoginRepository
 ```
 
-### 4. Compare Versions
-See what was added, removed, or changed between two versions.
+### 4. Compare Versions (Bytecode Only)
+
+See what was added, removed, or changed between two versions of compiled library dependencies.
+
 ```bash
 library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
 ```

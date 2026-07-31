@@ -13,7 +13,8 @@ object SearchEngine {
         val packageName: String,
         val className: String? = null,
         val name: String,
-        val details: String // Modifiers, signature, etc.
+        val details: String, // Modifiers, signature, etc.
+        val sourceLocation: SourceLocation? = null
     )
 
     /**
@@ -93,7 +94,8 @@ object SearchEngine {
                             packageName = pkg.name,
                             className = clazz.name,
                             name = clazz.simpleName,
-                            details = "$modStr $kindStr ${clazz.name}$dslMarkerBadge"
+                            details = "$modStr $kindStr ${clazz.name}$dslMarkerBadge",
+                            sourceLocation = clazz.sourceLocation
                         )
                     )
                 }
@@ -133,7 +135,8 @@ object SearchEngine {
                                 packageName = pkg.name,
                                 className = clazz.name,
                                 name = method.name,
-                                details = "${method.visibility.name.lowercase()} ${modStr}fun $receiverPrefix${method.name}(${method.parameters.joinToString { it.type }}): ${method.returnType}"
+                                details = "${method.visibility.name.lowercase()} ${modStr}fun $receiverPrefix${method.name}(${method.parameters.joinToString { it.type }}): ${method.returnType}",
+                                sourceLocation = method.sourceLocation
                             )
                         )
                     }
@@ -157,7 +160,8 @@ object SearchEngine {
                                 packageName = pkg.name,
                                 className = clazz.name,
                                 name = prop.name,
-                                details = "${prop.visibility.name.lowercase()} $mutableStr ${prop.name}: ${prop.type}"
+                                details = "${prop.visibility.name.lowercase()} $mutableStr ${prop.name}: ${prop.type}",
+                                sourceLocation = prop.sourceLocation
                             )
                         )
                     }
