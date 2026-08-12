@@ -138,7 +138,21 @@ echo ""
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | library-insight mcp
 echo ""
 
+# ------------------------------------------------------------------
+# 13. KMP SCAN & EXPLAIN — Kotlin Multiplatform support
+# ------------------------------------------------------------------
+echo ">> 13. KMP SCAN & EXPLAIN — Multi-target platform variant resolution"
+echo "   library-insight scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json"
+library-insight scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json > /dev/null
+echo "   library-insight explain io.ktor.client.HttpClient --db build/ktor-index.json"
+echo ""
+library-insight explain io.ktor.client.HttpClient --db build/ktor-index.json | head -n 35
+echo ""
+
+# Cleanup
+rm -f build/ktor-index.json
+
 echo "$SEP"
-echo " Done! Run demo.sh for the full 22-command walkthrough."
+echo " Done! Run demo.sh for the full 23-command walkthrough."
 echo "$SEP"
 echo ""

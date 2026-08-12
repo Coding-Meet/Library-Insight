@@ -26,6 +26,7 @@ The complete documentation, architecture diagrams, command reference, and integr
 <!-- --8<-- [start:features] -->
 
 - **MCP Server**: Connect Cursor, Claude Desktop, or any MCP-compatible IDE to query APIs directly.
+- **Kotlin Multiplatform (KMP) Support**: Resolve coordinates from Gradle Module Metadata (`.module` JSON), parse Native `.klib` metadata files, and merge platform variant API targets (`common`, `jvm`, `ios`, `js`, `wasm`).
 - **Local Source Code Scanner (`scan-source`)**: Analyze Kotlin and Java source projects without compilation, preserving KDoc/Javadoc, imports, and declaration source locations (`file:line`).
 - **Version-Correct API Lookup**: Build an API index from the exact JAR, AAR, Maven dependency, Gradle output, or source code used by your project to prevent AI hallucinations.
 - **Deep Metadata Extraction**: Extract classes, constructors, methods, properties, nullability, generics, annotations, modifiers, and source metadata.
@@ -102,7 +103,7 @@ To simplify maintenance, we are partitioning the codebase into three clean layer
 2. **Unified Database** — Serves as the single serialization schema and repository index.
 3. **Analysis & Tooling Layer** (`search`, `explain`, `references`, `implementations`, `hierarchy`, `callgraph`, `ai-export`, `export`) — Consumes the database and provides rich diagnostic tools.
 
-### 📦 Kotlin Multiplatform (KMP) Support
+### 📦 Kotlin Multiplatform (KMP) Support (Completed)
 
 - **KLib Metadata Reader**: Parse `.klib` metadata to extract signatures for iOS/Native, JS, and Wasm targets directly (bypassing JVM bytecode dependencies).
 - **Platform-Aware Indexing**: Store platform target markers (`common`, `jvm`, `ios`, `js`, `wasm`) in the database schema.

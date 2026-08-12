@@ -34,14 +34,53 @@ class ScanCommand : CliktCommand(
         try {
             val index = if (MavenResolver.isCoordinate(pathOrCoordinate)) {
                 echo("Detected Maven coordinate: $pathOrCoordinate")
-                val resolved = MavenResolver.resolve(pathOrCoordinate, repos) { progress ->
-                    echo("  -> $progress")
+                val kmpCoordinates = try {
+                    MavenResolver.resolveKmpCoordinates(pathOrCoordinate, repos) { progress ->
+                        echo("  -> $progress")
+                    }
+                } catch (e: Exception) {
+                    emptyList()
                 }
+
                 val parts = pathOrCoordinate.split(':')
                 val name = libName ?: parts[1]
                 val version = libVersion ?: parts[2]
-                Logger.info("Analyzing resolved binary file: ${resolved.binaryFile.absolutePath}")
-                LibraryAnalyzer.analyze(resolved.binaryFile, name, version, resolved.sourcesFile)
+
+                if (kmpCoordinates.isNotEmpty() && kmpCoordinates != listOf(pathOrCoordinate)) {
+                    echo("Detected Kotlin Multiplatform (KMP) library. Resolving ${kmpCoordinates.size} platform targets:")
+                    val targetIndices = mutableListOf<com.meet.libraryinsight.model.LibraryApiIndex>()
+                    for (targetCoord in kmpCoordinates) {
+                        try {
+                            echo("  • Resolving platform: $targetCoord")
+                            val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { progress ->
+                                echo("    -> $progress")
+                            }
+                            val targetIndex = LibraryAnalyzer.analyze(
+                                resolvedTarget.binaryFile,
+                                name,
+                                version,
+                                resolvedTarget.sourcesFile
+                            )
+                            targetIndices.add(targetIndex)
+                        } catch (e: Exception) {
+                            echo("    -> Warn: Failed to resolve variant $targetCoord: ${e.message}")
+                        }
+                    }
+                    if (targetIndices.isNotEmpty()) {
+                        LibraryAnalyzer.mergeIndices(targetIndices)
+                    } else {
+                        val resolved = MavenResolver.resolve(pathOrCoordinate, repos) { progress ->
+                            echo("  -> $progress")
+                        }
+                        LibraryAnalyzer.analyze(resolved.binaryFile, name, version, resolved.sourcesFile)
+                    }
+                } else {
+                    val resolved = MavenResolver.resolve(pathOrCoordinate, repos) { progress ->
+                        echo("  -> $progress")
+                    }
+                    Logger.info("Analyzing resolved binary file: ${resolved.binaryFile.absolutePath}")
+                    LibraryAnalyzer.analyze(resolved.binaryFile, name, version, resolved.sourcesFile)
+                }
             } else {
                 val file = File(pathOrCoordinate)
                 if (!file.exists()) {

@@ -75,6 +75,13 @@ You can build an API index database using either of the two pipelines:
     library-insight scan com.squareup.retrofit2:retrofit:2.11.0
     ```
 
+=== "C. Scan Kotlin Multiplatform (KMP) Libraries"
+
+    Scan a multiplatform library. Library Insight automatically resolves Gradle Module Metadata, downloads and parses target KLib metadata files, and merges platform variants (`common`, `jvm`, `ios`, etc.) into a unified index:
+    ```bash
+    library-insight scan io.ktor:ktor-client-core:3.0.0
+    ```
+
 ### 2. Search for Symbols
 
 Find a class, interface, or property in the index database.

@@ -4,10 +4,7 @@ import com.meet.libraryinsight.common.ArchiveUtils
 import com.meet.libraryinsight.common.Logger
 import com.meet.libraryinsight.kotlin.KotlinMetadataEnricher
 import com.meet.libraryinsight.kotlin.KotlinMetadataParser
-import com.meet.libraryinsight.model.ClassApi
-import com.meet.libraryinsight.model.LibraryApiIndex
-import com.meet.libraryinsight.model.PackageApi
-import com.meet.libraryinsight.model.TypeAliasApi
+import com.meet.libraryinsight.model.*
 import com.meet.libraryinsight.parser.BytecodeParser
 import com.meet.libraryinsight.parser.RawAnnotation
 import com.meet.libraryinsight.parser.RawClassData
@@ -30,6 +27,12 @@ object LibraryAnalyzer {
         version: String = "1.0.0",
         sourcesFile: File? = null
     ): LibraryApiIndex {
+        if (com.meet.libraryinsight.parser.KlibParser.isKlib(file)) {
+            return com.meet.libraryinsight.parser.KlibParser.parseKlib(file, sourcesFile).copy(
+                libraryName = libraryName,
+                version = version
+            )
+        }
         val classBytesMap = ArchiveUtils.extractClasses(file)
 
         // --- Pass 1: Parse all raw class data ---
@@ -171,7 +174,8 @@ object LibraryAnalyzer {
         return LibraryApiIndex(
             libraryName = libraryName,
             version = version,
-            packages = packages
+            packages = packages,
+            targets = listOf("jvm")
         )
     }
 
@@ -247,10 +251,13 @@ object LibraryAnalyzer {
     }
 
     private fun cleanClassAnnotations(clazz: ClassApi): ClassApi {
+        val targets = clazz.targets.ifEmpty { listOf("jvm") }
         return clazz.copy(
+            targets = targets,
             annotations = clazz.annotations.filter { isUserFacingAnnotation(it.name) },
             constructors = clazz.constructors.map { cons ->
                 cons.copy(
+                    targets = cons.targets.ifEmpty { targets },
                     annotations = cons.annotations.filter { isUserFacingAnnotation(it.name) },
                     parameters = cons.parameters.map { param ->
                         param.copy(annotations = param.annotations.filter { isUserFacingAnnotation(it.name) })
@@ -259,6 +266,7 @@ object LibraryAnalyzer {
             },
             methods = clazz.methods.map { method ->
                 method.copy(
+                    targets = method.targets.ifEmpty { targets },
                     annotations = method.annotations.filter { isUserFacingAnnotation(it.name) },
                     parameters = method.parameters.map { param ->
                         param.copy(annotations = param.annotations.filter { isUserFacingAnnotation(it.name) })
@@ -266,7 +274,10 @@ object LibraryAnalyzer {
                 )
             },
             properties = clazz.properties.map { prop ->
-                prop.copy(annotations = prop.annotations.filter { isUserFacingAnnotation(it.name) })
+                prop.copy(
+                    targets = prop.targets.ifEmpty { targets },
+                    annotations = prop.annotations.filter { isUserFacingAnnotation(it.name) }
+                )
             }
         )
     }
@@ -274,5 +285,72 @@ object LibraryAnalyzer {
     private fun isUserFacingAnnotation(name: String): Boolean {
         val normalized = name.replace('/', '.')
         return normalized != "kotlin.Metadata" && !normalized.startsWith("kotlin.jvm.internal")
+    }
+
+    /**
+     * Merges multiple platform target indices together into a single unified index.
+     */
+    fun mergeIndices(indices: List<LibraryApiIndex>): LibraryApiIndex {
+        if (indices.isEmpty()) throw IllegalArgumentException("No indices to merge")
+        if (indices.size == 1) return indices.first()
+
+        val first = indices.first()
+        val allPackages = indices.flatMap { it.packages }
+
+        val mergedPackages = allPackages.groupBy { it.name }.map { (pkgName, pkgList) ->
+            val allClasses = pkgList.flatMap { it.classes }
+            val mergedClasses = allClasses.groupBy { it.name }.map { (className, classList) ->
+                val representative = classList.first()
+                
+                val allMethods = classList.flatMap { it.methods }
+                val mergedMethods = allMethods.groupBy { it.signature }.map { (_, methodList) ->
+                    val repMethod = methodList.first()
+                    val unionTargets = methodList.flatMap { it.targets }.distinct().sorted()
+                    repMethod.copy(targets = unionTargets)
+                }
+
+                val allProperties = classList.flatMap { it.properties }
+                val mergedProperties = allProperties.groupBy { it.name }.map { (_, propList) ->
+                    val repProp = propList.first()
+                    val unionTargets = propList.flatMap { it.targets }.distinct().sorted()
+                    repProp.copy(targets = unionTargets)
+                }
+
+                val allConstructors = classList.flatMap { it.constructors }
+                val mergedConstructors = allConstructors.groupBy { it.signature }.map { (_, consList) ->
+                    val repCons = consList.first()
+                    val unionTargets = consList.flatMap { it.targets }.distinct().sorted()
+                    repCons.copy(targets = unionTargets)
+                }
+
+                val unionTargets = classList.flatMap { it.targets }.distinct().sorted()
+                representative.copy(
+                    methods = mergedMethods,
+                    properties = mergedProperties,
+                    constructors = mergedConstructors,
+                    targets = unionTargets
+                )
+            }
+
+            val allTypeAliases = pkgList.flatMap { it.typeAliases }
+            val mergedTypeAliases = allTypeAliases.distinctBy { it.name }
+
+            PackageApi(
+                name = pkgName,
+                classes = mergedClasses.sortedBy { it.name },
+                typeAliases = mergedTypeAliases
+            )
+        }
+
+        val unionTargets = indices.flatMap { it.targets }.distinct().sorted()
+        val scanMode = if (indices.any { it.scanMode == ScanMode.SOURCE }) ScanMode.SOURCE else ScanMode.BYTECODE
+
+        return LibraryApiIndex(
+            libraryName = first.libraryName,
+            version = first.version,
+            packages = mergedPackages.sortedBy { it.name },
+            scanMode = scanMode,
+            targets = unionTargets
+        )
     }
 }

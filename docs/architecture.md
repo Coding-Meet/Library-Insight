@@ -61,10 +61,11 @@ graph TD
 
 ## Unified API Indexing Pipelines
 
-Library Insight exposes two different parsing pipelines depending on the target input:
+Library Insight exposes three different parsing pipelines depending on the target input:
 
 1. **Bytecode Scan Pipeline (`scan` command)**: Extracts signatures from compiled `.class` files (inside JAR/AAR/Maven artifacts) using the ASM library, enriched by `kotlin-metadata-jvm`.
-2. **Source Scan Pipeline (`scan-source` command)**: Extracts signatures directly from raw Java (`.java`) and Kotlin (`.kt`) source project files using JavaParser and Kotlin PSI compiler APIs.
+2. **Kotlin Multiplatform (KMP) Scan Pipeline (`scan` command)**: Resolves Maven coordinates, inspects Gradle Module Metadata (`.module` JSON), extracts platform targets from Kotlin Native `.klib` metadata files, and merges platform variants (`common`, `jvm`, `ios`, `js`, `wasm`) into a unified index.
+3. **Source Scan Pipeline (`scan-source` command)**: Extracts signatures directly from raw Java (`.java`) and Kotlin (`.kt`) source project files using JavaParser and Kotlin PSI compiler APIs.
 
 Both pipelines converge into the same unified `LibraryApiIndex` schema, allowing existing downstream search, explain, and export subcommands to function identically without separate workflows.
 

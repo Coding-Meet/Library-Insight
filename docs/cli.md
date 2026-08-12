@@ -61,6 +61,36 @@ Scan complete! Found 113 classes across 3 packages.
 Saved API index to: build/library-insight-index.json
 ```
 
+### Kotlin Multiplatform (KMP) Scanning
+
+When you supply a root Kotlin Multiplatform library coordinate, the `scan` command automatically:
+
+1. Inspects Gradle Module Metadata (`.module`) to resolve target split coordinates.
+2. Resolves and downloads each platform's binaries (`.klib` or JVM `.jar`/`.aar`) and sources JAR.
+3. Automatically parses `.klib` manifests and maps compilation targets (e.g. `ios`, `js`, `wasm`, `jvm`).
+4. Merges all declarations, constructors, methods, and properties into a single unified index.
+
+```bash
+library-insight scan io.ktor:ktor-client-core:3.0.0
+```
+
+When explaining a class from a KMP index, platform target tags are annotated on class and member declarations:
+
+```
+==================================================
+ CLASS EXPLAIN REPORT
+==================================================
+Class:       io.ktor.client.HttpClient
+Package:     io.ktor.client
+Kind:        class
+Visibility:  public
+Targets:     common, jvm
+...
+Constructors:
+  - public constructor(engine: HttpClientEngine, userConfig: HttpClientConfig<out HttpClientEngineConfig>) [common]
+  - public constructor(engine: io.ktor.client.engine.HttpClientEngine, ... ) [jvm]
+```
+
 ---
 
 ## 2. `search` — Search Symbols

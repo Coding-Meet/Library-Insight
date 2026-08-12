@@ -44,6 +44,9 @@ class ExplainCommand : CliktCommand(
         echo("Package:     $pkgName")
         echo("Kind:        ${clazz.kind.name.lowercase()}")
         echo("Visibility:  ${clazz.visibility.name.lowercase()}")
+        if (clazz.targets.isNotEmpty()) {
+            echo("Targets:     ${clazz.targets.joinToString(", ")}")
+        }
         clazz.sourceLocation?.let { loc ->
             echo("Source:      ${loc.file}:${loc.line}")
         }
@@ -78,7 +81,8 @@ class ExplainCommand : CliktCommand(
             echo("Constructors:")
             for (cons in clazz.constructors) {
                 val params = cons.parameters.joinToString { "${it.name}: ${it.type}" }
-                echo("  - ${cons.visibility.name.lowercase()} constructor($params)")
+                val targetStr = if (cons.targets.isNotEmpty() && cons.targets != clazz.targets) " [${cons.targets.joinToString(", ")}]" else ""
+                echo("  - ${cons.visibility.name.lowercase()} constructor($params)$targetStr")
             }
             echo("")
         }
@@ -93,7 +97,8 @@ class ExplainCommand : CliktCommand(
                 val mut = if (prop.isMutable) "var" else "val"
                 val constStr = if (prop.isConst) "const " else ""
                 val locStr = prop.sourceLocation?.let { " (${it.file}:${it.line})" } ?: ""
-                echo("  - ${prop.visibility.name.lowercase()} ${constStr}$mut ${prop.name}: ${prop.type}$locStr")
+                val targetStr = if (prop.targets.isNotEmpty() && prop.targets != clazz.targets) " [${prop.targets.joinToString(", ")}]" else ""
+                echo("  - ${prop.visibility.name.lowercase()} ${constStr}$mut ${prop.name}: ${prop.type}$locStr$targetStr")
             }
             echo("")
         }
@@ -127,7 +132,8 @@ class ExplainCommand : CliktCommand(
                 }
                 val receiver = if (method.extensionReceiverType != null) "${method.extensionReceiverType}." else ""
                 val locStr = method.sourceLocation?.let { " (${it.file}:${it.line})" } ?: ""
-                echo("  - ${method.visibility.name.lowercase()} ${modsStr}fun $typeParamStr$receiver${method.name}($params): ${method.returnType}$locStr")
+                val targetStr = if (method.targets.isNotEmpty() && method.targets != clazz.targets) " [${method.targets.joinToString(", ")}]" else ""
+                echo("  - ${method.visibility.name.lowercase()} ${modsStr}fun $typeParamStr$receiver${method.name}($params): ${method.returnType}$locStr$targetStr")
             }
             echo("")
         }

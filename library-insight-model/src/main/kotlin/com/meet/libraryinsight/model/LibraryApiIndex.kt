@@ -19,7 +19,8 @@ data class LibraryApiIndex(
     val libraryName: String,
     val version: String,
     val packages: List<PackageApi>,
-    val scanMode: ScanMode = ScanMode.BYTECODE
+    val scanMode: ScanMode = ScanMode.BYTECODE,
+    val targets: List<String> = emptyList()
 )
 
 @Serializable
@@ -50,7 +51,8 @@ data class ClassApi(
     val sourceCode: String? = null,
     val documentationExamples: List<String> = emptyList(),
     val sourceLocation: SourceLocation? = null,
-    val imports: List<String> = emptyList()
+    val imports: List<String> = emptyList(),
+    val targets: List<String> = emptyList()
 )
 
 @Serializable
@@ -75,7 +77,8 @@ data class ConstructorApi(
     val parameters: List<ParameterApi>,
     val annotations: List<AnnotationApi>,
     val signature: String, // JVM descriptor signature
-    val sourceLocation: SourceLocation? = null
+    val sourceLocation: SourceLocation? = null,
+    val targets: List<String> = emptyList()
 )
 
 @Serializable
@@ -91,7 +94,8 @@ data class MethodApi(
     val typeParameters: List<TypeParameterApi> = emptyList(),
     val doc: String? = null,
     val sourceCode: String? = null,
-    val sourceLocation: SourceLocation? = null
+    val sourceLocation: SourceLocation? = null,
+    val targets: List<String> = emptyList()
 )
 
 @Serializable
@@ -129,7 +133,8 @@ data class PropertyApi(
     val isLateinit: Boolean = false,
     val doc: String? = null,
     val sourceCode: String? = null,
-    val sourceLocation: SourceLocation? = null
+    val sourceLocation: SourceLocation? = null,
+    val targets: List<String> = emptyList()
 )
 
 @Serializable
