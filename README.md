@@ -158,8 +158,8 @@ mkdocs gh-deploy --force
 Release and publish a new version tag to GitHub:
 
 ```bash
-git tag v1.3.0
-git push origin v1.3.0
+git tag v1.4.0
+git push origin v1.4.0
 ```
 
 ### 5. Demos

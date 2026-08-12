@@ -4,11 +4,11 @@ All releases for **Library Insight** are documented below.
 
 ---
 
-## v1.3.0
+## v1.4.0
 
-_Released on August 13, 2026_
+_Released on August 12, 2026_
 
-This release introduces `scan-source`, enabling Library Insight to analyze local Kotlin and Java source projects without compilation. It also introduces first-class Kotlin Multiplatform (KMP) support to download, parse, and merge platform-specific targets (`.klib`, JVM `.jar`/`.aar`) from a single root coordinate.
+This release introduces first-class Kotlin Multiplatform (KMP) support to download, parse, and merge platform-specific targets (`.klib`, JVM `.jar`/`.aar`) from a single root coordinate.
 
 ### 📦 Kotlin Multiplatform (KMP) Support
 
@@ -16,6 +16,14 @@ This release introduces `scan-source`, enabling Library Insight to analyze local
 - **KLIB Metadata Scanner**: Reads platform target tags and package structures directly from Kotlin Native `.klib` metadata ZIP archives.
 - **Unified Multiplatform Merging**: Consolidates package declarations, constructors, methods, and properties across all target platforms into a single unified index.
 - **Platform-Aware Reports**: Displays target annotations (e.g. `[common]`, `[jvm]`) in explain reports and MCP tool outputs when signatures vary by platform.
+
+---
+
+## v1.3.0
+
+_Released on July 31, 2026_
+
+This release introduces `scan-source`, enabling Library Insight to analyze local Kotlin and Java source projects without compilation. Source declarations, documentation, imports, and precise source locations are indexed into the same unified API database used for compiled libraries.
 
 ### 🔍 Raw Source Directory Scanner (`scan-source`)
 

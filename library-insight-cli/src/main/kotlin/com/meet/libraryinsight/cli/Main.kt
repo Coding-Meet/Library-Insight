@@ -39,7 +39,8 @@ fun main(args: Array<String>) {
                 ExamplesCommand(),
                 HealthCommand(),
                 DependencyCheckCommand(),
-                CallGraphCommand()
+                CallGraphCommand(),
+                UpdateCommand()
             )
             .main(args)
         Logger.info("Library-Insight CLI completed successfully")

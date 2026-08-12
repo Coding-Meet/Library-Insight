@@ -24,7 +24,7 @@ SEP="=================================================="
 
 echo ""
 echo "$SEP"
-echo " LIBRARY INSIGHT — QUICK DEMO  (v1.3.0 Suite)"
+echo " LIBRARY INSIGHT — QUICK DEMO  (v1.4.0 Suite)"
 echo "$SEP"
 echo ""
 

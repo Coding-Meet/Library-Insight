@@ -970,3 +970,27 @@ Found 15 classes across 3 packages.
 Saved API index to:
 /Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight-index.json
 ```
+
+---
+
+### 23. `update` — Self-Update CLI
+
+Check for the latest release on GitHub and automatically download and update the Library Insight installation to the latest version.
+
+```bash
+library-insight update
+```
+
+**Example output:**
+
+```
+Checking for updates...
+A new version is available: v1.4.0 (Current: v1.3.0)
+Updating Library Insight...
+==================================================
+ Installing Library Insight v1.4.0...
+==================================================
+...
+SUCCESS: Library Insight installed globally!
+Library Insight updated successfully to v1.4.0!
+```
