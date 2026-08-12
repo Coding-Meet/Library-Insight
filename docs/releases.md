@@ -17,6 +17,12 @@ This release introduces first-class Kotlin Multiplatform (KMP) support to downlo
 - **Unified Multiplatform Merging**: Consolidates package declarations, constructors, methods, and properties across all target platforms into a single unified index.
 - **Platform-Aware Reports**: Displays target annotations (e.g. `[common]`, `[jvm]`) in explain reports and MCP tool outputs when signatures vary by platform.
 
+### 🔄 Self-Updating CLI Command (`update`)
+
+- **Automatic Version Checks**: Connects to the GitHub API to check for new releases dynamically.
+- **Dynamic Local Versioning**: Reads the current CLI version dynamically at build-time using `version.properties` resources.
+- **Zero-Config Updates**: Automatically runs the installation wrapper script to upgrade binaries and distribute updated AI Agent Skills seamlessly.
+
 ---
 
 ## v1.3.0
