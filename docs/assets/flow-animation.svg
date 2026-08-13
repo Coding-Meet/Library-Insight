@@ -1,0 +1,321 @@
+<svg width="800" height="560" viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#060913" />
+      <stop offset="50%" stop-color="#0D1224" />
+      <stop offset="100%" stop-color="#151A30" />
+    </linearGradient>
+
+    <!-- Node Gradient (Dark Metallic Slate) -->
+    <linearGradient id="node-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.85" />
+    </linearGradient>
+
+    <!-- Core Engine Gradient (Purple-Indigo) -->
+    <linearGradient id="core-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="50%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#D946EF" />
+    </linearGradient>
+
+    <!-- Unified Index Gradient (Teal-Emerald) -->
+    <linearGradient id="index-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="50%" stop-color="#0D9488" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+
+    <!-- Drop Shadows / Glows -->
+    <filter id="glow-core" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-index" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000" flood-opacity="0.5" />
+    </filter>
+
+    <!-- Core Gear Spinner Animation -->
+    <style>
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 0.7; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.03); }
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-4px); }
+      }
+      .spin-icon {
+        transform-origin: 400px 232px;
+        animation: spin 16s linear infinite;
+      }
+      .pulse-core {
+        transform-origin: 400px 245px;
+        animation: pulse 4s ease-in-out infinite;
+      }
+      .float-db {
+        transform-origin: 400px 380px;
+        animation: float 5s ease-in-out infinite;
+      }
+      .connector {
+        stroke-dasharray: 6 6;
+        animation: dash 30s linear infinite;
+      }
+      @keyframes dash {
+        to { stroke-dashoffset: -1000; }
+      }
+      .node-text {
+        font-family: system-ui, -apple-system, sans-serif;
+        font-weight: 500;
+        fill: #E2E8F0;
+        font-size: 13px;
+        text-anchor: middle;
+      }
+      .node-subtext {
+        font-family: system-ui, -apple-system, sans-serif;
+        font-weight: 400;
+        fill: #94A3B8;
+        font-size: 10px;
+        text-anchor: middle;
+      }
+    </style>
+  </defs>
+
+  <!-- Background Rect -->
+  <rect width="100%" height="100%" fill="url(#bg-gradient)" rx="16" />
+
+  <!-- Grid Pattern Overlay for Tech Aesthetic -->
+  <g opacity="0.05">
+    <path d="M 0,40 H 800 M 0,80 H 800 M 0,120 H 800 M 0,160 H 800 M 0,200 H 800 M 0,240 H 800 M 0,280 H 800 M 0,320 H 800 M 0,360 H 800 M 0,400 H 800 M 0,440 H 800 M 0,480 H 800 M 0,520 H 800" stroke="#FFF" stroke-width="1"/>
+    <path d="M 40,0 V 560 M 80,0 V 560 M 120,0 V 560 M 160,0 V 560 M 200,0 V 560 M 240,0 V 560 M 280,0 V 560 M 320,0 V 560 M 360,0 V 560 M 400,0 V 560 M 440,0 V 560 M 480,0 V 560 M 520,0 V 560 M 560,0 V 560 M 600,0 V 560 M 640,0 V 560 M 680,0 V 560 M 720,0 V 560 M 760,0 V 560" stroke="#FFF" stroke-width="1"/>
+  </g>
+
+  <!-- ==================== CONNECTOR PATHS (INPUT TO CORE) ==================== -->
+  <g fill="none" stroke-opacity="0.3" stroke-width="2">
+    <path id="path1" d="M 110 110 C 110 170, 330 180, 360 215" stroke="#8B5CF6" class="connector" />
+    <path id="path2" d="M 300 110 C 300 170, 360 180, 380 215" stroke="#6366F1" class="connector" />
+    <path id="path3" d="M 490 110 C 490 170, 440 180, 420 215" stroke="#EC4899" class="connector" />
+    <path id="path4" d="M 680 110 C 680 170, 470 180, 440 215" stroke="#3B82F6" class="connector" />
+  </g>
+
+  <!-- ==================== CONNECTOR PATH (CORE TO DB) ==================== -->
+  <g fill="none" stroke-opacity="0.5" stroke-width="3">
+    <path id="pathCoreToDB" d="M 400 275 L 400 345" stroke="#a855f7" class="connector" />
+  </g>
+
+  <!-- ==================== CONNECTOR PATHS (DB TO OUTPUTS) ==================== -->
+  <g fill="none" stroke-opacity="0.3" stroke-width="2">
+    <path id="pathOut1" d="M 370 395 C 310 430, 110 440, 110 475" stroke="#06B6D4" class="connector" />
+    <path id="pathOut2" d="M 390 395 C 350 430, 300 440, 300 475" stroke="#0D9488" class="connector" />
+    <path id="pathOut3" d="M 410 395 C 450 430, 490 440, 490 475" stroke="#10B981" class="connector" />
+    <path id="pathOut4" d="M 430 395 C 490 430, 680 440, 680 475" stroke="#84CC16" class="connector" />
+  </g>
+
+  <!-- ==================== ANIMATED PARTICLES (INPUT TO CORE) ==================== -->
+  <!-- Path 1 (JAR/AAR) -->
+  <circle r="4" fill="#a855f7" opacity="0.8">
+    <animateMotion dur="2.4s" repeatCount="indefinite">
+      <mpath href="#path1" />
+    </animateMotion>
+  </circle>
+  <circle r="3" fill="#c084fc" opacity="0.6">
+    <animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite">
+      <mpath href="#path1" />
+    </animateMotion>
+  </circle>
+
+  <!-- Path 2 (Source) -->
+  <circle r="4" fill="#818cf8" opacity="0.8">
+    <animateMotion dur="2s" repeatCount="indefinite">
+      <mpath href="#path2" />
+    </animateMotion>
+  </circle>
+  <circle r="3" fill="#a5b4fc" opacity="0.6">
+    <animateMotion dur="2s" begin="1s" repeatCount="indefinite">
+      <mpath href="#path2" />
+    </animateMotion>
+  </circle>
+
+  <!-- Path 3 (KMP/KLib) -->
+  <circle r="4" fill="#f472b6" opacity="0.8">
+    <animateMotion dur="2.2s" repeatCount="indefinite">
+      <mpath href="#path3" />
+    </animateMotion>
+  </circle>
+  <circle r="3" fill="#fbcfe8" opacity="0.6">
+    <animateMotion dur="2.2s" begin="1.1s" repeatCount="indefinite">
+      <mpath href="#path3" />
+    </animateMotion>
+  </circle>
+
+  <!-- Path 4 (Maven Coordinator) -->
+  <circle r="4" fill="#60a5fa" opacity="0.8">
+    <animateMotion dur="2.6s" repeatCount="indefinite">
+      <mpath href="#path4" />
+    </animateMotion>
+  </circle>
+  <circle r="3" fill="#93c5fd" opacity="0.6">
+    <animateMotion dur="2.6s" begin="1.3s" repeatCount="indefinite">
+      <mpath href="#path4" />
+    </animateMotion>
+  </circle>
+
+  <!-- ==================== ANIMATED PARTICLES (CORE TO DB) ==================== -->
+  <circle r="5" fill="#e9d5ff" opacity="0.9">
+    <animateMotion dur="1.2s" repeatCount="indefinite">
+      <mpath href="#pathCoreToDB" />
+    </animateMotion>
+  </circle>
+  <circle r="3" fill="#a855f7" opacity="0.6">
+    <animateMotion dur="1.2s" begin="0.6s" repeatCount="indefinite">
+      <mpath href="#pathCoreToDB" />
+    </animateMotion>
+  </circle>
+
+  <!-- ==================== ANIMATED PARTICLES (DB TO OUTPUTS) ==================== -->
+  <!-- DB to Search -->
+  <circle r="4" fill="#22d3ee" opacity="0.8">
+    <animateMotion dur="2.2s" repeatCount="indefinite">
+      <mpath href="#pathOut1" />
+    </animateMotion>
+  </circle>
+  <circle r="3" fill="#67e8f9" opacity="0.6">
+    <animateMotion dur="2.2s" begin="1.1s" repeatCount="indefinite">
+      <mpath href="#pathOut1" />
+    </animateMotion>
+  </circle>
+
+  <!-- DB to Analyze -->
+  <circle r="4" fill="#2dd4bf" opacity="0.8">
+    <animateMotion dur="1.8s" repeatCount="indefinite">
+      <mpath href="#pathOut2" />
+    </animateMotion>
+  </circle>
+  <circle r="3" fill="#5eead4" opacity="0.6">
+    <animateMotion dur="1.8s" begin="0.9s" repeatCount="indefinite">
+      <mpath href="#pathOut2" />
+    </animateMotion>
+  </circle>
+
+  <!-- DB to AI -->
+  <circle r="4" fill="#34d399" opacity="0.8">
+    <animateMotion dur="2s" repeatCount="indefinite">
+      <mpath href="#pathOut3" />
+    </animateMotion>
+  </circle>
+  <circle r="3" fill="#6ee7b7" opacity="0.6">
+    <animateMotion dur="2s" begin="1s" repeatCount="indefinite">
+      <mpath href="#pathOut3" />
+    </animateMotion>
+  </circle>
+
+  <!-- DB to MCP -->
+  <circle r="4" fill="#a3e635" opacity="0.8">
+    <animateMotion dur="2.4s" repeatCount="indefinite">
+      <mpath href="#pathOut4" />
+    </animateMotion>
+  </circle>
+  <circle r="3" fill="#bef264" opacity="0.6">
+    <animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite">
+      <mpath href="#pathOut4" />
+    </animateMotion>
+  </circle>
+
+
+  <!-- ==================== INPUT LAYER NODES (ROW 1, Y=60) ==================== -->
+  <!-- Node 1: JAR / AAR -->
+  <g transform="translate(40, 60)" filter="url(#shadow)">
+    <rect width="140" height="50" rx="8" fill="url(#node-gradient)" stroke="#475569" stroke-width="1.5" />
+    <text x="70" y="24" class="node-text">JAR / AAR</text>
+    <text x="70" y="38" class="node-subtext">Compiled Bytecode</text>
+  </g>
+
+  <!-- Node 2: Java / Kotlin Source -->
+  <g transform="translate(230, 60)" filter="url(#shadow)">
+    <rect width="140" height="50" rx="8" fill="url(#node-gradient)" stroke="#475569" stroke-width="1.5" />
+    <text x="70" y="24" class="node-text">Source Code</text>
+    <text x="70" y="38" class="node-subtext">JavaParser &amp; Kotlin PSI</text>
+  </g>
+
+  <!-- Node 3: KMP / KLib -->
+  <g transform="translate(420, 60)" filter="url(#shadow)">
+    <rect width="140" height="50" rx="8" fill="url(#node-gradient)" stroke="#475569" stroke-width="1.5" />
+    <text x="70" y="24" class="node-text">KMP / KLib</text>
+    <text x="70" y="38" class="node-subtext">Multiplatform Metadata</text>
+  </g>
+
+  <!-- Node 4: Maven Central -->
+  <g transform="translate(610, 60)" filter="url(#shadow)">
+    <rect width="140" height="50" rx="8" fill="url(#node-gradient)" stroke="#475569" stroke-width="1.5" />
+    <text x="70" y="24" class="node-text">Maven Coordinates</text>
+    <text x="70" y="38" class="node-subtext">Remote Artifact Resolution</text>
+  </g>
+
+
+  <!-- ==================== CENTER ENGINE LAYER (ROW 2, Y=210) ==================== -->
+  <g class="pulse-core" filter="url(#shadow)">
+    <!-- Glowing background core -->
+    <rect x="280" y="210" width="240" height="70" rx="12" fill="url(#core-gradient)" filter="url(#glow-core)" opacity="0.3" />
+    <!-- Core container -->
+    <rect x="280" y="210" width="240" height="70" rx="12" fill="#1E1B4B" stroke="url(#core-gradient)" stroke-width="2" />
+    <!-- Gear Spinner Icon -->
+    <!-- <path class="spin-icon" d="M396,226 L398,226 L399,228 C400.5,228.3 401.8,229 403,230 L405,229 L406,230.5 L405,232 C406,233.2 406.7,234.5 407,236 L409,237 L409,239 L407,240 C406.7,241.5 406,242.8 405,244 L406,245.5 L405,247 L403,246 C401.8,247 400.5,247.7 399,248 L398,250 L396,250 L395,248 C393.5,247.7 392.2,247 391,246 L389,247 L388,245.5 L389,244 C388,242.8 387.3,241.5 387,240 L385,239 L385,237 L387,236 C387.3,234.5 388,233.2 389,232 L388,230.5 L389,229 L391,230 C392.2,229 393.5,228.3 395,228 Z" fill="#E9D5FF" /> -->
+    <circle cx="400" cy="238" r="3" fill="#1E1B4B" />
+    <!-- Core Texts -->
+    <text x="400" y="246" class="node-text" font-size="14" font-weight="700" fill="#F3E8FF">Library Insight Core</text>
+    <text x="400" y="262" class="node-subtext" fill="#D8B4FE">API Extraction &amp; Metadata Engine</text>
+  </g>
+
+
+  <!-- ==================== DATABASE LAYER (ROW 3, Y=360) ==================== -->
+  <g class="float-db" filter="url(#shadow)">
+    <!-- Glowing background index -->
+    <rect x="300" y="350" width="200" height="50" rx="10" fill="url(#index-gradient)" filter="url(#glow-index)" opacity="0.25" />
+    <!-- Database cylinder container -->
+    <rect x="300" y="350" width="200" height="50" rx="10" fill="#022C22" stroke="url(#index-gradient)" stroke-width="2" />
+    <!-- Database Cylinder Symbol -->
+    <path d="M 330 362 C 330 365, 340 365, 340 362 M 330 367 C 330 370, 340 370, 340 367 M 330 362 V 373 C 330 376, 340 376, 340 373 V 362" fill="none" stroke="#6EE7B7" stroke-width="1.5" />
+    <!-- DB Texts -->
+    <text x="405" y="374" class="node-text" font-size="13" font-weight="700" fill="#E6F4EA">Unified API Index</text>
+    <text x="405" y="388" class="node-subtext" fill="#A7F3D0">Platform-Merged Binary Cache</text>
+  </g>
+
+
+  <!-- ==================== OUTPUT LAYER NODES (ROW 4, Y=475) ==================== -->
+  <!-- Node 5: Search & Explore -->
+  <g transform="translate(40, 475)" filter="url(#shadow)">
+    <rect width="140" height="50" rx="8" fill="url(#node-gradient)" stroke="#0E7490" stroke-width="1.5" />
+    <text x="70" y="24" class="node-text">Search &amp; Explore</text>
+    <text x="70" y="38" class="node-subtext">search • explain • examples</text>
+  </g>
+
+  <!-- Node 6: Compare & Analyze -->
+  <g transform="translate(230, 475)" filter="url(#shadow)">
+    <rect width="140" height="50" rx="8" fill="url(#node-gradient)" stroke="#0F766E" stroke-width="1.5" />
+    <text x="70" y="24" class="node-text">Compare &amp; Analyze</text>
+    <text x="70" y="38" class="node-subtext">diff • migrate • semver • audit</text>
+  </g>
+
+  <!-- Node 7: AI Export -->
+  <g transform="translate(420, 475)" filter="url(#shadow)">
+    <rect width="140" height="50" rx="8" fill="url(#node-gradient)" stroke="#065F46" stroke-width="1.5" />
+    <text x="70" y="24" class="node-text">AI Context Exporter</text>
+    <text x="70" y="38" class="node-subtext">ai-export • token-optimized</text>
+  </g>
+
+  <!-- Node 8: MCP Integration -->
+  <g transform="translate(610, 475)" filter="url(#shadow)">
+    <rect width="140" height="50" rx="8" fill="url(#node-gradient)" stroke="#4D7C0F" stroke-width="1.5" />
+    <text x="70" y="24" class="node-text">MCP Integration</text>
+    <text x="70" y="38" class="node-subtext">mcp server • stdio API</text>
+  </g>
+</svg>

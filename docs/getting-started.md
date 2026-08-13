@@ -86,17 +86,33 @@ You can build an API index database using either of the two pipelines:
 
 Find a class, interface, or property in the index database.
 
-```bash
-library-insight search LoginRepository
-```
+=== "For Scanned Source Code"
+
+    ```bash
+    library-insight search LoginRepository
+    ```
+
+=== "For Scanned Libraries"
+
+    ```bash
+    library-insight search Retrofit
+    ```
 
 ### 3. Explain class signatures
 
 Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration source locations (file:line) for a class.
 
-```bash
-library-insight explain LoginRepository
-```
+=== "For Scanned Source Code"
+
+    ```bash
+    library-insight explain com.meet.sample.repository.LoginRepository
+    ```
+
+=== "For Scanned Libraries"
+
+    ```bash
+    library-insight explain retrofit2.Retrofit
+    ```
 
 ### 4. Compare Versions (Bytecode Only)
 
