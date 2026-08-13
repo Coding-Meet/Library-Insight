@@ -6,7 +6,7 @@ All releases for **Library Insight** are documented below.
 
 ## v1.4.0
 
-_Released on August 12, 2026_
+_Released on August 13, 2026_
 
 This release introduces first-class Kotlin Multiplatform (KMP) support to download, parse, and merge platform-specific targets (`.klib`, JVM `.jar`/`.aar`) from a single root coordinate.
 

@@ -1,6 +1,6 @@
 # Getting Started
 
-Get up and running with **Library Insight** to analyze JVM dependencies and enable correct API context for your development environment.
+Get up and running with **Library Insight** to analyze Java, Kotlin, and Kotlin Multiplatform dependencies and enable correct API context for your development environment.
 
 ---
 

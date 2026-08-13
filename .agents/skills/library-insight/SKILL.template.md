@@ -1,17 +1,18 @@
 ---
 name: library-insight
-description: JVM API Explorer & MCP Server that indexes public APIs from compiled libraries (JAR/AAR) or local Java/Kotlin source code, enabling API exploration, dependency analysis, migration reports, and AI-ready context generation.
+description: API Explorer & MCP Server for Java, Kotlin & KMP that indexes public APIs from compiled libraries (JAR/AAR), Kotlin Multiplatform libraries (KLib), or local Java/Kotlin source code, enabling API exploration, dependency analysis, migration reports, and AI-ready context generation.
 ---
 
 # Library Insight Agent Skill
 
 Use this skill when you need to understand, inspect, or build AI prompts for:
 
-- External JVM libraries (Java/Kotlin JAR or AAR files)
+- Java and Kotlin libraries (JAR/AAR files)
+- Kotlin Multiplatform libraries (KLib files)
 - Maven Central dependencies
 - Local Java or Kotlin source code projects
 
-Library Insight analyzes both compiled JVM libraries and local source code to build a searchable API index. It extracts public APIs, type information, documentation, source metadata, and Kotlin-specific language features, allowing AI agents to work with the exact code being used instead of relying on outdated documentation or web examples.
+Library Insight analyzes compiled libraries (JVM artifacts and Kotlin Multiplatform libraries) and local source code to build a searchable API index. It extracts public APIs, type information, documentation, source metadata, and Kotlin-specific language features, allowing AI agents to work with the exact code being used instead of relying on outdated documentation or web examples.
 
 > [!IMPORTANT]
 > **AI Agent Token Optimization Rule:**
@@ -22,7 +23,7 @@ Library Insight analyzes both compiled JVM libraries and local source code to bu
 >
 > **Indexing**
 >
-> - Use **`library-insight scan <jar|aar|directory|maven-coordinate>`** to index compiled JVM libraries.
+> - Use **`library-insight scan <jar|aar|klib|directory|maven-coordinate>`** to index compiled libraries.
 > - Use **`library-insight scan-source <directory>`** to index a local Java/Kotlin source project without compilation.
 >
 > **Querying**

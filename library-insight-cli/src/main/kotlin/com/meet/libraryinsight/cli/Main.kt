@@ -7,7 +7,7 @@ import com.meet.libraryinsight.common.Logger
 
 class LibraryInsightCommand : CliktCommand(
     name = "library-insight",
-    help = "Library Insight: JVM API Explorer & MCP Server — accurate library APIs for AI IDEs."
+    help = "Library Insight: API Explorer & MCP Server for Java, Kotlin & KMP — accurate library APIs for AI IDEs."
 ) {
     override fun run() = Unit
 }

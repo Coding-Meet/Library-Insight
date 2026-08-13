@@ -50,14 +50,14 @@ graph TD
 
 ### Module Responsibilities
 
-*   `library-insight-common`: Low-level utility classes for ZIP/JAR/AAR archives extraction, Ktor asynchronous HTTP engines, and directory operations.
-*   `library-insight-model`: Contains immutable Kotlin serialization structures representing the public API schema (`LibraryApiIndex`).
-*   `library-insight-parser`: Performs raw Java bytecode parsing using the **ASM** library, extracting class fields, methods, generic signatures, and structures.
-*   `library-insight-kotlin`: Reads and parses compiled Kotlin Metadata header annotations (`@Metadata` via `kotlin-metadata-jvm`) to enrich signatures with Kotlin properties, nullability flags, and suspend keywords.
-*   `library-insight-search`: The query/search engine that matches search keywords against compiled packages, classes, constructors, methods, and variables.
-*   `library-insight-export`: Exporters that format API indices into target representations: **JSON**, **Markdown** reference documentation, and token-optimized **AI Context** pages.
-*   `library-insight-core`: The main orchestration hub. It coordinates the parsing, metadata enrichment, search routines, and calculates API differences/compatibility alerts.
-*   `library-insight-cli`: Command Line Interface definitions using **Clikt** mapping option/argument configurations.
+- `library-insight-common`: Low-level utility classes for ZIP/JAR/AAR archives extraction, Ktor asynchronous HTTP engines, and directory operations.
+- `library-insight-model`: Contains immutable Kotlin serialization structures representing the public API schema (`LibraryApiIndex`).
+- `library-insight-parser`: Performs raw Java bytecode parsing using the **ASM** library, extracting class fields, methods, generic signatures, and structures.
+- `library-insight-kotlin`: Reads and parses compiled Kotlin Metadata header annotations (`@Metadata` via `kotlin-metadata-jvm`) to enrich signatures with Kotlin properties, nullability flags, and suspend keywords.
+- `library-insight-search`: The query/search engine that matches search keywords against compiled packages, classes, constructors, methods, and variables.
+- `library-insight-export`: Exporters that format API indices into target representations: **JSON**, **Markdown** reference documentation, and token-optimized **AI Context** pages.
+- `library-insight-core`: The main orchestration hub. It coordinates the parsing, metadata enrichment, search routines, and calculates API differences/compatibility alerts.
+- `library-insight-cli`: Command Line Interface definitions using **Clikt** mapping option/argument configurations.
 
 ## Unified API Indexing Pipelines
 
