@@ -20,9 +20,13 @@ dependencies {
     runtimeOnly("org.slf4j:slf4j-simple:2.0.9")
 }
 
+val projectVersion = rootProject.version.toString()
+val skillFile = rootProject.file(".agents/skills/library-insight/SKILL.md")
+val scriptsDir = rootProject.file(".agents/skills/library-insight/scripts")
+
 tasks.processResources {
-    from(rootProject.file(".agents/skills/library-insight/SKILL.md"))
-    from(rootProject.file(".agents/skills/library-insight/scripts")) {
-        into("scripts")
-    }
+    inputs.property("version", projectVersion)
+    filter(mapOf("tokens" to mapOf("version" to projectVersion)), org.apache.tools.ant.filters.ReplaceTokens::class.java)
+    from(skillFile)
+    from(scriptsDir).into("scripts")
 }

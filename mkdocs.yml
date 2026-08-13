@@ -3,7 +3,7 @@ site_url: https://Coding-Meet.github.io/Library-Insight/
 repo_name: Coding-Meet/Library-Insight
 repo_url: https://github.com/Coding-Meet/Library-Insight
 edit_uri: edit/main/docs/
-site_description: Version-correct JVM API explorer and MCP server for AI IDEs.
+site_description: Version-correct API explorer and MCP server for Java, Kotlin & KMP.
 
 theme:
   name: material
@@ -106,7 +106,14 @@ nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - Architecture: architecture.md
-  - Command Reference: cli.md
+  - CLI Reference:
+      - Overview: cli/index.md
+      - Scanners & Indexing: cli/scanners.md
+      - API Explorer & Lookup: cli/explorer.md
+      - Analysis & Diagnostics: cli/analysis.md
+      - Versioning & Migration: cli/versioning.md
+      - Maven & Dependency Resolution: cli/dependencies.md
+      - AI Context & Integration: cli/ai-integration.md
   - MCP Integration: mcp.md
   - AI Agent Integration: ai-agents.md
   - Release Notes: releases.md

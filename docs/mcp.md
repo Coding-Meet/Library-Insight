@@ -4,11 +4,11 @@
 
 When connected, the AI agent gains access to the following tools:
 
-*   `scan_library`: Scan and index a JAR/AAR or Maven coordinate.
-*   `scan_source`: Scan local raw Java and Kotlin source directories directly without compilation.
-*   `search_symbols`: Query the API index for classes, methods, or properties matching a name.
-*   `explain_class`: Retrieve the exact public API signature and Javadoc/KDoc documentation for a class.
-*   `dsl_report`: Generate a Kotlin DSL surface report for the active library index (type aliases, `@DslMarker` scopes, extension functions, builders, and inline reified entry points).
+- `scan_library`: Scan and index a JAR/AAR or Maven coordinate.
+- `scan_source`: Scan local raw Java and Kotlin source directories directly without compilation.
+- `search_symbols`: Query the API index for classes, methods, or properties matching a name.
+- `explain_class`: Retrieve the exact public API signature and Javadoc/KDoc documentation for a class.
+- `dsl_report`: Generate a Kotlin DSL surface report for the active library index (type aliases, `@DslMarker` scopes, extension functions, builders, and inline reified entry points).
 
 ---
 
@@ -20,9 +20,9 @@ When connected, the AI agent gains access to the following tools:
 2. Go to **Features** > **MCP**.
 3. Click **+ Add New MCP Server**.
 4. Configure the settings:
-    *   **Name**: `Library Insight`
-    *   **Type**: `command`
-    *   **Command**: `library-insight mcp`
+   - **Name**: `Library Insight`
+   - **Type**: `command`
+   - **Command**: `library-insight mcp`
 5. Click **Save**. The status should change to a green dot showing it's connected.
 
 > [!NOTE]
@@ -34,8 +34,8 @@ When connected, the AI agent gains access to the following tools:
 
 To add the tool to the Claude Desktop client, edit your configuration file:
 
-*   **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-*   **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
 Add `library-insight` under `mcpServers`:
 
@@ -57,6 +57,7 @@ Restart Claude Desktop, and you should see the tool icon appear in your chat win
 ## Verification
 
 To verify that the MCP server is working, ask the AI in your IDE:
+
 > "Use Library Insight to search for Retrofit and explain it."
 
 The assistant will make a tool call to the MCP server, retrieve the Retrofit class structure, and print the results without having to index the entire codebase or read external documents.

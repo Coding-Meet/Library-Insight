@@ -1,6 +1,6 @@
 # Getting Started
 
-Get up and running with **Library Insight** to analyze JVM dependencies and enable correct API context for your development environment.
+Get up and running with **Library Insight** to analyze Java, Kotlin, and Kotlin Multiplatform dependencies and enable correct API context for your development environment.
 
 ---
 
@@ -73,6 +73,13 @@ You can build an API index database using either of the two pipelines:
     Scan a compiled dependency from Maven Central (or pick it from your local Gradle cache):
     ```bash
     library-insight scan com.squareup.retrofit2:retrofit:2.11.0
+    ```
+
+=== "C. Scan Kotlin Multiplatform (KMP) Libraries"
+
+    Scan a multiplatform library. Library Insight automatically resolves Gradle Module Metadata, downloads and parses target KLib metadata files, and merges platform variants (`common`, `jvm`, `ios`, etc.) into a unified index:
+    ```bash
+    library-insight scan io.ktor:ktor-client-core:3.0.0
     ```
 
 ### 2. Search for Symbols

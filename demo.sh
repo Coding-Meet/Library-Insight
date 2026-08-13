@@ -268,10 +268,23 @@ echo ""
 library-insight doctor
 echo ""
 
+# ------------------------------------------------------------------
+# 23. KMP SCAN & EXPLAIN
+# Resolve target platforms and print platform indicators
+# ------------------------------------------------------------------
+echo ">> 23. KMP SCAN & EXPLAIN - Resolve KMP targets and merge API indexes"
+echo "   library-insight scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json"
+library-insight scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json > /dev/null
+echo "   library-insight explain io.ktor.client.HttpClient --db build/ktor-index.json"
+echo ""
+library-insight explain io.ktor.client.HttpClient --db build/ktor-index.json | head -n 35
+echo ""
+
 # Cleanup
 rm -rf "$DEMO_WORKSPACE"
+rm -f build/ktor-index.json
 
 echo "$SEPARATOR"
-echo " All 22 commands completed successfully!"
+echo " All 23 commands completed successfully!"
 echo "$SEPARATOR"
 echo ""

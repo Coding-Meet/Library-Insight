@@ -2,9 +2,9 @@
 
 # Library Insight 🔍
 
-### JVM API Explorer & MCP Server
+### API Explorer & MCP Server for Java, Kotlin & KMP
 
-Analyze Java & Kotlin libraries and source code with a standalone CLI or integrate directly into AI IDEs via MCP.
+Analyze Java and Kotlin libraries, JVM artifacts, Kotlin Multiplatform libraries, and local source code with a standalone CLI or integrate directly into AI IDEs via MCP.
 
 AI coding assistants often guess Java/Kotlin APIs from outdated documentation, web examples, or a different version than the one used in your project. That leads to missing methods, deprecated usage, incorrect signatures, and wasted debugging time.
 
@@ -26,6 +26,7 @@ The complete documentation, architecture diagrams, command reference, and integr
 <!-- --8<-- [start:features] -->
 
 - **MCP Server**: Connect Cursor, Claude Desktop, or any MCP-compatible IDE to query APIs directly.
+- **Kotlin Multiplatform (KMP) Support**: Resolve coordinates from Gradle Module Metadata (`.module` JSON), parse Native `.klib` metadata files, and merge platform variant API targets (`common`, `jvm`, `ios`, `js`, `wasm`).
 - **Local Source Code Scanner (`scan-source`)**: Analyze Kotlin and Java source projects without compilation, preserving KDoc/Javadoc, imports, and declaration source locations (`file:line`).
 - **Version-Correct API Lookup**: Build an API index from the exact JAR, AAR, Maven dependency, Gradle output, or source code used by your project to prevent AI hallucinations.
 - **Deep Metadata Extraction**: Extract classes, constructors, methods, properties, nullability, generics, annotations, modifiers, and source metadata.
@@ -85,7 +86,7 @@ For setup instructions in Cursor or Claude Desktop, see the [MCP Integration Gui
 
 <!-- --8<-- [start:roadmap] -->
 
-We plan to expand Library Insight with deep source-level analysis capabilities, a three-layer clean architecture, and unified Kotlin Multiplatform (KMP) support:
+We plan to expand Library Insight with deep source-level analysis capabilities:
 
 ### 🔍 Source Analysis Engine (Planned)
 
@@ -93,20 +94,6 @@ We plan to expand Library Insight with deep source-level analysis capabilities, 
 - **Implementations**: Query all interface implementations or subclass declarations (e.g. `library-insight implementations Repository` -> `RoomRepository`, `NetworkRepository`).
 - **Hierarchy**: Render the visual inheritance tree for any base class or interface (e.g. `library-insight hierarchy BaseViewModel`).
 - **Source Call Graph**: Trace internal method execution paths using raw source file declaration locations.
-
-### 🏗️ Clean Architectural Layers
-
-To simplify maintenance, we are partitioning the codebase into three clean layers:
-
-1. **Scanner Layer** (`scan`, `scan-source`) — Processes raw inputs (bytecode, sources, metadata) and compiles them.
-2. **Unified Database** — Serves as the single serialization schema and repository index.
-3. **Analysis & Tooling Layer** (`search`, `explain`, `references`, `implementations`, `hierarchy`, `callgraph`, `ai-export`, `export`) — Consumes the database and provides rich diagnostic tools.
-
-### 📦 Kotlin Multiplatform (KMP) Support
-
-- **KLib Metadata Reader**: Parse `.klib` metadata to extract signatures for iOS/Native, JS, and Wasm targets directly (bypassing JVM bytecode dependencies).
-- **Platform-Aware Indexing**: Store platform target markers (`common`, `jvm`, `ios`, `js`, `wasm`) in the database schema.
-- **KMP Coordinate Resolution**: Auto-resolve platform split coordinates (e.g. `ktor-client-core-iosarm64`) from the root KMP library Maven coordinate.
 <!-- --8<-- [end:roadmap] -->
 
 ---
@@ -157,8 +144,8 @@ mkdocs gh-deploy --force
 Release and publish a new version tag to GitHub:
 
 ```bash
-git tag v1.3.0
-git push origin v1.3.0
+git tag v1.4.0
+git push origin v1.4.0
 ```
 
 ### 5. Demos

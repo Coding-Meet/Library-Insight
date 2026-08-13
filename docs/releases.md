@@ -4,11 +4,33 @@ All releases for **Library Insight** are documented below.
 
 ---
 
+## v1.4.0
+
+_Released on August 13, 2026_
+
+This release introduces first-class Kotlin Multiplatform (KMP) support to download, parse, and merge platform-specific targets (`.klib`, JVM `.jar`/`.aar`) from a single root coordinate.
+
+### 📦 Kotlin Multiplatform (KMP) Support
+
+- **Gradle Module Metadata Resolution**: Resolves target split coordinates (e.g. `iosarm64`, `js`, `wasm-js`, `jvm`) automatically from Gradle Module Metadata (`.module` JSON).
+- **KLIB Metadata Scanner**: Reads platform target tags and package structures directly from Kotlin Native `.klib` metadata ZIP archives.
+- **Unified Multiplatform Merging**: Consolidates package declarations, constructors, methods, and properties across all target platforms into a single unified index.
+- **Platform-Aware Reports**: Displays target annotations (e.g. `[common]`, `[jvm]`) in explain reports and MCP tool outputs when signatures vary by platform.
+
+### 🖥️ CLI Updates & Architecture Refactoring
+
+- **Self-Updating Engine (`update` Command)**: Checks for the latest version on GitHub, automatically upgrades the CLI binaries, and distributes the updated Agent Skills dynamically.
+- **Clean Architecture Partitioning**: Fully modularized the codebase into Scanner Layer, Unified Database, and Tooling/Analysis Layer.
+- **Configuration Cache Compliance**: Dynamic CLI version resolution configured safely, enabling 100% compatibility with Gradle's Configuration Cache.
+- **Categorized Modular Documentation**: CLI Reference split into 6 functional files under `docs/cli/` to improve website navigation and AI agent contextual lookup.
+
+---
+
 ## v1.3.0
 
 _Released on July 31, 2026_
 
-This release introduces scan-source, enabling Library Insight to analyze local Kotlin and Java source projects without compilation. Source declarations, documentation, imports, and precise source locations are indexed into the same unified API database used for compiled libraries.
+This release introduces `scan-source`, enabling Library Insight to analyze local Kotlin and Java source projects without compilation. Source declarations, documentation, imports, and precise source locations are indexed into the same unified API database used for compiled libraries.
 
 ### 🔍 Raw Source Directory Scanner (`scan-source`)
 

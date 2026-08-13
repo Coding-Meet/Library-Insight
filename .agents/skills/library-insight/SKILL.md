@@ -1,17 +1,18 @@
 ---
 name: library-insight
-description: JVM API Explorer & MCP Server that indexes public APIs from compiled libraries (JAR/AAR) or local Java/Kotlin source code, enabling API exploration, dependency analysis, migration reports, and AI-ready context generation.
+description: API Explorer & MCP Server for Java, Kotlin & KMP that indexes public APIs from compiled libraries (JAR/AAR), Kotlin Multiplatform libraries (KLib), or local Java/Kotlin source code, enabling API exploration, dependency analysis, migration reports, and AI-ready context generation.
 ---
 
 # Library Insight Agent Skill
 
 Use this skill when you need to understand, inspect, or build AI prompts for:
 
-- External JVM libraries (Java/Kotlin JAR or AAR files)
+- Java and Kotlin libraries (JAR/AAR files)
+- Kotlin Multiplatform libraries (KLib files)
 - Maven Central dependencies
 - Local Java or Kotlin source code projects
 
-Library Insight analyzes both compiled JVM libraries and local source code to build a searchable API index. It extracts public APIs, type information, documentation, source metadata, and Kotlin-specific language features, allowing AI agents to work with the exact code being used instead of relying on outdated documentation or web examples.
+Library Insight analyzes compiled libraries (JVM artifacts and Kotlin Multiplatform libraries) and local source code to build a searchable API index. It extracts public APIs, type information, documentation, source metadata, and Kotlin-specific language features, allowing AI agents to work with the exact code being used instead of relying on outdated documentation or web examples.
 
 > [!IMPORTANT]
 > **AI Agent Token Optimization Rule:**
@@ -22,7 +23,7 @@ Library Insight analyzes both compiled JVM libraries and local source code to bu
 >
 > **Indexing**
 >
-> - Use **`library-insight scan <jar|aar|directory|maven-coordinate>`** to index compiled JVM libraries.
+> - Use **`library-insight scan <jar|aar|klib|directory|maven-coordinate>`** to index compiled libraries.
 > - Use **`library-insight scan-source <directory>`** to index a local Java/Kotlin source project without compilation.
 >
 > **Querying**
@@ -159,7 +160,9 @@ When answering questions about a library or project:
 6. Generate AI context (`ai-export`) only when broad project understanding is required.
 7. When an MCP server is available, prefer MCP tools over spawning CLI processes.
 
-### 1. `scan` — Scan a Library
+# Scanners & Indexing
+
+## `scan` — Scan a Library
 
 Scan a JAR, AAR, local directory, or Maven coordinate. Use this first to build the local index.
 
@@ -196,9 +199,119 @@ Scan complete! Found 113 classes across 3 packages.
 Saved API index to: build/library-insight-index.json
 ```
 
+### Kotlin Multiplatform (KMP) Scanning
+
+When you supply a root Kotlin Multiplatform library coordinate, the `scan` command automatically:
+
+1. Inspects Gradle Module Metadata (`.module`) to resolve target split coordinates.
+2. Resolves and downloads each platform's binaries (`.klib` or JVM `.jar`/`.aar`) and sources JAR.
+3. Automatically parses `.klib` manifests and maps compilation targets (e.g. `ios`, `js`, `wasm`, `jvm`).
+4. Merges all declarations, constructors, methods, and properties into a single unified index.
+
+```bash
+library-insight scan io.ktor:ktor-client-core:3.0.0
+```
+
+When explaining a class from a KMP index, platform target tags are annotated on class and member declarations:
+
+```
+==================================================
+ CLASS EXPLAIN REPORT
+==================================================
+Class:       io.ktor.client.HttpClient
+Package:     io.ktor.client
+Kind:        class
+Visibility:  public
+Targets:     common, jvm
+...
+Constructors:
+  - public constructor(engine: HttpClientEngine, userConfig: HttpClientConfig<out HttpClientEngineConfig>) [common]
+  - public constructor(engine: io.ktor.client.engine.HttpClientEngine, ... ) [jvm]
+```
+
 ---
 
-### 2. `search` — Search Symbols
+## `scan-source` — Local Source Directory Scanner
+
+Scan a local raw source directory containing Kotlin (`.kt`) and Java (`.java`) files to build an API index database.
+
+```bash
+library-insight scan-source sample/src/main/kotlin
+```
+
+**Optional Parameters:**
+
+- `--db <file>`: Target index database JSON file path to write to (default: `build/library-insight-index.json`)
+- `--lib-name <name>`: Override the library name tag in the generated index
+- `--lib-version <version>`: Override the version tag in the generated index
+
+**Example with options:**
+
+```bash
+library-insight scan-source src/main/kotlin --db build/my-app-index.json --lib-name MyApp --lib-version 1.0.0
+```
+
+**Example output:**
+
+```
+Scanning source directory: /Users/meet/AndroidStudioProjects/Library-Insight/sample/src/main/kotlin
+
+Detected:
+  • Kotlin files : 1
+  • Java files   : 0
+
+Scan complete!
+Found 15 classes across 3 packages.
+
+Saved API index to:
+/Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight-index.json
+```
+
+---
+
+## `clear-cache` — Clear Local Cache
+
+Delete all locally downloaded Maven artifacts.
+
+```bash
+library-insight clear-cache
+```
+
+**Example output:**
+
+```
+Clearing local cache at: ~/.library-insight/cache...
+Cache cleared successfully. Deleted 12.4 MB.
+```
+
+---
+
+## `update` — Self-Update CLI
+
+Check for the latest release on GitHub and automatically download and update the Library Insight installation to the latest version.
+
+```bash
+library-insight update
+```
+
+**Example output:**
+
+```
+Checking for updates...
+A new version is available: v1.4.0 (Current: v1.3.0)
+Updating Library Insight...
+==================================================
+ Installing Library Insight v1.4.0...
+==================================================
+...
+SUCCESS: Library Insight installed globally!
+Library Insight updated successfully to v1.4.0!
+```
+
+---
+# API Explorer & Lookup
+
+## `search` — Search Symbols
 
 Search for packages, classes, methods, or properties in the saved index.
 
@@ -230,7 +343,7 @@ Found 2 matches for 'Retrofit':
 
 ---
 
-### 3. `explain` — Explain a Class
+## `explain` — Explain a Class
 
 Print detailed structural information (modifiers, superclass, constructors, properties, methods, Javadoc/KDoc, and nested usage guide examples extracted from README/Dokka markdown files) for a specific class.
 
@@ -281,387 +394,7 @@ Methods:
 
 ---
 
-### 4. `diff` — Compare Versions
-
-Compare two library archives to check for added, removed, and changed APIs including breaking changes.
-
-```bash
-library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar
-```
-
-**Or via Maven coordinates:**
-
-```bash
-library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
-```
-
-**Example output:**
-
-```
-==================================================
- LIBRARY INSIGHT API DIFF REPORT
-==================================================
-Breaking Changes Found: NO
-➕ Added Classes:
-  - retrofit2.Reflection
-📝 Changed Classes:
-  Class: retrofit2.Invocation
-    Added Methods:
-      + fun service(): java.lang.Class<?>
-```
-
----
-
-### 5. `migrate` — Migration Advisor
-
-Compare two versions and get a structured migration report showing removed, deprecated, and replacement APIs.
-
-```bash
-library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
-```
-
-**Optional Parameters:**
-
-- `--repo <url>`: Additional Maven repository URLs to resolve coordinates (multiple allowed)
-
-**Example with options:**
-
-```bash
-library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0 --repo https://repo.maven.apache.org/maven2
-```
-
-**Example output:**
-
-```
-==================================================
-        Library Insight Migration Report
-==================================================
-Old Version : 2.9.0
-New Version : 2.11.0
-
-❌ Removed Classes
-  - retrofit2.Platform$Android
-❌ Removed Methods
-  - fun retrofit2.Platform.defaultCallbackExecutor(): Executor
-
-Binary Compatibility: ❌ BREAKING CHANGES DETECTED
-```
-
----
-
-### 6. `export` — Export Index
-
-Export the scanned index to Markdown or JSON.
-
-> For large libraries, Markdown files can be huge. Use `ai-export` for AI prompts instead.
-
-**Export to Markdown format:**
-
-```bash
-library-insight export markdown
-```
-
-**Export to JSON format:**
-
-```bash
-library-insight export json
-```
-
-**Positional Arguments:**
-
-- `[output-file]`: Optional target output file path to write export content to. If not specified, defaults to `build/API_REFERENCE.md` or `build/library-insight-index.json`. Use `-` to print to stdout.
-
-**Optional Parameters:**
-
-- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
-
-**Example with options:**
-
-```bash
-library-insight export markdown API_REFERENCE.md --db custom-index.json
-```
-
-**Example output:**
-
-```
-Exported MARKDOWN to: build/API_REFERENCE.md
-```
-
----
-
-### 7. `ai-export` — AI Context Export (Recommended for AI prompts)
-
-Splits the scanned database into a token-efficient directory structure under `build/ai-context/`. AI agents read `metadata.json` first, then load only the class files they need — reducing token usage by 95%+.
-
-```bash
-library-insight ai-export
-```
-
-**Positional Arguments:**
-
-- `[output-dir]`: Optional target output directory to save AI context files (default: `build/ai-context/`)
-
-**Optional Parameters:**
-
-- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
-
-**Example with options:**
-
-```bash
-library-insight ai-export custom-ai-context/ --db custom-index.json
-```
-
-**Example output:**
-
-```
-Generated compact LLM context directory structure at: build/ai-context
-```
-
----
-
-### 8. `audit` — Dependency API Audit
-
-Scan all project Gradle dependencies recursively (`build.gradle.kts`, `libs.versions.toml`) and report deprecated classes, methods, and properties found in the bytecode.
-
-```bash
-library-insight audit
-```
-
-**Example output:**
-
-```
-==================================================
-      Library Insight Dependency Audit
-==================================================
-Found 10 dependencies to audit.
-Auditing org.ow2.asm:asm:9.7...
-  - Status: ⚠️  Deprecations detected
-    * Deprecated Methods    : 2
-    * Deprecated Properties : 2
-Audit Summary: Scanned 10 libraries. Total Deprecated APIs: 1819
-```
-
----
-
-### 9. `search-central` — Search Maven Central
-
-Search Maven Central dynamically for matching coordinates and versions.
-
-**Search for Retrofit on Maven Central:**
-
-```bash
-library-insight search-central retrofit
-```
-
-**Or search for another library like Clikt:**
-
-```bash
-library-insight search-central clikt
-```
-
-**Example output:**
-
-```
-Searching Maven Central for 'clikt'...
-
-Found 10 matching libraries on Maven Central:
-
-📦 Coordinate: com.github.ajalt.clikt:clikt:5.0.3
-   Repository: central
-   Group:      com.github.ajalt.clikt
-   Artifact:   clikt
---------------------------------------------------
-📦 Coordinate: com.github.ajalt:clikt:2.8.0
-   Repository: central
-   Group:      com.github.ajalt
-   Artifact:   clikt
-```
-
----
-
-### 10. `dependency-graph` — Dependency Tree
-
-Print a visual recursive tree of transitive dependencies from POM descriptors.
-
-```bash
-library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
-```
-
-**Example output:**
-
-```
-com.github.ajalt.clikt:clikt-jvm:4.4.0
-│   ├── com.github.ajalt.mordant:mordant-jvm:2.5.0
-│   │   ├── com.github.ajalt.colormath:colormath-jvm:3.5.0
-│   │   │   ├── org.jetbrains.kotlin:kotlin-stdlib:1.9.21
-```
-
----
-
-### 11. `semver` — SemVer Compliance Check
-
-Verify that the version number bump between two releases correctly reflects the bytecode changes (breaking change requires major bump, added APIs require minor bump).
-
-```bash
-library-insight semver com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
-```
-
-**Example output:**
-
-```
-🚨 SemVer Violation: Version bump does not match API changes!
-  ❌ API Breaking Change detected but MAJOR version was not incremented!
-```
-
----
-
-### 12. `mcp` — MCP Server
-
-Start the Model Context Protocol server on stdio. Connect Cursor, Claude Desktop, or any MCP-compatible IDE to use `scan_library`, `search_symbols`, `explain_class`, and `dsl_report` tools natively.
-
-```bash
-library-insight mcp
-```
-
-**Optional Parameters:**
-
-- `--db <file>`: Index database JSON file path to read from and write to (default: `build/library-insight-index.json`)
-
-**Example with options:**
-
-```bash
-library-insight mcp --db /path/to/project/custom-index.json
-```
-
-**Example output (JSON-RPC tools list response):**
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "tools": [
-      {
-        "name": "scan_library",
-        "description": "Scans a Java/Kotlin library and creates an API index.",
-        "inputSchema": {
-          "type": "object",
-          "properties": { "pathOrCoordinate": { "type": "string" } }
-        }
-      },
-      {
-        "name": "search_symbols",
-        "description": "Search for symbols in the active library index.",
-        "inputSchema": {
-          "type": "object",
-          "properties": { "query": { "type": "string" } }
-        }
-      }
-    ]
-  }
-}
-```
-
-> **MCP vs CLI:** If an MCP server is already configured in your IDE, prefer it over running CLI commands directly.
-
----
-
-### 13. `init` — Initialize Workspace Skill
-
-Write a `SKILL.md` into `.agents/skills/library-insight/` so local AI agents auto-discover the CLI.
-
-```bash
-library-insight init
-```
-
-**Example output:**
-
-```
-Initializing Library Insight agent environment...
-Creating directory: .agents/skills/library-insight/
-Successfully initialized workspace skill instructions!
-```
-
----
-
-### 14. `skills` — Manage Agent Skills
-
-**Add skill to the current workspace:**
-
-```bash
-library-insight skills add
-```
-
-**List registered skills in the current workspace:**
-
-```bash
-library-insight skills list
-```
-
-**Example output (skills list):**
-
-```
-Workspace AI Agent Skills:
-  - [Installed] library-insight
-```
-
----
-
-### 15. `clear-cache` — Clear Local Cache
-
-Delete all locally downloaded Maven artifacts.
-
-```bash
-library-insight clear-cache
-```
-
-**Example output:**
-
-```
-Clearing local cache at: ~/.library-insight/cache...
-Cache cleared successfully. Deleted 12.4 MB.
-```
-
----
-
-### 16. `doctor` — Diagnostics
-
-Check Java version, cache directory, and active AI agent skill configurations.
-
-```bash
-library-insight doctor
-```
-
-**Example output:**
-
-```
-==================================================
-      Library Insight Diagnostics & Doctor
-==================================================
-
-1. Java Runtime Environment (JRE):
-   - Version: 17.0.17
-   - Vendor: Microsoft
-   - Status: OK (Java 17+ verified)
-
-2. Local Download Cache:
-   - Path: ~/.library-insight/cache
-   - Status: OK
-
-3. Global AI Agent Skill Configurations:
-   - Cursor               : INSTALLED (Verified)
-   - Gemini Config        : INSTALLED (Verified)
-   - Claude Desktop       : INSTALLED (Verified)
-   - Antigravity Agents   : INSTALLED (Verified)
-   - GitHub Copilot       : INSTALLED (Verified)
-
-==================================================
-Diagnostics completed.
-```
-
----
-
-### 17. `dsl-report` — Kotlin DSL Surface Report
+## `dsl-report` — Kotlin DSL Surface Report
 
 Generate a dedicated Kotlin DSL surface report for DSL-heavy libraries. Shows:
 
@@ -725,7 +458,7 @@ library-insight dsl-report --package io.ktor.client --db custom-index.json
 
 ---
 
-### 18. `examples` — API Usage Examples Generator
+## `examples` — API Usage Examples Generator
 
 Generate idiomatic Kotlin code examples showing typical usage patterns for a specific class. Automatically scans bytecode signatures to determine target design patterns (Constructor, Builder, Factory, Singleton) and extracts nested guide examples from README/Dokka markdown files.
 
@@ -780,8 +513,41 @@ val htmlbuilder = com.meet.sample.HtmlBuilder()
 ```
 
 ---
+# Analysis & Diagnostics
 
-### 19. `health` — Package Health & Complexity Report
+## `callgraph` — Method Call Graph Generator
+
+Generate a recursive tree representation showing all internal library methods called by a specific method node. Uses ASM instructions analysis to map actual execution paths.
+
+```bash
+library-insight callgraph AppConfigBuilder.database
+```
+
+**Optional Parameters:**
+
+- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
+
+**Example with options:**
+
+```bash
+library-insight callgraph AppConfigBuilder.database --db custom-index.json
+```
+
+**Example output:**
+
+```
+==================================================
+  METHOD INVOCATION CALL GRAPH  —  database
+==================================================
+
+▶ Starting entrypoint: com.meet.sample.AppConfigBuilder.database(Lkotlin/jvm/functions/Function1;)V
+└── com.meet.sample.DatabaseConfigBuilder.<init>()
+==================================================
+```
+
+---
+
+## `health` — Package Health & Complexity Report
 
 Generate a detailed report showing public API statistics, deprecation ratios, topo package sizes, and structural complexity metrics (largest classes, deepest inheritance hierarchies, generic density).
 
@@ -833,7 +599,7 @@ API Health Grade: A (Deprecation ratio: 1.11%)
 
 ---
 
-### 20. `dependency-check` — Transitive ABI Dependency Conflict Detector
+## `dependency-check` — Transitive ABI Dependency Conflict Detector
 
 Scan all Gradle build dependencies and verify classpath bytecode references against resolved dependency JARs. Flags potential runtime `LinkageError` and `NoSuchFieldError` issues before deployment.
 
@@ -873,13 +639,221 @@ Analysis Complete: ❌ 12 potential linkage conflicts detected.
 
 ---
 
-### 21. `callgraph` — Method Call Graph Generator
+## `audit` — Dependency API Audit
 
-Generate a recursive tree representation showing all internal library methods called by a specific method node. Uses ASM instructions analysis to map actual execution paths.
+Scan all project Gradle dependencies recursively (`build.gradle.kts`, `libs.versions.toml`) and report deprecated classes, methods, and properties found in the bytecode.
 
 ```bash
-library-insight callgraph AppConfigBuilder.database
+library-insight audit
 ```
+
+**Example output:**
+
+```
+==================================================
+      Library Insight Dependency Audit
+==================================================
+Found 10 dependencies to audit.
+Auditing org.ow2.asm:asm:9.7...
+  - Status: ⚠️  Deprecations detected
+    * Deprecated Methods    : 2
+    * Deprecated Properties : 2
+Audit Summary: Scanned 10 libraries. Total Deprecated APIs: 1819
+```
+
+---
+
+## `doctor` — Diagnostics
+
+Check Java version, cache directory, and active AI agent skill configurations.
+
+```bash
+library-insight doctor
+```
+
+**Example output:**
+
+```
+==================================================
+      Library Insight Diagnostics & Doctor
+==================================================
+
+1. Java Runtime Environment (JRE):
+   - Version: 17.0.17
+   - Vendor: Microsoft
+   - Status: OK (Java 17+ verified)
+
+2. Local Download Cache:
+   - Path: ~/.library-insight/cache
+   - Status: OK
+
+3. Global AI Agent Skill Configurations:
+   - Cursor               : INSTALLED (Verified)
+   - Gemini Config        : INSTALLED (Verified)
+   - Claude Desktop       : INSTALLED (Verified)
+   - Antigravity Agents   : INSTALLED (Verified)
+   - GitHub Copilot       : INSTALLED (Verified)
+
+==================================================
+Diagnostics completed.
+```
+
+---
+# Versioning & Migration
+
+## `diff` — Compare Versions
+
+Compare two library archives to check for added, removed, and changed APIs including breaking changes.
+
+```bash
+library-insight diff retrofit-2.9.0.jar retrofit-2.11.0.jar
+```
+
+**Or via Maven coordinates:**
+
+```bash
+library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+```
+
+**Example output:**
+
+```
+==================================================
+ LIBRARY INSIGHT API DIFF REPORT
+==================================================
+Breaking Changes Found: NO
+➕ Added Classes:
+  - retrofit2.Reflection
+📝 Changed Classes:
+  Class: retrofit2.Invocation
+    Added Methods:
+      + fun service(): java.lang.Class<?>
+```
+
+---
+
+## `migrate` — Migration Advisor
+
+Compare two versions and get a structured migration report showing removed, deprecated, and replacement APIs.
+
+```bash
+library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+```
+
+**Optional Parameters:**
+
+- `--repo <url>`: Additional Maven repository URLs to resolve coordinates (multiple allowed)
+
+**Example with options:**
+
+```bash
+library-insight migrate com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0 --repo https://repo.maven.apache.org/maven2
+```
+
+**Example output:**
+
+```
+==================================================
+        Library Insight Migration Report
+==================================================
+Old Version : 2.9.0
+New Version : 2.11.0
+
+❌ Removed Classes
+  - retrofit2.Platform$Android
+❌ Removed Methods
+  - fun retrofit2.Platform.defaultCallbackExecutor(): Executor
+
+Binary Compatibility: ❌ BREAKING CHANGES DETECTED
+```
+
+---
+
+## `semver` — SemVer Compliance Check
+
+Verify that the version number bump between two releases correctly reflects the bytecode changes (breaking change requires major bump, added APIs require minor bump).
+
+```bash
+library-insight semver com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+```
+
+**Example output:**
+
+```
+🚨 SemVer Violation: Version bump does not match API changes!
+  ❌ API Breaking Change detected but MAJOR version was not incremented!
+```
+
+---
+# Maven & Dependency Resolution
+
+## `search-central` — Search Maven Central
+
+Search Maven Central dynamically for matching coordinates and versions.
+
+**Search for Retrofit on Maven Central:**
+
+```bash
+library-insight search-central retrofit
+```
+
+**Or search for another library like Clikt:**
+
+```bash
+library-insight search-central clikt
+```
+
+**Example output:**
+
+```
+Searching Maven Central for 'clikt'...
+
+Found 10 matching libraries on Maven Central:
+
+📦 Coordinate: com.github.ajalt.clikt:clikt:5.0.3
+   Repository: central
+   Group:      com.github.ajalt.clikt
+   Artifact:   clikt
+--------------------------------------------------
+📦 Coordinate: com.github.ajalt:clikt:2.8.0
+   Repository: central
+   Group:      com.github.ajalt
+   Artifact:   clikt
+```
+
+---
+
+## `dependency-graph` — Dependency Tree
+
+Print a visual recursive tree of transitive dependencies from POM descriptors.
+
+```bash
+library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
+```
+
+**Example output:**
+
+```
+com.github.ajalt.clikt:clikt-jvm:4.4.0
+│   ├── com.github.ajalt.mordant:mordant-jvm:2.5.0
+│   │   ├── com.github.ajalt.colormath:colormath-jvm:3.5.0
+│   │   │   ├── org.jetbrains.kotlin:kotlin-stdlib:1.9.21
+```
+
+---
+# AI Context & Integration
+
+## `ai-export` — AI Context Export (Recommended for AI prompts)
+
+Splits the scanned database into a token-efficient directory structure under `build/ai-context/`. AI agents read `metadata.json` first, then load only the class files they need — reducing token usage by 95%+.
+
+```bash
+library-insight ai-export
+```
+
+**Positional Arguments:**
+
+- `[output-dir]`: Optional target output directory to save AI context files (default: `build/ai-context/`)
 
 **Optional Parameters:**
 
@@ -888,55 +862,145 @@ library-insight callgraph AppConfigBuilder.database
 **Example with options:**
 
 ```bash
-library-insight callgraph AppConfigBuilder.database --db custom-index.json
+library-insight ai-export custom-ai-context/ --db custom-index.json
 ```
 
 **Example output:**
 
 ```
-==================================================
-  METHOD INVOCATION CALL GRAPH  —  database
-==================================================
-
-▶ Starting entrypoint: com.meet.sample.AppConfigBuilder.database(Lkotlin/jvm/functions/Function1;)V
-└── com.meet.sample.DatabaseConfigBuilder.<init>()
-==================================================
+Generated compact LLM context directory structure at: build/ai-context
 ```
 
 ---
 
-### 22. `scan-source` — Local Source Directory Scanner
+## `mcp` — MCP Server
 
-Scan a local raw source directory containing Kotlin (`.kt`) and Java (`.java`) files to build an API index database.
+Start the Model Context Protocol server on stdio. Connect Cursor, Claude Desktop, or any MCP-compatible IDE to use `scan_library`, `search_symbols`, `explain_class`, and `dsl_report` tools natively.
 
 ```bash
-library-insight scan-source sample/src/main/kotlin
+library-insight mcp
 ```
 
 **Optional Parameters:**
 
-- `--db <file>`: Target index database JSON file path to write to (default: `build/library-insight-index.json`)
-- `--lib-name <name>`: Override the library name tag in the generated index
-- `--lib-version <version>`: Override the version tag in the generated index
+- `--db <file>`: Index database JSON file path to read from and write to (default: `build/library-insight-index.json`)
 
 **Example with options:**
 
 ```bash
-library-insight scan-source src/main/kotlin --db build/my-app-index.json --lib-name MyApp --lib-version 1.0.0
+library-insight mcp --db /path/to/project/custom-index.json
+```
+
+**Example output (JSON-RPC tools list response):**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [
+      {
+        "name": "scan_library",
+        "description": "Scans a Java/Kotlin library and creates an API index.",
+        "inputSchema": {
+          "type": "object",
+          "properties": { "pathOrCoordinate": { "type": "string" } }
+        }
+      },
+      {
+        "name": "search_symbols",
+        "description": "Search for symbols in the active library index.",
+        "inputSchema": {
+          "type": "object",
+          "properties": { "query": { "type": "string" } }
+        }
+      }
+    ]
+  }
+}
+```
+
+> **MCP vs CLI:** If an MCP server is already configured in your IDE, prefer it over running CLI commands directly.
+
+---
+
+## `init` — Initialize Workspace Skill
+
+Write a `SKILL.md` into `.agents/skills/library-insight/` so local AI agents auto-discover the CLI.
+
+```bash
+library-insight init
 ```
 
 **Example output:**
 
 ```
-Scanning source directory: /Users/meet/AndroidStudioProjects/Library-Insight/sample/src/main/kotlin
-
-Detected:
-  • Kotlin files : 1
-  • Java files   : 0
-
-Scan complete!
-Found 15 classes across 3 packages.
-
-Saved API index to:
-/Users/meet/AndroidStudioProjects/Library-Insight/build/library-insight-index.json
+Initializing Library Insight agent environment...
+Creating directory: .agents/skills/library-insight/
+Successfully initialized workspace skill instructions!
 ```
+
+---
+
+## `skills` — Manage Agent Skills
+
+**Add skill to the current workspace:**
+
+```bash
+library-insight skills add
+```
+
+**List registered skills in the current workspace:**
+
+```bash
+library-insight skills list
+```
+
+**Example output (skills list):**
+
+```
+Workspace AI Agent Skills:
+  - [Installed] library-insight
+```
+
+---
+
+## `export` — Export Index
+
+Export the scanned index to Markdown or JSON.
+
+> For large libraries, Markdown files can be huge. Use `ai-export` for AI prompts instead.
+
+**Export to Markdown format:**
+
+```bash
+library-insight export markdown
+```
+
+**Export to JSON format:**
+
+```bash
+library-insight export json
+```
+
+**Positional Arguments:**
+
+- `[output-file]`: Optional target output file path to write export content to. If not specified, defaults to `build/API_REFERENCE.md` or `build/library-insight-index.json`. Use `-` to print to stdout.
+
+**Optional Parameters:**
+
+- `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
+
+**Example with options:**
+
+```bash
+library-insight export markdown API_REFERENCE.md --db custom-index.json
+```
+
+**Example output:**
+
+```
+Exported MARKDOWN to: build/API_REFERENCE.md
+```
+
+---

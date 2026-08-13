@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     group = "com.meet.libraryinsight"
-    version = "1.3.0"
+    version = "1.4.0"
 
     repositories {
         mavenCentral()
@@ -61,52 +61,56 @@ tasks.register("setupGitHooks") {
 tasks.register("generateAgentSkill") {
     dependsOn("setupGitHooks")
     group = "documentation"
-    description = "Generates .agents/skills/library-insight/SKILL.md from docs/cli.md and a template."
+    description = "Generates .agents/skills/library-insight/SKILL.md from split docs/cli/*.md and a template."
 
-    val cliFile = file("docs/cli.md")
+    val cliDir = file("docs/cli")
     val templateFile = file(".agents/skills/library-insight/SKILL.template.md")
     val outputFile = file(".agents/skills/library-insight/SKILL.md")
 
-    inputs.file(cliFile)
+    val scannersFile = file("docs/cli/scanners.md")
+    val explorerFile = file("docs/cli/explorer.md")
+    val analysisFile = file("docs/cli/analysis.md")
+    val versioningFile = file("docs/cli/versioning.md")
+    val dependenciesFile = file("docs/cli/dependencies.md")
+    val aiIntegrationFile = file("docs/cli/ai-integration.md")
+
+    inputs.dir(cliDir)
     inputs.file(templateFile)
     outputs.file(outputFile)
 
     doLast {
-        if (!cliFile.exists()) {
-            throw GradleException("docs/cli.md does not exist")
+        if (!cliDir.exists() || !cliDir.isDirectory) {
+            throw GradleException("docs/cli directory does not exist")
         }
         if (!templateFile.exists()) {
             throw GradleException("SKILL.template.md does not exist")
         }
 
-        val cliContent = cliFile.readText()
-        val startMarker = "<!-- --8<-- [start:commands] -->"
-        val endMarker = "<!-- --8<-- [end:commands] -->"
-        
-        val startIndex = cliContent.indexOf(startMarker)
-        val endIndex = cliContent.indexOf(endMarker)
+        // Ordered categories/files
+        val categoryFiles = listOf(
+            "Scanners & Indexing" to scannersFile,
+            "API Explorer & Lookup" to explorerFile,
+            "Analysis & Diagnostics" to analysisFile,
+            "Versioning & Migration" to versioningFile,
+            "Maven & Dependency Resolution" to dependenciesFile,
+            "AI Context & Integration" to aiIntegrationFile
+        )
 
-        if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex) {
-            throw GradleException("Could not find start/end command markers in docs/cli.md")
-        }
-
-        val commandsSection = cliContent.substring(startIndex + startMarker.length, endIndex).trim()
-
-        // Shift headers: ## to ### (to fit in SKILL.md under ## Command Reference)
-        val shiftedCommands = commandsSection.lines().joinToString("\n") { line ->
-            if (line.startsWith("## ")) {
-                "### " + line.substring(3)
-            } else if (line.startsWith("### ")) {
-                "#### " + line.substring(4)
-            } else {
-                line
+        val commandsSection = buildString {
+            categoryFiles.forEachIndexed { index, (catTitle, file) ->
+                if (!file.exists()) {
+                    throw GradleException("${file.name} does not exist")
+                }
+                file.readLines().forEach { line ->
+                    append(line + "\n")
+                }
             }
-        }
+        }.trim()
 
         val templateContent = templateFile.readText()
-        val finalContent = templateContent.replace("{{COMMAND_REFERENCE}}", shiftedCommands)
+        val finalContent = templateContent.replace("{{COMMAND_REFERENCE}}", commandsSection)
         outputFile.writeText(finalContent)
-        logger.lifecycle("Successfully generated ${outputFile.path} from docs/cli.md")
+        logger.lifecycle("Successfully generated ${outputFile.path} from split CLI docs")
     }
 }
 

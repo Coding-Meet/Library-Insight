@@ -10,7 +10,9 @@
 
 ## Why Library Insight?
 
-When you add a dependency, the first question is simple: _"How do I use this version correctly?"_
+When you add a dependency, the first question is simple:
+
+> "How do I use this version correctly?"
 
 In real projects, that answer is often messy:
 
@@ -20,7 +22,7 @@ In real projects, that answer is often messy:
 - **Hidden Replacements**: Deprecated methods may still appear in examples, while the replacement is hidden in release notes or source comments.
 - **Context Waste**: Huge generated docs waste AI context and make one class hard to find.
 
-Library Insight turns the **compiled library itself** into the source of truth. Scan the dependency, then use `search`, `explain`, `diff`, or `ai-export` to give humans and AI agents exact, version-aware API information.
+Library Insight turns the **library artifacts and source code you actually use** into the source of truth. Scan a JAR, AAR, KLib, Maven dependency, or local Java/Kotlin source directory, then use `search`, `explain`, `diff`, `migrate`, or `ai-export` to give humans and AI agents exact, version-aware API information.
 
 ---
 

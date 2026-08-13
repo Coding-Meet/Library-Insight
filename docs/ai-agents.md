@@ -10,12 +10,12 @@ The skill is designed around one core rule: **do not guess from web examples whe
 
 When you install the CLI globally via the recommended shell installer (`install.sh`), the script automatically copies the agent skill file into your user profile configurations:
 
-*   `~/.cursor/skills/library-insight`
-*   `~/.gemini/config/skills/library-insight`
-*   `~/.claude/skills/library-insight`
-*   `~/.agents/skills/library-insight`
-*   `~/.copilot/skills/library-insight`
-*   `~/.junie/skills/library-insight`
+- `~/.cursor/skills/library-insight`
+- `~/.gemini/config/skills/library-insight`
+- `~/.claude/skills/library-insight`
+- `~/.agents/skills/library-insight`
+- `~/.copilot/skills/library-insight`
+- `~/.junie/skills/library-insight`
 
 Any active AI agent running on your computer will instantly discover and utilize the `library-insight` command tree when you ask a question.
 
@@ -23,7 +23,7 @@ Any active AI agent running on your computer will instantly discover and utilize
 
 ## 2. Project Workspace Scoping
 
-If you want to install the skill scoped *only* to your current project directory (so that any developer working in the repository gets the skill context), run the following command in the project root:
+If you want to install the skill scoped _only_ to your current project directory (so that any developer working in the repository gets the skill context), run the following command in the project root:
 
 ```bash
 library-insight init
