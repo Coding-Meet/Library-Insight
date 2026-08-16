@@ -534,7 +534,18 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Modular Architecture">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-flow-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Flow Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Flow Pipeline">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -956,7 +967,18 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Modular Architecture">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-flow-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Flow Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Flow Pipeline">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1071,6 +1093,11 @@
     MODEL --&gt; COMMON
     COMMON --&gt; ASM[ASM Bytecode Reader]
     COMMON --&gt; KTOR[Ktor HTTP Client]</code></pre>
+<hr />
+<h2 id="data-flow-pipeline">Data Flow Pipeline<a class="headerlink" href="#data-flow-pipeline" title="Link to this section">&para;</a></h2>
+<p>The animated diagram below visualizes the end-to-end data flow within Library Insight: starting from parsing inputs (bytecode, local sources, KMP Klibs, and Maven coordinates), processing them through the core engine, storing them in a unified API index database, and exposing the index to search tools and AI clients.</p>
+<p><img alt="Library Insight Data Flow" src="../assets/flow-animation.svg" /></p>
+<hr />
 <h3 id="module-responsibilities">Module Responsibilities<a class="headerlink" href="#module-responsibilities" title="Link to this section">&para;</a></h3>
 <ul>
 <li><code>library-insight-common</code>: Low-level utility classes for ZIP/JAR/AAR archives extraction, Ktor asynchronous HTTP engines, and directory operations.</li>
