@@ -21,6 +21,18 @@ The complete documentation, architecture diagrams, command reference, and integr
 
 ---
 
+## 📺 Video Walkthrough
+
+Watch the full **13-minute product showcase** explaining Library Insight's core workflows, local source scanning, version diffing, Kotlin Multiplatform support, and AI IDE integrations:
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=jmvBqjGE_gg" target="_blank">
+    <img src="https://img.youtube.com/vi/jmvBqjGE_gg/maxresdefault.jpg" alt="Library Insight Walkthrough Video" width="800" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
+  </a>
+</p>
+
+---
+
 ## Key Features
 
 <!-- --8<-- [start:features] -->

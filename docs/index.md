@@ -2,6 +2,16 @@
 
 ---
 
+## 📺 Video Walkthrough
+
+Watch the full product showcase explaining Library Insight's core features, architecture, KMP integration, and AI MCP server setup:
+
+<div class="video-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+  <iframe src="https://www.youtube.com/embed/jmvBqjGE_gg" title="Library Insight Walkthrough" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+</div>
+
+---
+
 ## Key Features
 
 --8<-- "README.md:features"

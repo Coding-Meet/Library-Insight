@@ -48,6 +48,16 @@ graph TD
     COMMON --> KTOR[Ktor HTTP Client]
 ```
 
+---
+
+## Data Flow Pipeline
+
+The animated diagram below visualizes the end-to-end data flow within Library Insight: starting from parsing inputs (bytecode, local sources, KMP Klibs, and Maven coordinates), processing them through the core engine, storing them in a unified API index database, and exposing the index to search tools and AI clients.
+
+![Library Insight Data Flow](./assets/flow-animation.svg)
+
+---
+
 ### Module Responsibilities
 
 - `library-insight-common`: Low-level utility classes for ZIP/JAR/AAR archives extraction, Ktor asynchronous HTTP engines, and directory operations.
