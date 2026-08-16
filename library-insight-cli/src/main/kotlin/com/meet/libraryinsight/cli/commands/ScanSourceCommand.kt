@@ -30,7 +30,7 @@ class ScanSourceCommand : CliktCommand(
             return
         }
 
-        val name = libName ?: srcDir.name
+        val name = libName ?: srcDir.canonicalFile.name
         val version = libVersion ?: "1.0.0"
 
         var ktFilesCount = 0

@@ -11,6 +11,7 @@ import com.meet.libraryinsight.common.LocalArtifacts
 import com.meet.libraryinsight.common.MavenResolver
 import com.meet.libraryinsight.core.LibraryAnalyzer
 import com.meet.libraryinsight.common.Logger
+import com.meet.libraryinsight.model.LibraryApiIndex
 import java.io.File
 
 class ScanCommand : CliktCommand(
@@ -47,14 +48,11 @@ class ScanCommand : CliktCommand(
                 val version = libVersion ?: parts[2]
 
                 if (kmpCoordinates.isNotEmpty() && kmpCoordinates != listOf(pathOrCoordinate)) {
-                    echo("Detected Kotlin Multiplatform (KMP) library. Resolving ${kmpCoordinates.size} platform targets:")
-                    val targetIndices = mutableListOf<com.meet.libraryinsight.model.LibraryApiIndex>()
+                    val targetIndices = mutableListOf<LibraryApiIndex>()
+                    val resolveErrors = mutableListOf<Pair<String, String>>()
                     for (targetCoord in kmpCoordinates) {
                         try {
-                            echo("  • Resolving platform: $targetCoord")
-                            val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { progress ->
-                                echo("    -> $progress")
-                            }
+                            val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { _ -> }
                             val targetIndex = LibraryAnalyzer.analyze(
                                 resolvedTarget.binaryFile,
                                 name,
@@ -63,10 +61,17 @@ class ScanCommand : CliktCommand(
                             )
                             targetIndices.add(targetIndex)
                         } catch (e: Exception) {
-                            echo("    -> Warn: Failed to resolve variant $targetCoord: ${e.message}")
+                            resolveErrors.add(targetCoord to (e.message ?: "Unknown error"))
                         }
                     }
                     if (targetIndices.isNotEmpty()) {
+                        echo("Detected Kotlin Multiplatform (KMP) library. Successfully resolved ${targetIndices.size} of ${kmpCoordinates.size} platform targets:")
+                        for (targetIndex in targetIndices) {
+                            Logger.info("Resolved KMP variant: ${targetIndex.libraryName}")
+                        }
+                        for (error in resolveErrors) {
+                            Logger.info("Failed to resolve KMP variant ${error.first}: ${error.second}")
+                        }
                         LibraryAnalyzer.mergeIndices(targetIndices)
                     } else {
                         val resolved = MavenResolver.resolve(pathOrCoordinate, repos) { progress ->
