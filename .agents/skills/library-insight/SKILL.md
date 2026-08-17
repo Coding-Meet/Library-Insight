@@ -1,6 +1,6 @@
 ---
 name: library-insight
-description: API Explorer & MCP Server for Java, Kotlin & KMP that indexes public APIs from compiled libraries (JAR/AAR), Kotlin Multiplatform libraries (KLib), or local Java/Kotlin source code, enabling API exploration, dependency analysis, migration reports, and AI-ready context generation.
+description: Use when the user asks to inspect a Java, Kotlin, or Kotlin Multiplatform (KMP) library API, verify if a method or class exists in the installed dependency version, compare or migrate between library versions, audit deprecated APIs, or check Gradle dependency graphs. Triggers: check library API, search class/method, library migration, deprecated API audit, dependency-check, JAR/AAR/KLib scan, Java/Kotlin source scan.
 ---
 
 # Library Insight Agent Skill
