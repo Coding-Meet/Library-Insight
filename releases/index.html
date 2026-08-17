@@ -862,6 +862,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v141" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v1.4.1
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v1.4.1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bug-fixes-refactoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🐛 Bug Fixes &amp; Refactoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-option-skill-discovery-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🖥️ CLI Option &amp; Skill Discovery Updates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v140" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1188,6 +1227,45 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#v141" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v1.4.1
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v1.4.1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bug-fixes-refactoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🐛 Bug Fixes &amp; Refactoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-option-skill-discovery-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🖥️ CLI Option &amp; Skill Discovery Updates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#v140" class="md-nav__link">
@@ -1519,8 +1597,22 @@
 <h1 id="release-notes">Release Notes<a class="headerlink" href="#release-notes" title="Link to this section">&para;</a></h1>
 <p>All releases for <strong>Library Insight</strong> are documented below.</p>
 <hr />
+<h2 id="v141">v1.4.1<a class="headerlink" href="#v141" title="Link to this section">&para;</a></h2>
+<p><em>Released on August 17, 2026</em></p>
+<p>This is a maintenance release that improves CLI version checks, resolves relative path scanner bugs, silences KMP fallback noise, and enhances AI auto-discovery.</p>
+<h3 id="bug-fixes-refactoring">🐛 Bug Fixes &amp; Refactoring<a class="headerlink" href="#bug-fixes-refactoring" title="Link to this section">&para;</a></h3>
+<ul>
+<li><strong>Quiet KMP Target Fallbacks</strong>: Silenced failed variant target resolution warnings (like <code>Warn: Failed to resolve variant...</code>) when scanning non-Kotlin Multiplatform libraries (e.g. Retrofit), ensuring a quiet console log fallback to standard JVM artifacts.</li>
+<li><strong>Relative Path Canonicalization</strong>: Fixed a bug where scanning source files in the current folder (e.g. <code>scan-source .</code>) resolved the library index name literally to <code>"."</code>. It now correctly uses the normalized parent directory name, restoring path resolving for local callgraph analysis.</li>
+</ul>
+<h3 id="cli-option-skill-discovery-updates">🖥️ CLI Option &amp; Skill Discovery Updates<a class="headerlink" href="#cli-option-skill-discovery-updates" title="Link to this section">&para;</a></h3>
+<ul>
+<li><strong>Native Version Command</strong>: Added the standard Clikt <code>versionOption</code> so running <code>library-insight -v</code> or <code>library-insight --version</code> outputs the active CLI build version dynamically.</li>
+<li><strong>AI Agent Skill Auto-Discovery</strong>: Added explicit trigger phrases inside the YAML frontmatter description of <code>SKILL.md</code> to help agent frameworks (such as Claude Code) auto-enable the tool proactively.</li>
+</ul>
+<hr />
 <h2 id="v140">v1.4.0<a class="headerlink" href="#v140" title="Link to this section">&para;</a></h2>
-<p><em>Released on August 13, 2026</em></p>
+<p><em>Released on August 16, 2026</em></p>
 <p>This release introduces first-class Kotlin Multiplatform (KMP) support to download, parse, and merge platform-specific targets (<code>.klib</code>, JVM <code>.jar</code>/<code>.aar</code>) from a single root coordinate.</p>
 <h3 id="kotlin-multiplatform-kmp-support">📦 Kotlin Multiplatform (KMP) Support<a class="headerlink" href="#kotlin-multiplatform-kmp-support" title="Link to this section">&para;</a></h3>
 <ul>
