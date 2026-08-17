@@ -4,9 +4,27 @@ All releases for **Library Insight** are documented below.
 
 ---
 
+## v1.4.1
+
+_Released on August 17, 2026_
+
+This is a maintenance release that improves CLI version checks, resolves relative path scanner bugs, silences KMP fallback noise, and enhances AI auto-discovery.
+
+### 🐛 Bug Fixes & Refactoring
+
+- **Quiet KMP Target Fallbacks**: Silenced failed variant target resolution warnings (like `Warn: Failed to resolve variant...`) when scanning non-Kotlin Multiplatform libraries (e.g. Retrofit), ensuring a quiet console log fallback to standard JVM artifacts.
+- **Relative Path Canonicalization**: Fixed a bug where scanning source files in the current folder (e.g. `scan-source .`) resolved the library index name literally to `"."`. It now correctly uses the normalized parent directory name, restoring path resolving for local callgraph analysis.
+
+### 🖥️ CLI Option & Skill Discovery Updates
+
+- **Native Version Command**: Added the standard Clikt `versionOption` so running `library-insight -v` or `library-insight --version` outputs the active CLI build version dynamically.
+- **AI Agent Skill Auto-Discovery**: Added explicit trigger phrases inside the YAML frontmatter description of `SKILL.md` to help agent frameworks (such as Claude Code) auto-enable the tool proactively.
+
+---
+
 ## v1.4.0
 
-_Released on August 13, 2026_
+_Released on August 16, 2026_
 
 This release introduces first-class Kotlin Multiplatform (KMP) support to download, parse, and merge platform-specific targets (`.klib`, JVM `.jar`/`.aar`) from a single root coordinate.
 
