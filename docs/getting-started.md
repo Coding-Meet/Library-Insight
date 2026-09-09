@@ -98,9 +98,9 @@ Find a class, interface, or property in the index database.
     library-insight search Retrofit
     ```
 
-### 3. Explain class signatures
+### 3. Explain class & symbol signatures
 
-Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration source locations (file:line) for a class.
+Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration source locations (file:line) for a class or top-level function. Smart resolution automatically routes top-level Kotlin functions (e.g. `Grid` → `GridKt`) and member methods to their declaring classes.
 
 === "For Scanned Source Code"
 
@@ -111,7 +111,8 @@ Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration
 === "For Scanned Libraries"
 
     ```bash
-    library-insight explain retrofit2.Retrofit
+    library-insight explain Retrofit
+    library-insight explain Grid  # Automatically resolves top-level @Composable fun Grid to GridKt
     ```
 
 ### 4. Compare Versions (Bytecode Only)

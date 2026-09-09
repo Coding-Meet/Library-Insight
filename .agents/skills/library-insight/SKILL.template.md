@@ -29,7 +29,7 @@ Library Insight analyzes compiled libraries (JVM artifacts and Kotlin Multiplatf
 > **Querying**
 >
 > - Use **`library-insight search <query>`** to locate packages, classes, methods, or properties.
-> - Use **`library-insight explain <class>`** to inspect a class, including signatures, documentation, imports, and source locations when available.
+> - Use **`library-insight explain <class|function|member>`** to inspect a class or top-level Kotlin symbol (e.g. `explain Grid` auto-resolves to `GridKt`), including signatures, documentation, imports, and source locations when available.
 > - Use **`library-insight examples <class>`** to generate typical usage examples.
 >
 > **Analysis**

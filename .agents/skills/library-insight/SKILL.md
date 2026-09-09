@@ -29,7 +29,7 @@ Library Insight analyzes compiled libraries (JVM artifacts and Kotlin Multiplatf
 > **Querying**
 >
 > - Use **`library-insight search <query>`** to locate packages, classes, methods, or properties.
-> - Use **`library-insight explain <class>`** to inspect a class, including signatures, documentation, imports, and source locations when available.
+> - Use **`library-insight explain <class|function|member>`** to inspect a class or top-level Kotlin symbol (e.g. `explain Grid` auto-resolves to `GridKt`), including signatures, documentation, imports, and source locations when available.
 > - Use **`library-insight examples <class>`** to generate typical usage examples.
 >
 > **Analysis**
@@ -343,13 +343,19 @@ Found 2 matches for 'Retrofit':
 
 ---
 
-## `explain` — Explain a Class
+## `explain` — Explain a Class or Symbol
 
-Print detailed structural information (modifiers, superclass, constructors, properties, methods, Javadoc/KDoc, and nested usage guide examples extracted from README/Dokka markdown files) for a specific class.
+Print detailed structural information (modifiers, superclass, constructors, properties, methods, Javadoc/KDoc, and nested usage guide examples extracted from README/Dokka markdown files) for a specific class or top-level symbol.
 
 ```bash
 library-insight explain HtmlBuilder
 ```
+
+**Smart Resolution Capabilities:**
+
+- **Kotlin Top-Level Function Resolution (`${name}Kt`)**: Querying a top-level Kotlin function (e.g. `library-insight explain Grid`) automatically resolves to its Kotlin facade class (`GridKt`).
+- **Member Method & Property Lookup**: Querying a method or property directly (e.g. `library-insight explain gridItem`) automatically locates its declaring class (e.g. `GridScope`).
+- **Fuzzy Typo Suggestions**: If a symbol is not found or has a typo, `explain` displays "Did you mean one of these?" with close matches.
 
 **Optional Parameters:**
 

@@ -28,10 +28,100 @@ class ExplainCommand : CliktCommand(
 
         // Find the class matching the given name (FQCN or simple name)
         val allClasses = index.packages.flatMap { it.classes }
-        val clazz = allClasses.firstOrNull { it.name == className || it.simpleName == className }
 
+        // 1. Exact match (case-sensitive or FQCN)
+        var clazz: com.meet.libraryinsight.model.ClassApi? = allClasses.firstOrNull { it.name == className || it.simpleName == className }
+
+        // 2. Case-insensitive exact match
         if (clazz == null) {
-            echo("Error: Class '$className' not found in the index.", err = true)
+            clazz = allClasses.firstOrNull {
+                it.name.equals(className, ignoreCase = true) || it.simpleName.equals(className, ignoreCase = true)
+            }
+        }
+
+        // 3. Kotlin top-level function facade fallback (${className}Kt)
+        if (clazz == null) {
+            val ktClassName = "${className}Kt"
+            clazz = allClasses.firstOrNull {
+                it.simpleName == ktClassName || it.name.endsWith(".$ktClassName") || it.simpleName.equals(ktClassName, ignoreCase = true)
+            }
+            if (clazz != null) {
+                echo("Note: Resolved '$className' to Kotlin top-level facade class '${clazz.simpleName}'.\n")
+            }
+        }
+
+        // 4. Method or Property lookup matching className
+        if (clazz == null) {
+            val classesWithMatchingMember = allClasses.filter { c ->
+                c.methods.any { it.name.equals(className, ignoreCase = true) } ||
+                c.properties.any { it.name.equals(className, ignoreCase = true) }
+            }
+            if (classesWithMatchingMember.isNotEmpty()) {
+                clazz = classesWithMatchingMember.first()
+                if (classesWithMatchingMember.size == 1) {
+                    echo("Note: Resolved '$className' to member in class '${clazz.simpleName}'.\n")
+                } else {
+                    val otherClasses = classesWithMatchingMember.joinToString(", ") { it.simpleName }
+                    echo("Note: '$className' is a member in multiple classes ($otherClasses). Showing report for '${clazz.simpleName}'.\n")
+                }
+            }
+        }
+
+        // 5. Suggestions fallback if still not found
+        if (clazz == null) {
+            echo("Error: Class or member '$className' not found in the index.", err = true)
+
+            val suggestions = mutableListOf<String>()
+
+            // Substring match on class simpleName
+            allClasses.filter { it.simpleName.contains(className, ignoreCase = true) }
+                .take(5)
+                .forEach { suggestions.add("${it.simpleName} (${it.kind.name.lowercase()})") }
+
+            // Substring match on methods / properties
+            allClasses.forEach { c ->
+                val matchingMethods = c.methods.filter { it.name.contains(className, ignoreCase = true) }
+                for (m in matchingMethods.take(3)) {
+                    val entry = "${c.simpleName}.${m.name}() (method)"
+                    if (!suggestions.contains(entry)) suggestions.add(entry)
+                }
+            }
+
+            if (suggestions.isEmpty()) {
+                fun levenshtein(s1: String, s2: String): Int {
+                    val dp = Array(s1.length + 1) { IntArray(s2.length + 1) }
+                    for (i in 0..s1.length) dp[i][0] = i
+                    for (j in 0..s2.length) dp[0][j] = j
+                    for (i in 1..s1.length) {
+                        for (j in 1..s2.length) {
+                            val cost = if (s1[i - 1].equals(s2[j - 1], ignoreCase = true)) 0 else 1
+                            dp[i][j] = minOf(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost)
+                        }
+                    }
+                    return dp[s1.length][s2.length]
+                }
+
+                val targetLow = className.lowercase()
+                val fuzzyMatches = allClasses.flatMap { c ->
+                    listOf(c.simpleName to "class") + c.methods.map { "${c.simpleName}.${it.name}()" to "method" }
+                }
+                .map { (name, kind) ->
+                    val token = name.substringBefore('(').substringAfterLast('.')
+                    name to levenshtein(targetLow, token.lowercase())
+                }
+                .filter { it.second <= 2 }
+                .sortedBy { it.second }
+                .map { it.first }
+
+                suggestions.addAll(fuzzyMatches)
+            }
+
+            if (suggestions.isNotEmpty()) {
+                echo("\nDid you mean one of these?", err = true)
+                suggestions.distinct().take(8).forEach { suggestion ->
+                    echo("  • $suggestion", err = true)
+                }
+            }
             return
         }
 
