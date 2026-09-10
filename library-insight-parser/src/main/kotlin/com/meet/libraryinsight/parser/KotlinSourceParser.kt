@@ -1,3 +1,6 @@
+@file:Suppress("DEPRECATION", "OPT_IN_USAGE_ERROR", "UNCHECKED_CAST")
+@file:OptIn(org.jetbrains.kotlin.config.CompilerConfiguration.Internals::class)
+
 package com.meet.libraryinsight.parser
 
 import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer

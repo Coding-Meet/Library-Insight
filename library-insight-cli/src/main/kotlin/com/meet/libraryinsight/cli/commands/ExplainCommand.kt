@@ -3,9 +3,12 @@ package com.meet.libraryinsight.cli.commands
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.meet.libraryinsight.cli.DatabaseHelper
+import com.meet.libraryinsight.model.ClassApi
+import com.meet.libraryinsight.model.LibraryApiIndex
 import java.io.File
 
 class ExplainCommand : CliktCommand(
@@ -19,6 +22,11 @@ class ExplainCommand : CliktCommand(
         help = "Index database JSON file path to read from"
     ).file().default(File("build/library-insight-index.json"))
 
+    val deep by option(
+        "-d", "--deep",
+        help = "Recursively explain referenced parameter types, DSL receiver scopes, and return types."
+    ).flag(default = false)
+
     override fun run() {
         val index = DatabaseHelper.loadIndex(db)
         if (index == null) {
@@ -30,7 +38,7 @@ class ExplainCommand : CliktCommand(
         val allClasses = index.packages.flatMap { it.classes }
 
         // 1. Exact match (case-sensitive or FQCN)
-        var clazz: com.meet.libraryinsight.model.ClassApi? = allClasses.firstOrNull { it.name == className || it.simpleName == className }
+        var clazz: ClassApi? = allClasses.firstOrNull { it.name == className || it.simpleName == className }
 
         // 2. Case-insensitive exact match
         if (clazz == null) {
@@ -125,11 +133,37 @@ class ExplainCommand : CliktCommand(
             return
         }
 
-        val pkgName = index.packages.first { it.classes.contains(clazz) }.name
+        val printedClasses = mutableSetOf<String>()
+        printReportForClass(index, clazz, isPrimary = true)
+        printedClasses.add(clazz.name)
 
-        echo("==================================================")
-        echo(" CLASS EXPLAIN REPORT")
-        echo("==================================================")
+        if (deep) {
+            val referencedClasses = findReferencedClasses(clazz, allClasses, printedClasses)
+            if (referencedClasses.isNotEmpty()) {
+                echo("\n==================================================")
+                echo(" DEEP EXPLAIN: REFERENCED TYPES & DSL SCOPES (${referencedClasses.size})")
+                echo("==================================================\n")
+
+                for (refClazz in referencedClasses) {
+                    if (printedClasses.contains(refClazz.name)) continue
+                    echo("--------------------------------------------------")
+                    echo(" REFERENCED SCOPE / TYPE: ${refClazz.simpleName}")
+                    echo("--------------------------------------------------")
+                    printReportForClass(index, refClazz, isPrimary = false)
+                    printedClasses.add(refClazz.name)
+                }
+            }
+        }
+    }
+
+    private fun printReportForClass(index: LibraryApiIndex, clazz: ClassApi, isPrimary: Boolean) {
+        val pkgName = index.packages.firstOrNull { it.classes.contains(clazz) }?.name ?: ""
+
+        if (isPrimary) {
+            echo("==================================================")
+            echo(" CLASS EXPLAIN REPORT")
+            echo("==================================================")
+        }
         echo("Class:       ${clazz.name}")
         echo("Package:     $pkgName")
         echo("Kind:        ${clazz.kind.name.lowercase()}")
@@ -253,5 +287,55 @@ class ExplainCommand : CliktCommand(
             }
             echo("")
         }
+    }
+
+    private fun findReferencedClasses(
+        targetClass: ClassApi,
+        allClasses: List<ClassApi>,
+        alreadyPrinted: Set<String>
+    ): List<ClassApi> {
+        val builtins = setOf(
+            "Unit", "Int", "String", "Boolean", "Any", "Object", "List", "Array", "Set", "Map",
+            "Double", "Float", "Long", "Byte", "Char", "Short", "Nothing", "Modifier", "Function0",
+            "Function1", "Function2", "Throwable", "Exception", "Class"
+        )
+
+        val rawTypeStrings = mutableSetOf<String>()
+        rawTypeStrings.addAll(targetClass.superTypes)
+
+        for (method in targetClass.methods) {
+            method.extensionReceiverType?.let { rawTypeStrings.add(it) }
+            rawTypeStrings.add(method.returnType)
+            for (param in method.parameters) {
+                rawTypeStrings.add(param.type)
+            }
+        }
+
+        for (prop in targetClass.properties) {
+            rawTypeStrings.add(prop.type)
+        }
+
+        val tokens = mutableSetOf<String>()
+        val tokenRegex = Regex("[A-Za-z0-9_]+")
+        for (raw in rawTypeStrings) {
+            tokenRegex.findAll(raw).forEach { match ->
+                val t = match.value
+                if (t !in builtins && t.length > 2) {
+                    tokens.add(t)
+                }
+            }
+        }
+
+        val result = mutableListOf<ClassApi>()
+        for (token in tokens) {
+            val matched = allClasses.firstOrNull {
+                (it.simpleName == token || it.name == token) && !alreadyPrinted.contains(it.name)
+            }
+            if (matched != null && !result.contains(matched) && matched.name != targetClass.name) {
+                result.add(matched)
+            }
+        }
+
+        return result
     }
 }

@@ -21,7 +21,7 @@ Get up and running with **Library Insight** to analyze Java, Kotlin, and Kotlin 
     curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh | bash
     ```
 
-    Once installed, you can execute the `library-insight` command directly from any folder.
+    Once installed, both `library-insight` and `li` commands are available globally and can be used interchangeably.
 
 === "Option B: Manual Build from Source"
 
@@ -80,6 +80,13 @@ You can build an API index database using either of the two pipelines:
     Scan a multiplatform library. Library Insight automatically resolves Gradle Module Metadata, downloads and parses target KLib metadata files, and merges platform variants (`common`, `jvm`, `ios`, etc.) into a unified index:
     ```bash
     library-insight scan io.ktor:ktor-client-core:3.0.0
+    ```
+
+=== "D. Scan Bill of Materials (BOM) Libraries"
+
+    Scan a Maven BOM coordinate. Library Insight parses `<dependencyManagement>` from the BOM POM XML and automatically downloads, scans, and merges all constituent managed library artifacts into a unified API index:
+    ```bash
+    library-insight scan androidx.compose:compose-bom:2024.09.00
     ```
 
 ### 2. Search for Symbols

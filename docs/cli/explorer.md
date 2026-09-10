@@ -48,11 +48,16 @@ library-insight explain HtmlBuilder
 
 **Optional Parameters:**
 
+- `-d, --deep`: Recursively explain referenced parameter types, DSL receiver scopes, and return types in a single output.
 - `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
 
 **Example with options:**
 
 ```bash
+# Deep recursive DSL scope resolution
+library-insight explain Grid --deep
+
+# Custom database index
 library-insight explain HtmlBuilder --db custom-index.json
 ```
 

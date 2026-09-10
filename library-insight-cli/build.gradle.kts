@@ -12,12 +12,12 @@ application {
 dependencies {
     implementation(project(":library-insight-core"))
     implementation(project(":library-insight-common"))
-    implementation("com.github.ajalt.clikt:clikt-jvm:4.4.0")
+    implementation(libs.clikt)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.java)
     implementation(libs.kotlinxCoroutines)
     implementation(libs.kotlinxSerialization)
-    runtimeOnly("org.slf4j:slf4j-simple:2.0.9")
+    runtimeOnly(libs.slf4j.simple)
 }
 
 val projectVersion = rootProject.version.toString()
@@ -29,4 +29,18 @@ tasks.processResources {
     filter(mapOf("tokens" to mapOf("version" to projectVersion)), org.apache.tools.ant.filters.ReplaceTokens::class.java)
     from(skillFile)
     from(scriptsDir).into("scripts")
+}
+
+val createLiStartScripts = tasks.register<CreateStartScripts>("createLiStartScripts") {
+    mainClass.set("com.meet.libraryinsight.cli.MainKt")
+    applicationName = "li"
+    outputDir = layout.buildDirectory.dir("scripts-li").get().asFile
+    classpath = tasks.named<CreateStartScripts>("startScripts").get().classpath
+}
+
+tasks.named<Sync>("installDist") {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from(createLiStartScripts) {
+        into("bin")
+    }
 }

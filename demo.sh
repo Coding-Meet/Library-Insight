@@ -16,6 +16,11 @@
 
 set -e
 
+CLI_CMD="library-insight"
+if command -v li &> /dev/null; then
+    CLI_CMD="li"
+fi
+
 SEPARATOR="=================================================="
 LIBRARY="com.squareup.retrofit2:retrofit:2.11.0"
 LIBRARY_OLD="com.squareup.retrofit2:retrofit:2.9.0"
@@ -33,9 +38,9 @@ echo ""
 # Scan a Maven coordinate, local JAR, or AAR from Gradle cache
 # ------------------------------------------------------------------
 echo ">> 1. SCAN - Analyze library and build API index"
-echo "   library-insight scan $LIBRARY"
+echo "   $CLI_CMD scan $LIBRARY"
 echo ""
-library-insight scan $LIBRARY
+$CLI_CMD scan $LIBRARY
 echo ""
 
 # ------------------------------------------------------------------
@@ -43,9 +48,9 @@ echo ""
 # Scan local raw Kotlin & Java source files directly without compilation
 # ------------------------------------------------------------------
 echo ">> 2. SCAN-SOURCE - Analyze local source directory and build API index"
-echo "   library-insight scan-source sample/src/main/kotlin"
+echo "   $CLI_CMD scan-source sample/src/main/kotlin"
 echo ""
-library-insight scan-source sample/src/main/kotlin
+$CLI_CMD scan-source sample/src/main/kotlin
 echo ""
 
 # ------------------------------------------------------------------
@@ -53,19 +58,19 @@ echo ""
 # Search for classes, interfaces, methods, or packages in the index
 # ------------------------------------------------------------------
 echo ">> 3. SEARCH - Find a class by name"
-echo "   library-insight search Retrofit"
+echo "   $CLI_CMD search Grid"
 echo ""
-library-insight search Retrofit
+$CLI_CMD search Grid
 echo ""
 
 # ------------------------------------------------------------------
-# 4. EXPLAIN
-# Print detailed structure of a class (constructors, methods, javadoc)
+# 4. EXPLAIN & DEEP DSL RESOLUTION
+# Print detailed structure of a class/symbol & recursively expand DSL scopes
 # ------------------------------------------------------------------
-echo ">> 4. EXPLAIN - Inspect class structure and method signatures"
-echo "   library-insight explain Retrofit"
+echo ">> 4. EXPLAIN & DEEP EXPLAIN - Inspect class structure and deep DSL scopes"
+echo "   $CLI_CMD explain Grid --deep"
 echo ""
-library-insight explain Retrofit
+$CLI_CMD explain Grid --deep
 echo ""
 
 # ------------------------------------------------------------------
@@ -73,9 +78,9 @@ echo ""
 # Export the full API index to a readable Markdown reference sheet
 # ------------------------------------------------------------------
 echo ">> 5. EXPORT MARKDOWN - Save readable API reference to file"
-echo "   library-insight export markdown"
+echo "   $CLI_CMD export markdown"
 echo ""
-library-insight export markdown
+$CLI_CMD export markdown
 echo ""
 
 # ------------------------------------------------------------------
@@ -83,9 +88,9 @@ echo ""
 # Export the full API index to raw JSON format
 # ------------------------------------------------------------------
 echo ">> 6. EXPORT JSON - Save raw JSON index to file"
-echo "   library-insight export json"
+echo "   $CLI_CMD export json"
 echo ""
-library-insight export json
+$CLI_CMD export json
 echo ""
 
 # ------------------------------------------------------------------
@@ -93,9 +98,9 @@ echo ""
 # Compare two library JAR versions and detect breaking changes & severity
 # ------------------------------------------------------------------
 echo ">> 7. DIFF - Compare two library versions for breaking changes & severity"
-echo "   library-insight diff $LIBRARY_OLD $LIBRARY_NEW"
+echo "   $CLI_CMD diff $LIBRARY_OLD $LIBRARY_NEW"
 echo ""
-library-insight diff $LIBRARY_OLD $LIBRARY_NEW
+$CLI_CMD diff $LIBRARY_OLD $LIBRARY_NEW
 echo ""
 
 # ------------------------------------------------------------------
@@ -103,9 +108,9 @@ echo ""
 # Generate compact per-class JSON files for AI token-efficient context
 # ------------------------------------------------------------------
 echo ">> 8. AI-EXPORT - Generate token-efficient AI context directory"
-echo "   library-insight ai-export"
+echo "   $CLI_CMD ai-export"
 echo ""
-library-insight ai-export
+$CLI_CMD ai-export
 echo ""
 
 # ------------------------------------------------------------------
@@ -113,12 +118,12 @@ echo ""
 # Write a workspace-scoped SKILL.md so local AI agents can discover the CLI
 # ------------------------------------------------------------------
 echo ">> 9. INIT - Initialize AI agent skill for this workspace"
-echo "   library-insight init"
+echo "   $CLI_CMD init"
 echo ""
 mkdir -p "$DEMO_WORKSPACE"
 (
   cd "$DEMO_WORKSPACE"
-  library-insight init
+  $CLI_CMD init
 )
 echo ""
 
@@ -127,12 +132,12 @@ echo ""
 # Install or update the agent SKILL.md in the current workspace
 # ------------------------------------------------------------------
 echo ">> 10. SKILLS ADD - Install AI agent skill to current workspace"
-echo "   library-insight skills add"
+echo "   $CLI_CMD skills add"
 echo ""
 (
   cd "$DEMO_WORKSPACE"
-  library-insight skills add
-  library-insight skills list
+  $CLI_CMD skills add
+  $CLI_CMD skills list
 )
 echo ""
 
@@ -141,9 +146,9 @@ echo ""
 # Delete all locally cached Maven artifacts to free up space
 # ------------------------------------------------------------------
 echo ">> 11. CLEAR-CACHE - Remove locally cached downloaded artifacts"
-echo "   library-insight clear-cache"
+echo "   $CLI_CMD clear-cache"
 echo ""
-library-insight clear-cache
+$CLI_CMD clear-cache
 echo ""
 
 # ------------------------------------------------------------------
@@ -151,9 +156,9 @@ echo ""
 # Scan and report deprecated APIs in project build files recursively
 # ------------------------------------------------------------------
 echo ">> 12. AUDIT - Scan project dependencies and audit deprecated APIs"
-echo "   library-insight audit"
+echo "   $CLI_CMD audit"
 echo ""
-library-insight audit
+$CLI_CMD audit
 echo ""
 
 # ------------------------------------------------------------------
@@ -161,9 +166,9 @@ echo ""
 # Compare old/new coordinates and generate migration advisors with replacements
 # ------------------------------------------------------------------
 echo ">> 13. MIGRATE - Analyze version upgrade differences and suggest replacements"
-echo "   library-insight migrate $LIBRARY_OLD $LIBRARY_NEW"
+echo "   $CLI_CMD migrate $LIBRARY_OLD $LIBRARY_NEW"
 echo ""
-library-insight migrate $LIBRARY_OLD $LIBRARY_NEW
+$CLI_CMD migrate $LIBRARY_OLD $LIBRARY_NEW
 echo ""
 
 # ------------------------------------------------------------------
@@ -171,9 +176,9 @@ echo ""
 # Search Maven Central repository for matching coordinates
 # ------------------------------------------------------------------
 echo ">> 14. SEARCH-CENTRAL - Search Maven Central for package metadata"
-echo "   library-insight search-central clikt"
+echo "   $CLI_CMD search-central clikt"
 echo ""
-library-insight search-central clikt
+$CLI_CMD search-central clikt
 echo ""
 
 # ------------------------------------------------------------------
@@ -181,9 +186,9 @@ echo ""
 # Generate an ASCII recursive transitive dependency graph
 # ------------------------------------------------------------------
 echo ">> 15. DEPENDENCY-GRAPH - Generate recursive transitive dependency tree"
-echo "   library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0"
+echo "   $CLI_CMD dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0"
 echo ""
-library-insight dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
+$CLI_CMD dependency-graph com.github.ajalt.clikt:clikt-jvm:4.4.0
 echo ""
 
 # ------------------------------------------------------------------
@@ -191,9 +196,9 @@ echo ""
 # Verify that library modifications comply with SemVer version numbers
 # ------------------------------------------------------------------
 echo ">> 16. SEMVER - Verify Semantic Versioning compliance"
-echo "   library-insight semver $LIBRARY_OLD $LIBRARY_NEW"
+echo "   $CLI_CMD semver $LIBRARY_OLD $LIBRARY_NEW"
 echo ""
-library-insight semver $LIBRARY_OLD $LIBRARY_NEW
+$CLI_CMD semver $LIBRARY_OLD $LIBRARY_NEW
 echo ""
 
 # ------------------------------------------------------------------
@@ -201,9 +206,9 @@ echo ""
 # Start MCP server and feed it a tools/list request to verify stdio integration
 # ------------------------------------------------------------------
 echo ">> 17. MCP - Test Model Context Protocol tools list interface"
-echo "   echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | library-insight mcp"
+echo "   echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}' | $CLI_CMD mcp"
 echo ""
-echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | library-insight mcp
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | $CLI_CMD mcp
 echo ""
 
 # ------------------------------------------------------------------
@@ -211,9 +216,9 @@ echo ""
 # Generate Kotlin DSL surface report: type aliases, @DslMarker scopes, etc.
 # ------------------------------------------------------------------
 echo ">> 18. DSL-REPORT - Generate Kotlin DSL surface report"
-echo "   library-insight dsl-report"
+echo "   $CLI_CMD dsl-report"
 echo ""
-library-insight dsl-report
+$CLI_CMD dsl-report
 echo ""
 
 # ------------------------------------------------------------------
@@ -221,11 +226,11 @@ echo ""
 # Auto-generate usage boilerplate examples for classes & extract markdown guides
 # ------------------------------------------------------------------
 echo ">> 19. EXAMPLES - Auto-generate library usage snippets & extract guide examples"
-echo "   library-insight scan sample/build/libs/sample-1.1.0.jar --sources sample"
-library-insight scan sample/build/libs/sample-1.1.0.jar --sources sample > /dev/null
-echo "   library-insight examples HtmlBuilder"
+echo "   $CLI_CMD scan sample/build/libs/sample-1.1.0.jar --sources sample"
+$CLI_CMD scan sample/build/libs/sample-1.1.0.jar --sources sample > /dev/null
+echo "   $CLI_CMD examples HtmlBuilder"
 echo ""
-library-insight examples HtmlBuilder
+$CLI_CMD examples HtmlBuilder
 echo ""
 
 # ------------------------------------------------------------------
@@ -233,9 +238,9 @@ echo ""
 # Print public API counts, deprecation ratio, and complexity indices
 # ------------------------------------------------------------------
 echo ">> 20. HEALTH - Generate Package Health & API Complexity Report"
-echo "   library-insight health"
+echo "   $CLI_CMD health"
 echo ""
-library-insight health
+$CLI_CMD health
 echo ""
 
 # ------------------------------------------------------------------
@@ -243,9 +248,9 @@ echo ""
 # Check transitive classpath dependencies for linkage error risks
 # ------------------------------------------------------------------
 echo ">> 21. DEPENDENCY-CHECK - Audit classpath for linkage/ABI conflicts"
-echo "   library-insight dependency-check"
+echo "   $CLI_CMD dependency-check"
 echo ""
-library-insight dependency-check
+$CLI_CMD dependency-check
 echo ""
 
 # ------------------------------------------------------------------
@@ -253,9 +258,9 @@ echo ""
 # Trace recursive internal method invocations
 # ------------------------------------------------------------------
 echo ">> 22. CALLGRAPH - Renders recursive method invocation tree"
-echo "   library-insight callgraph HtmlBuilder.div"
+echo "   $CLI_CMD callgraph HtmlBuilder.div"
 echo ""
-library-insight callgraph HtmlBuilder.div
+$CLI_CMD callgraph HtmlBuilder.div
 echo ""
 
 # ------------------------------------------------------------------
@@ -263,9 +268,9 @@ echo ""
 # Run full diagnostic checks - Java, caches, agent skill status
 # ------------------------------------------------------------------
 echo ">> BONUS. DOCTOR - Run system diagnostics and check tool health"
-echo "   library-insight doctor"
+echo "   $CLI_CMD doctor"
 echo ""
-library-insight doctor
+$CLI_CMD doctor
 echo ""
 
 # ------------------------------------------------------------------
@@ -273,11 +278,11 @@ echo ""
 # Resolve target platforms and print platform indicators
 # ------------------------------------------------------------------
 echo ">> 23. KMP SCAN & EXPLAIN - Resolve KMP targets and merge API indexes"
-echo "   library-insight scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json"
-library-insight scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json > /dev/null
-echo "   library-insight explain io.ktor.client.HttpClient --db build/ktor-index.json"
+echo "   $CLI_CMD scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json"
+$CLI_CMD scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json > /dev/null
+echo "   $CLI_CMD explain io.ktor.client.HttpClient --db build/ktor-index.json"
 echo ""
-library-insight explain io.ktor.client.HttpClient --db build/ktor-index.json | head -n 35
+$CLI_CMD explain io.ktor.client.HttpClient --db build/ktor-index.json | head -n 35
 echo ""
 
 # Cleanup
