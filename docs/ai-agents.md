@@ -56,12 +56,12 @@ This generates a compact, token-efficient split structure under `build/ai-contex
 
 Here are concrete examples of how you can prompt AI coding assistants (Cursor, Claude, Gemini, Copilot, etc.) to use **Library Insight** CLI commands automatically:
 
-### 💡 Example 1: Exploring Unfamiliar Libraries & DSLs
+### Example 1: Exploring Unfamiliar Libraries & DSLs
 
 > **Developer Prompt:**
 > _"Use my `library-insight` CLI to scan `androidx.compose.foundation:foundation-layout:1.12.0`, search for `Grid`, explain its DSL structure, and create a working Jetpack Compose Grid layout example."_
 
-**🤖 AI Agent Response Workflow:**
+**AI Agent Response Workflow:**
 
 1. Executes `library-insight scan androidx.compose.foundation:foundation-layout:1.12.0`
 2. Executes `library-insight search Grid`
@@ -70,12 +70,12 @@ Here are concrete examples of how you can prompt AI coding assistants (Cursor, C
 
 ---
 
-### 📦 Example 2: Scanning Bill of Materials (BOM)
+### Example 2: Scanning Bill of Materials (BOM)
 
 > **Developer Prompt:**
 > _"Scan `androidx.compose:compose-bom:2024.09.00` using `library-insight scan` and explain how `LazyVerticalGrid` and `StaggeredGridCells` work."_
 
-**🤖 AI Agent Response Workflow:**
+**AI Agent Response Workflow:**
 
 1. Executes `library-insight scan androidx.compose:compose-bom:2024.09.00` (automatically parses POM XML and merges all 92 managed Compose libraries into one index).
 2. Executes `library-insight explain LazyVerticalGrid --deep` to discover `LazyGridScope`, `LazyGridItemSpanScope`, and `GridItemSpan`.
@@ -83,12 +83,12 @@ Here are concrete examples of how you can prompt AI coding assistants (Cursor, C
 
 ---
 
-### 🔄 Example 3: Auditing Library Version Upgrades & Breaking Changes
+### Example 3: Auditing Library Version Upgrades & Breaking Changes
 
 > **Developer Prompt:**
 > _"Compare Retrofit versions `2.9.0` vs `2.11.0` using `library-insight diff` and tell me what APIs were added, removed, or deprecated."_
 
-**🤖 AI Agent Response Workflow:**
+**AI Agent Response Workflow:**
 
 1. Executes `library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0`
 2. Analyzes the generated JSON/Console diff report for signature modifications.
@@ -96,12 +96,12 @@ Here are concrete examples of how you can prompt AI coding assistants (Cursor, C
 
 ---
 
-### ⚡ Example 4: Exporting Local Source Code Context for AI Coding
+### Example 4: Exporting Local Source Code Context for AI Coding
 
 > **Developer Prompt:**
 > _"Scan our local codebase `library-insight scan-source app/src/main`, run `library-insight ai-export`, and explain how `DashboardViewModel` interacts with our repository layer."_
 
-**🤖 AI Agent Response Workflow:**
+**AI Agent Response Workflow:**
 
 1. Executes `library-insight scan-source app/src/main`
 2. Executes `library-insight ai-export`
@@ -109,12 +109,12 @@ Here are concrete examples of how you can prompt AI coding assistants (Cursor, C
 
 ---
 
-### 🔍 Example 5: Version Catalog Auto-Discovery & Zero-Knowledge Scanning
+### Example 5: Version Catalog Auto-Discovery & Zero-Knowledge Scanning
 
 > **Developer Prompt:**
 > _"I want to create a grid layout using Compose, but I don't know the exact library version. Find the library name and version from our project's version catalog (`gradle/libs.versions.toml`), scan it with `library-insight`, and generate the code for me."_
 
-**🤖 AI Agent Response Workflow:**
+**AI Agent Response Workflow:**
 
 1. **Version Catalog Inspection**: The AI Agent inspects `gradle/libs.versions.toml` or `build.gradle.kts` to locate the project's declared library coordinates or BOM references (e.g. `androidx.compose.foundation:foundation-layout` or `compose-bom = "2024.09.00"`).
    _(If not declared in the project, the agent runs `library-insight search-central "foundation-layout"` to query the latest release on Maven Central)._
