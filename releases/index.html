@@ -710,7 +710,7 @@
   <a href="#cli-option-skill-discovery-updates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ️ CLI Option &amp; Skill Discovery Updates
+        ️CLI Option &amp; Skill Discovery Updates
       
     </span>
   </a>
@@ -749,7 +749,7 @@
   <a href="#cli-updates-architecture-refactoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ️ CLI Updates &amp; Architecture Refactoring
+        ️CLI Updates &amp; Architecture Refactoring
       
     </span>
   </a>
@@ -799,7 +799,7 @@
   <a href="#cli-improvements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ️ CLI Improvements
+        ️CLI Improvements
       
     </span>
   </a>
@@ -882,7 +882,7 @@
   <a href="#mcp-server-enhancements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ️ MCP Server Enhancements
+        ️MCP Server Enhancements
       
     </span>
   </a>
@@ -1105,7 +1105,7 @@
   <a href="#cli-option-skill-discovery-updates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ️ CLI Option &amp; Skill Discovery Updates
+        ️CLI Option &amp; Skill Discovery Updates
       
     </span>
   </a>
@@ -1144,7 +1144,7 @@
   <a href="#cli-updates-architecture-refactoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ️ CLI Updates &amp; Architecture Refactoring
+        ️CLI Updates &amp; Architecture Refactoring
       
     </span>
   </a>
@@ -1194,7 +1194,7 @@
   <a href="#cli-improvements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ️ CLI Improvements
+        ️CLI Improvements
       
     </span>
   </a>
@@ -1277,7 +1277,7 @@
   <a href="#mcp-server-enhancements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ️ MCP Server Enhancements
+        ️MCP Server Enhancements
       
     </span>
   </a>
@@ -1471,7 +1471,7 @@
 <li><strong>Quiet KMP Target Fallbacks</strong>: Silenced failed variant target resolution warnings (like <code>Warn: Failed to resolve variant...</code>) when scanning non-Kotlin Multiplatform libraries (e.g. Retrofit), ensuring a quiet console log fallback to standard JVM artifacts.</li>
 <li><strong>Relative Path Canonicalization</strong>: Fixed a bug where scanning source files in the current folder (e.g. <code>scan-source .</code>) resolved the library index name literally to <code>"."</code>. It now correctly uses the normalized parent directory name, restoring path resolving for local callgraph analysis.</li>
 </ul>
-<h3 id="cli-option-skill-discovery-updates">️ CLI Option &amp; Skill Discovery Updates<a class="headerlink" href="#cli-option-skill-discovery-updates" title="Link to this section">&para;</a></h3>
+<h3 id="cli-option-skill-discovery-updates">️CLI Option &amp; Skill Discovery Updates<a class="headerlink" href="#cli-option-skill-discovery-updates" title="Link to this section">&para;</a></h3>
 <ul>
 <li><strong>Native Version Command</strong>: Added the standard Clikt <code>versionOption</code> so running <code>library-insight -v</code> or <code>library-insight --version</code> outputs the active CLI build version dynamically.</li>
 <li><strong>AI Agent Skill Auto-Discovery</strong>: Added explicit trigger phrases inside the YAML frontmatter description of <code>SKILL.md</code> to help agent frameworks (such as Claude Code) auto-enable the tool proactively.</li>
@@ -1487,7 +1487,7 @@
 <li><strong>Unified Multiplatform Merging</strong>: Consolidates package declarations, constructors, methods, and properties across all target platforms into a single unified index.</li>
 <li><strong>Platform-Aware Reports</strong>: Displays target annotations (e.g. <code>[common]</code>, <code>[jvm]</code>) in explain reports and MCP tool outputs when signatures vary by platform.</li>
 </ul>
-<h3 id="cli-updates-architecture-refactoring">️ CLI Updates &amp; Architecture Refactoring<a class="headerlink" href="#cli-updates-architecture-refactoring" title="Link to this section">&para;</a></h3>
+<h3 id="cli-updates-architecture-refactoring">️CLI Updates &amp; Architecture Refactoring<a class="headerlink" href="#cli-updates-architecture-refactoring" title="Link to this section">&para;</a></h3>
 <ul>
 <li><strong>Self-Updating Engine (<code>update</code> Command)</strong>: Checks for the latest version on GitHub, automatically upgrades the CLI binaries, and distributes the updated Agent Skills dynamically.</li>
 <li><strong>Clean Architecture Partitioning</strong>: Fully modularized the codebase into Scanner Layer, Unified Database, and Tooling/Analysis Layer.</li>
@@ -1513,7 +1513,7 @@
 <li><strong>Import Statements</strong>: Persists file-level import lists inside the class API model, helpful for dependency analysis and code structure auditing.</li>
 <li><strong>Backward-Compatible Database</strong>: Existing bytecode-scanned indices are backward-compatible and load seamlessly without schema validation breaks.</li>
 </ul>
-<h3 id="cli-improvements">️ CLI Improvements<a class="headerlink" href="#cli-improvements" title="Link to this section">&para;</a></h3>
+<h3 id="cli-improvements">️CLI Improvements<a class="headerlink" href="#cli-improvements" title="Link to this section">&para;</a></h3>
 <ul>
 <li>scan-source displays Kotlin/Java file statistics and indexing progress.</li>
 <li>search now shows declaration source locations when available.</li>
@@ -1551,7 +1551,7 @@
 <p>Checks compiled transitive dependencies for method and field signatures missing from the classpath. Proactively flags runtime risks such as <code>NoSuchMethodError</code>, <code>NoSuchFieldError</code>, or <code>LinkageError</code>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>library-insight<span class="w"> </span>dependency-check
 </span></code></pre></div>
-<h3 id="mcp-server-enhancements">️ MCP Server Enhancements<a class="headerlink" href="#mcp-server-enhancements" title="Link to this section">&para;</a></h3>
+<h3 id="mcp-server-enhancements">️MCP Server Enhancements<a class="headerlink" href="#mcp-server-enhancements" title="Link to this section">&para;</a></h3>
 <ul>
 <li><strong><code>dsl_report</code> Tool</strong>: AI assistants can query DSL structures natively.</li>
 <li><strong>Dynamic Database (<code>--db</code>)</strong>: Run multiple indices by passing custom database file paths.</li>
