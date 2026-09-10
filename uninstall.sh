@@ -15,21 +15,24 @@ set -e
 
 INSTALL_DIR="$HOME/.library-insight"
 SYMLINK="/usr/local/bin/library-insight"
+SYMLINK_LI="/usr/local/bin/li"
 
 echo "=================================================="
 echo " Uninstalling Library Insight..."
 echo "=================================================="
 
-# 1. Remove global symlink
-if [ -L "$SYMLINK" ] || [ -f "$SYMLINK" ]; then
-    echo "Removing global symlink at $SYMLINK..."
-    if [ -w "/usr/local/bin" ]; then
-        rm -f "$SYMLINK"
-    else
-        sudo rm -f "$SYMLINK"
+# 1. Remove global symlinks
+for sym in "$SYMLINK" "$SYMLINK_LI"; do
+    if [ -L "$sym" ] || [ -f "$sym" ]; then
+        echo "Removing global symlink at $sym..."
+        if [ -w "/usr/local/bin" ]; then
+            rm -f "$sym"
+        else
+            sudo rm -f "$sym"
+        fi
+        echo " -> Symlink $sym removed."
     fi
-    echo " -> Symlink removed."
-fi
+done
 
 # 2. Remove installation directory and caches
 if [ -d "$INSTALL_DIR" ]; then

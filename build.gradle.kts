@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     group = "com.meet.libraryinsight"
-    version = "1.4.1"
+    version = "1.5.0"
 
     repositories {
         mavenCentral()
@@ -17,15 +17,15 @@ subprojects {
     apply(plugin = "buildsrc.convention.kotlin-jvm")
 
     dependencies {
-        // Kotest testing framework
-        "testImplementation"("io.kotest:kotest-runner-junit5:5.8.0")
-        "testImplementation"("io.kotest:kotest-assertions-core:5.8.0")
         "testImplementation"("org.jetbrains.kotlin:kotlin-test")
     }
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         compilerOptions {
-            freeCompilerArgs.add("-Xopt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs.addAll(
+                "-Xopt-in=kotlin.RequiresOptIn",
+                "-Xsuppress-version-warnings"
+            )
         }
     }
 }

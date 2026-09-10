@@ -10,6 +10,9 @@ annotation class HtmlDsl
 @DslMarker
 annotation class ConfigDsl
 
+@DslMarker
+annotation class GridDsl
+
 // ============================================================
 // Type aliases — demonstrates type alias extraction
 // ============================================================
@@ -74,6 +77,28 @@ class DatabaseConfigBuilder {
     var poolSize: Int = 10
 }
 
+@GridDsl
+class GridConfigurationScope {
+    var columns: Int = 2
+    var rowGapPx: Int = 8
+    var columnGapPx: Int = 8
+
+    /** Sets the number of grid columns. */
+    fun configureColumns(count: Int) { columns = count }
+}
+
+@GridDsl
+class GridScope {
+    private val items = mutableListOf<String>()
+
+    /** Configures grid item position and content. */
+    fun gridItem(row: Int, column: Int, content: String) {
+        items.add("Item at ($row, $column): $content")
+    }
+
+    fun getItems(): List<String> = items
+}
+
 // ============================================================
 // Top-level DSL builder functions with lambda receivers
 // ============================================================
@@ -86,6 +111,15 @@ fun html(block: HtmlBuilder.() -> Unit): String {
 /** Builds an application configuration using a DSL block. */
 fun appConfig(block: AppConfigBuilder.() -> Unit): AppConfigBuilder {
     return AppConfigBuilder().apply(block)
+}
+
+/** Constructs a Grid layout using a configuration block and child scope. */
+fun grid(
+    config: GridConfigurationScope.() -> Unit = {},
+    content: GridScope.() -> Unit
+): GridScope {
+    val cfg = GridConfigurationScope().apply(config)
+    return GridScope().apply(content)
 }
 
 /** Configures and runs a block with a typed receiver. */

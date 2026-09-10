@@ -32,21 +32,32 @@ Found 2 matches for 'Retrofit':
 
 ---
 
-## `explain` — Explain a Class
+## `explain` — Explain a Class or Symbol
 
-Print detailed structural information (modifiers, superclass, constructors, properties, methods, Javadoc/KDoc, and nested usage guide examples extracted from README/Dokka markdown files) for a specific class.
+Print detailed structural information (modifiers, superclass, constructors, properties, methods, Javadoc/KDoc, and nested usage guide examples extracted from README/Dokka markdown files) for a specific class or top-level symbol.
 
 ```bash
 library-insight explain HtmlBuilder
 ```
 
+**Smart Resolution Capabilities:**
+
+- **Kotlin Top-Level Function Resolution (`${name}Kt`)**: Querying a top-level Kotlin function (e.g. `library-insight explain Grid`) automatically resolves to its Kotlin facade class (`GridKt`).
+- **Member Method & Property Lookup**: Querying a method or property directly (e.g. `library-insight explain gridItem`) automatically locates its declaring class (e.g. `GridScope`).
+- **Fuzzy Typo Suggestions**: If a symbol is not found or has a typo, `explain` displays "Did you mean one of these?" with close matches.
+
 **Optional Parameters:**
 
+- `-d, --deep`: Recursively explain referenced parameter types, DSL receiver scopes, and return types in a single output.
 - `--db <file>`: Index database JSON file path to read from (default: `build/library-insight-index.json`)
 
 **Example with options:**
 
 ```bash
+# Deep recursive DSL scope resolution
+library-insight explain Grid --deep
+
+# Custom database index
 library-insight explain HtmlBuilder --db custom-index.json
 ```
 

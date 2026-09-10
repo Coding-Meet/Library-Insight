@@ -54,26 +54,28 @@ else
 fi
 
 echo "Configuring executable permissions..."
-chmod +x "$INSTALL_DIR/bin/library-insight"
+chmod +x "$INSTALL_DIR/bin/library-insight" "$INSTALL_DIR/bin/li" 2>/dev/null || true
 
-echo "Creating global symlink..."
+echo "Creating global symlinks for library-insight and li..."
 SYMLINK_SUCCESS=false
 if [ -d "/usr/local/bin" ]; then
     if [ -w "/usr/local/bin" ]; then
-        ln -sf "$INSTALL_DIR/bin/library-insight" /usr/local/bin/library-insight 2>/dev/null && SYMLINK_SUCCESS=true
+        ln -sf "$INSTALL_DIR/bin/library-insight" /usr/local/bin/library-insight 2>/dev/null
+        ln -sf "$INSTALL_DIR/bin/li" /usr/local/bin/li 2>/dev/null && SYMLINK_SUCCESS=true
     else
-        sudo -n ln -sf "$INSTALL_DIR/bin/library-insight" /usr/local/bin/library-insight 2>/dev/null && SYMLINK_SUCCESS=true || sudo ln -sf "$INSTALL_DIR/bin/library-insight" /usr/local/bin/library-insight 2>/dev/null && SYMLINK_SUCCESS=true || true
+        sudo -n ln -sf "$INSTALL_DIR/bin/library-insight" /usr/local/bin/library-insight 2>/dev/null && sudo -n ln -sf "$INSTALL_DIR/bin/li" /usr/local/bin/li 2>/dev/null && SYMLINK_SUCCESS=true || sudo ln -sf "$INSTALL_DIR/bin/library-insight" /usr/local/bin/library-insight 2>/dev/null && sudo ln -sf "$INSTALL_DIR/bin/li" /usr/local/bin/li 2>/dev/null && SYMLINK_SUCCESS=true || true
     fi
 fi
 
 if [ "$SYMLINK_SUCCESS" = true ]; then
     echo "=================================================="
     echo " SUCCESS: Library Insight installed globally!"
-    echo " You can now run the 'library-insight' command."
+    echo " You can now run 'library-insight' or 'li'."
     echo "=================================================="
 else
     echo "=================================================="
-    echo " SUCCESS: Library Insight installed at $INSTALL_DIR/bin/library-insight!"
+    echo " SUCCESS: Library Insight installed at $INSTALL_DIR/bin!"
+    echo " Commands available: library-insight, li"
     echo " Direct path: $HOME/.library-insight/bin/library-insight"
     echo " To run directly without full path, add this to your .zshrc / .bashrc:"
     echo "   export PATH=\"\$PATH:$INSTALL_DIR/bin\""

@@ -103,7 +103,7 @@ class ExamplesCommand : CliktCommand(
         }
 
         // 3. Builder pattern
-        if (hasBuilder && builderClass != null) {
+        if (hasBuilder) {
             echo("\n// Pattern: Builder Configuration")
             generateBuilderExample(clazz, builderClass)
         }

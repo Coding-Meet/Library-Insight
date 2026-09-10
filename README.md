@@ -10,6 +10,15 @@ AI coding assistants often guess Java/Kotlin APIs from outdated documentation, w
 
 **Library Insight** solves this by analyzing the exact JAR, AAR, Maven dependency, Gradle output, or local Java/Kotlin source code used by your project. It builds a searchable, version-aware API index from compiled bytecode (including Kotlin `@Metadata`) or source code, allowing you to explore APIs, generate AI-ready context, and understand your codebase using the exact code you're working with—not outdated documentation or web examples.
 
+> **💡 Developer Prompt Example:**
+> *"Use my `library-insight` CLI to scan `androidx.compose.foundation:foundation-layout:1.12.0`, search for `Grid`, explain its DSL structure, and create a working Jetpack Compose Grid layout example."*
+>
+> **🤖 AI Agent Response Workflow:**
+> 1. Executes `library-insight scan androidx.compose.foundation:foundation-layout:1.12.0`
+> 2. Executes `library-insight search Grid`
+> 3. Executes `library-insight explain Grid --deep` to inspect parameters, receiver scopes (`GridScope`), and embedded KDocs in 1 turn.
+> 4. Generates **100% accurate, version-correct Kotlin code** grounded directly in the artifact bytecode—without hallucinating deprecated signatures or relying on outdated web snippets!
+
 <!-- --8<-- [end:intro] -->
 
 ---
@@ -39,6 +48,7 @@ Watch the full **13-minute product showcase** explaining Library Insight's core 
 
 - **MCP Server**: Connect Cursor, Claude Desktop, or any MCP-compatible IDE to query APIs directly.
 - **Kotlin Multiplatform (KMP) Support**: Resolve coordinates from Gradle Module Metadata (`.module` JSON), parse Native `.klib` metadata files, and merge platform variant API targets (`common`, `jvm`, `ios`, `js`, `wasm`).
+- **Bill of Materials (BOM) Auto-Resolution**: Parse Maven BOM POM XML files (`compose-bom`, `firebase-bom`) and automatically resolve, download, scan, and merge all constituent managed library artifacts into a unified API index.
 - **Local Source Code Scanner (`scan-source`)**: Analyze Kotlin and Java source projects without compilation, preserving KDoc/Javadoc, imports, and declaration source locations (`file:line`).
 - **Version-Correct API Lookup**: Build an API index from the exact JAR, AAR, Maven dependency, Gradle output, or source code used by your project to prevent AI hallucinations.
 - **Deep Metadata Extraction**: Extract classes, constructors, methods, properties, nullability, generics, annotations, modifiers, and source metadata.

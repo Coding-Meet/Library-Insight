@@ -22,9 +22,14 @@ LIBRARY_OLD="com.squareup.retrofit2:retrofit:2.9.0"
 LIBRARY_NEW="com.squareup.retrofit2:retrofit:2.11.0"
 SEP="=================================================="
 
+CLI_CMD="library-insight"
+if command -v li &> /dev/null; then
+    CLI_CMD="li"
+fi
+
 echo ""
 echo "$SEP"
-echo " LIBRARY INSIGHT — QUICK DEMO  (v1.4.0 Suite)"
+echo " LIBRARY INSIGHT — QUICK DEMO  (v1.4.2 Suite)"
 echo "$SEP"
 echo ""
 
@@ -32,121 +37,121 @@ echo ""
 # 1. SCAN
 # ------------------------------------------------------------------
 echo ">> 1. SCAN — Index compiled dependency API from Maven"
-echo "   library-insight scan $LIBRARY"
+echo "   $CLI_CMD scan $LIBRARY"
 echo ""
-library-insight scan $LIBRARY
+$CLI_CMD scan $LIBRARY
 echo ""
 
 # ------------------------------------------------------------------
 # 2. SCAN-SOURCE
 # ------------------------------------------------------------------
 echo ">> 2. SCAN-SOURCE — Index local raw Java & Kotlin source files"
-echo "   library-insight scan-source sample/src/main/kotlin"
+echo "   $CLI_CMD scan-source sample/src/main/kotlin"
 echo ""
-library-insight scan-source sample/src/main/kotlin
+$CLI_CMD scan-source sample/src/main/kotlin
 echo ""
 
 # ------------------------------------------------------------------
 # 3. SEARCH
 # ------------------------------------------------------------------
 echo ">> 3. SEARCH — Find class, methods, or sourceLocation annotations"
-echo "   library-insight search \"anno:Keep\""
+echo "   $CLI_CMD search \"anno:Keep\""
 echo ""
-library-insight search "anno:Keep"
+$CLI_CMD search "anno:Keep"
 echo ""
 
 # ------------------------------------------------------------------
-# 4. EXPLAIN
+# 4. EXPLAIN & DEEP DSL RESOLUTION
 # ------------------------------------------------------------------
-echo ">> 4. EXPLAIN — Inspect class structure, source pointers, DSL scopes, & receivers"
-echo "   library-insight explain HtmlBuilder"
+echo ">> 4. EXPLAIN — Deep inspect class structure, source pointers, DSL scopes, & receivers"
+echo "   $CLI_CMD explain Grid --deep"
 echo ""
-library-insight explain HtmlBuilder
+$CLI_CMD explain Grid --deep
 echo ""
 
 # ------------------------------------------------------------------
 # 5. DSL REPORT
 # ------------------------------------------------------------------
 echo ">> 5. DSL-REPORT — Kotlin DSL scopes, aliases, and extension receivers"
-echo "   library-insight dsl-report"
+echo "   $CLI_CMD dsl-report"
 echo ""
-library-insight dsl-report
+$CLI_CMD dsl-report
 echo ""
 
 # ------------------------------------------------------------------
 # 6. EXAMPLES
 # ------------------------------------------------------------------
 echo ">> 6. EXAMPLES — Generate usage patterns & extract guide examples"
-echo "   library-insight scan sample/build/libs/sample-1.1.0.jar --sources sample"
-library-insight scan sample/build/libs/sample-1.1.0.jar --sources sample > /dev/null
-echo "   library-insight examples HtmlBuilder"
+echo "   $CLI_CMD scan sample/build/libs/sample-1.1.0.jar --sources sample"
+$CLI_CMD scan sample/build/libs/sample-1.1.0.jar --sources sample > /dev/null
+echo "   $CLI_CMD examples HtmlBuilder"
 echo ""
-library-insight examples HtmlBuilder
+$CLI_CMD examples HtmlBuilder
 echo ""
 
 # ------------------------------------------------------------------
 # 7. HEALTH
 # ------------------------------------------------------------------
 echo ">> 7. HEALTH — Generate Package Health & API Complexity Report"
-echo "   library-insight health"
+echo "   $CLI_CMD health"
 echo ""
-library-insight health
+$CLI_CMD health
 echo ""
 
 # ------------------------------------------------------------------
 # 8. AUDIT
 # ------------------------------------------------------------------
 echo ">> 8. AUDIT — Scan dependencies for deprecated APIs recursively"
-echo "   library-insight audit"
+echo "   $CLI_CMD audit"
 echo ""
-library-insight audit
+$CLI_CMD audit
 echo ""
 
 # ------------------------------------------------------------------
 # 9. MIGRATE
 # ------------------------------------------------------------------
 echo ">> 9. MIGRATE — Get migration advisor report with replacements"
-echo "   library-insight migrate $LIBRARY_OLD $LIBRARY_NEW"
+echo "   $CLI_CMD migrate $LIBRARY_OLD $LIBRARY_NEW"
 echo ""
-library-insight migrate $LIBRARY_OLD $LIBRARY_NEW
+$CLI_CMD migrate $LIBRARY_OLD $LIBRARY_NEW
 echo ""
 
 # ------------------------------------------------------------------
 # 10. DEPENDENCY-CHECK
 # ------------------------------------------------------------------
 echo ">> 10. DEPENDENCY-CHECK — Scan classpath for Linkage/ABI conflicts"
-echo "   library-insight dependency-check"
+echo "   $CLI_CMD dependency-check"
 echo ""
-library-insight dependency-check
+$CLI_CMD dependency-check
 echo ""
 
 # ------------------------------------------------------------------
 # 11. CALLGRAPH
 # ------------------------------------------------------------------
 echo ">> 11. CALLGRAPH — Generate method call graph visual tree"
-echo "   library-insight callgraph HtmlBuilder.div"
+echo "   $CLI_CMD callgraph HtmlBuilder.div"
 echo ""
-library-insight callgraph HtmlBuilder.div
+$CLI_CMD callgraph HtmlBuilder.div
 echo ""
 
 # ------------------------------------------------------------------
 # 12. MCP
 # ------------------------------------------------------------------
 echo ">> 12. MCP — Test Model Context Protocol tools list interface"
-echo "   echo '{...}' | library-insight mcp"
+echo "   echo '{...}' | $CLI_CMD mcp"
 echo ""
-echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | library-insight mcp
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | $CLI_CMD mcp
 echo ""
 
 # ------------------------------------------------------------------
 # 13. KMP SCAN & EXPLAIN — Kotlin Multiplatform support
 # ------------------------------------------------------------------
 echo ">> 13. KMP SCAN & EXPLAIN — Multi-target platform variant resolution"
-echo "   library-insight scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json"
-library-insight scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json > /dev/null
-echo "   library-insight explain io.ktor.client.HttpClient --db build/ktor-index.json"
+echo "   $CLI_CMD scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json"
+$CLI_CMD scan io.ktor:ktor-client-core:3.0.0 --db build/ktor-index.json > /dev/null
+echo "   $CLI_CMD explain io.ktor.client.HttpClient --db build/ktor-index.json"
 echo ""
-library-insight explain io.ktor.client.HttpClient --db build/ktor-index.json | head -n 35
+$CLI_CMD explain io.ktor.client.HttpClient --db build/ktor-index.json | head -n 35
 echo ""
 
 # Cleanup

@@ -1,6 +1,6 @@
 ---
 name: library-insight
-description: Use when the user asks to inspect a Java, Kotlin, or Kotlin Multiplatform (KMP) library API, verify if a method or class exists in the installed dependency version, compare or migrate between library versions, audit deprecated APIs, or check Gradle dependency graphs. Triggers: check library API, search class/method, library migration, deprecated API audit, dependency-check, JAR/AAR/KLib scan, Java/Kotlin source scan.
+description: Use when the user asks to inspect a Java, Kotlin, or Kotlin Multiplatform (KMP) library API, scan Bill of Materials (BOM) coordinates (compose-bom, firebase-bom), auto-discover versions from Version Catalog (libs.versions.toml), verify method/class availability in installed dependency versions, compare or migrate between versions, audit deprecated APIs, check Gradle dependency graphs, scan local source code, or run commands like li scan and li explain.
 ---
 
 # Library Insight Agent Skill
@@ -21,15 +21,19 @@ Library Insight analyzes compiled libraries (JVM artifacts and Kotlin Multiplatf
 >
 > Instead, interact with the indexed database using the CLI query commands so that only the required symbols are loaded into context.
 >
-> **Indexing**
+> Both **`library-insight`** and the short alias **`li`** can be used interchangeably (e.g., `li scan ...`, `li search ...`, `li explain ...`).
+>
+> **Indexing & Version Discovery**
 >
 > - Use **`library-insight scan <jar|aar|klib|directory|maven-coordinate>`** to index compiled libraries.
+> - **BOM Scanning:** For Bill of Materials (BOM) coordinates (e.g. `androidx.compose:compose-bom:2024.09.00` or `com.google.firebase:firebase-bom`), `library-insight scan` automatically parses the POM XML, resolves all managed member libraries, and merges them into a single API index.
+> - **Zero-Knowledge Version Discovery:** If the user does not specify a library version, inspect `gradle/libs.versions.toml` or `build.gradle.kts` to discover the project's declared version. If not present in the project, run **`library-insight search-central <query>`** to query the latest coordinate from Maven Central.
 > - Use **`library-insight scan-source <directory>`** to index a local Java/Kotlin source project without compilation.
 >
 > **Querying**
 >
 > - Use **`library-insight search <query>`** to locate packages, classes, methods, or properties.
-> - Use **`library-insight explain <class>`** to inspect a class, including signatures, documentation, imports, and source locations when available.
+> - Use **`library-insight explain <class|function|member> [--deep]`** to inspect a class or top-level Kotlin symbol. Always pass **`--deep`** (or **`-d`**) when exploring DSLs or multi-type APIs (e.g. `library-insight explain Grid --deep` auto-resolves top-level `GridKt` and recursively includes all referenced receiver scopes like `GridScope` and `GridConfigurationScope` in 1 single turn).
 > - Use **`library-insight examples <class>`** to generate typical usage examples.
 >
 > **Analysis**

@@ -21,7 +21,7 @@ Get up and running with **Library Insight** to analyze Java, Kotlin, and Kotlin 
     curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh | bash
     ```
 
-    Once installed, you can execute the `library-insight` command directly from any folder.
+    Once installed, both `library-insight` and `li` commands are available globally and can be used interchangeably.
 
 === "Option B: Manual Build from Source"
 
@@ -82,6 +82,13 @@ You can build an API index database using either of the two pipelines:
     library-insight scan io.ktor:ktor-client-core:3.0.0
     ```
 
+=== "D. Scan Bill of Materials (BOM) Libraries"
+
+    Scan a Maven BOM coordinate. Library Insight parses `<dependencyManagement>` from the BOM POM XML and automatically downloads, scans, and merges all constituent managed library artifacts into a unified API index:
+    ```bash
+    library-insight scan androidx.compose:compose-bom:2024.09.00
+    ```
+
 ### 2. Search for Symbols
 
 Find a class, interface, or property in the index database.
@@ -98,9 +105,9 @@ Find a class, interface, or property in the index database.
     library-insight search Retrofit
     ```
 
-### 3. Explain class signatures
+### 3. Explain class & symbol signatures
 
-Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration source locations (file:line) for a class.
+Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration source locations (file:line) for a class or top-level function. Smart resolution automatically routes top-level Kotlin functions (e.g. `Grid` → `GridKt`) and member methods to their declaring classes.
 
 === "For Scanned Source Code"
 
@@ -111,7 +118,8 @@ Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration
 === "For Scanned Libraries"
 
     ```bash
-    library-insight explain retrofit2.Retrofit
+    library-insight explain Retrofit
+    library-insight explain Grid  # Automatically resolves top-level @Composable fun Grid to GridKt
     ```
 
 ### 4. Compare Versions (Bytecode Only)

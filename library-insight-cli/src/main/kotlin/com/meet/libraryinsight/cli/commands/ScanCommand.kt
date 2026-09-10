@@ -35,28 +35,33 @@ class ScanCommand : CliktCommand(
         try {
             val index = if (MavenResolver.isCoordinate(pathOrCoordinate)) {
                 echo("Detected Maven coordinate: $pathOrCoordinate")
-                val kmpCoordinates = try {
-                    MavenResolver.resolveKmpCoordinates(pathOrCoordinate, repos) { progress ->
+
+                val parts = pathOrCoordinate.split(':')
+                val name = libName ?: parts[1]
+                val version = libVersion ?: parts[2]
+
+                // 1. Check if coordinate is a BOM (Bill of Materials)
+                val bomCoordinates = try {
+                    MavenResolver.resolveBomCoordinates(pathOrCoordinate, repos) { progress ->
                         echo("  -> $progress")
                     }
                 } catch (e: Exception) {
                     emptyList()
                 }
 
-                val parts = pathOrCoordinate.split(':')
-                val name = libName ?: parts[1]
-                val version = libVersion ?: parts[2]
-
-                if (kmpCoordinates.isNotEmpty() && kmpCoordinates != listOf(pathOrCoordinate)) {
+                if (bomCoordinates.isNotEmpty()) {
+                    echo("Detected Bill of Materials (BOM) artifact containing ${bomCoordinates.size} managed libraries.")
                     val targetIndices = mutableListOf<LibraryApiIndex>()
                     val resolveErrors = mutableListOf<Pair<String, String>>()
-                    for (targetCoord in kmpCoordinates) {
+                    for (targetCoord in bomCoordinates) {
                         try {
+                            echo("  -> Scanning BOM member: $targetCoord")
                             val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { _ -> }
+                            val targetParts = targetCoord.split(':')
                             val targetIndex = LibraryAnalyzer.analyze(
                                 resolvedTarget.binaryFile,
-                                name,
-                                version,
+                                targetParts[1],
+                                targetParts[2],
                                 resolvedTarget.sourcesFile
                             )
                             targetIndices.add(targetIndex)
@@ -65,14 +70,14 @@ class ScanCommand : CliktCommand(
                         }
                     }
                     if (targetIndices.isNotEmpty()) {
-                        echo("Detected Kotlin Multiplatform (KMP) library. Successfully resolved ${targetIndices.size} of ${kmpCoordinates.size} platform targets:")
-                        for (targetIndex in targetIndices) {
-                            Logger.info("Resolved KMP variant: ${targetIndex.libraryName}")
-                        }
+                        echo("Successfully scanned and merged ${targetIndices.size} of ${bomCoordinates.size} BOM member libraries.")
                         for (error in resolveErrors) {
-                            Logger.info("Failed to resolve KMP variant ${error.first}: ${error.second}")
+                            Logger.info("Skipped BOM member ${error.first}: ${error.second}")
                         }
-                        LibraryAnalyzer.mergeIndices(targetIndices)
+                        LibraryAnalyzer.mergeIndices(targetIndices).copy(
+                            libraryName = name,
+                            version = version
+                        )
                     } else {
                         val resolved = MavenResolver.resolve(pathOrCoordinate, repos) { progress ->
                             echo("  -> $progress")
@@ -80,11 +85,54 @@ class ScanCommand : CliktCommand(
                         LibraryAnalyzer.analyze(resolved.binaryFile, name, version, resolved.sourcesFile)
                     }
                 } else {
-                    val resolved = MavenResolver.resolve(pathOrCoordinate, repos) { progress ->
-                        echo("  -> $progress")
+                    // 2. Check if KMP coordinate
+                    val kmpCoordinates = try {
+                        MavenResolver.resolveKmpCoordinates(pathOrCoordinate, repos) { progress ->
+                            echo("  -> $progress")
+                        }
+                    } catch (e: Exception) {
+                        emptyList()
                     }
-                    Logger.info("Analyzing resolved binary file: ${resolved.binaryFile.absolutePath}")
-                    LibraryAnalyzer.analyze(resolved.binaryFile, name, version, resolved.sourcesFile)
+
+                    if (kmpCoordinates.isNotEmpty() && kmpCoordinates != listOf(pathOrCoordinate)) {
+                        val targetIndices = mutableListOf<LibraryApiIndex>()
+                        val resolveErrors = mutableListOf<Pair<String, String>>()
+                        for (targetCoord in kmpCoordinates) {
+                            try {
+                                val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { _ -> }
+                                val targetIndex = LibraryAnalyzer.analyze(
+                                    resolvedTarget.binaryFile,
+                                    name,
+                                    version,
+                                    resolvedTarget.sourcesFile
+                                )
+                                targetIndices.add(targetIndex)
+                            } catch (e: Exception) {
+                                resolveErrors.add(targetCoord to (e.message ?: "Unknown error"))
+                            }
+                        }
+                        if (targetIndices.isNotEmpty()) {
+                            echo("Detected Kotlin Multiplatform (KMP) library. Successfully resolved ${targetIndices.size} of ${kmpCoordinates.size} platform targets:")
+                            for (targetIndex in targetIndices) {
+                                Logger.info("Resolved KMP variant: ${targetIndex.libraryName}")
+                            }
+                            for (error in resolveErrors) {
+                                Logger.info("Failed to resolve KMP variant ${error.first}: ${error.second}")
+                            }
+                            LibraryAnalyzer.mergeIndices(targetIndices)
+                        } else {
+                            val resolved = MavenResolver.resolve(pathOrCoordinate, repos) { progress ->
+                                echo("  -> $progress")
+                            }
+                            LibraryAnalyzer.analyze(resolved.binaryFile, name, version, resolved.sourcesFile)
+                        }
+                    } else {
+                        val resolved = MavenResolver.resolve(pathOrCoordinate, repos) { progress ->
+                            echo("  -> $progress")
+                        }
+                        Logger.info("Analyzing resolved binary file: ${resolved.binaryFile.absolutePath}")
+                        LibraryAnalyzer.analyze(resolved.binaryFile, name, version, resolved.sourcesFile)
+                    }
                 }
             } else {
                 val file = File(pathOrCoordinate)

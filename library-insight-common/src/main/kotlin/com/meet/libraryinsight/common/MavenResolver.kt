@@ -9,6 +9,9 @@ import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.*
 import java.io.File
+import javax.xml.parsers.DocumentBuilderFactory
+import org.w3c.dom.Element
+import org.w3c.dom.Node
 
 object MavenResolver {
 
@@ -58,7 +61,6 @@ object MavenResolver {
     private val REPOSITORIES = listOf(
         "https://repo1.maven.org/maven2/",
         "https://dl.google.com/dl/android/maven2/",
-        "https://qisdk.softbankrobotics.com/sdk/maven/"
     )
 
     val cacheDir: File
@@ -77,6 +79,152 @@ object MavenResolver {
     fun isCoordinate(input: String): Boolean {
         val parts = input.split(':')
         return parts.size == 3 && parts.all { it.trim().isNotEmpty() }
+    }
+
+    /**
+     * Resolves constituent library coordinates from a Maven Bill of Materials (BOM) coordinate.
+     * Parses the BOM's POM XML file and extracts all managed dependencies in <dependencyManagement>.
+     */
+    fun resolveBomCoordinates(
+        coordinate: String,
+        customRepos: List<String> = emptyList(),
+        progressReporter: (String) -> Unit = {}
+    ): List<String> {
+        val parts = coordinate.split(':')
+        if (parts.size != 3) return emptyList()
+        val groupId = parts[0].trim()
+        val artifactId = parts[1].trim()
+        val version = parts[2].trim()
+
+        val groupPath = groupId.replace('.', '/')
+        val basePath = "$groupPath/$artifactId/$version"
+        val pomName = "$artifactId-$version.pom"
+        val cachedPom = File(cacheDir, "$basePath/$pomName")
+
+        progressReporter("Resolving BOM POM for $coordinate...")
+
+        var pomText: String? = null
+        if (cachedPom.exists()) {
+            pomText = cachedPom.readText(Charsets.UTF_8)
+        } else {
+            val userHome = System.getProperty("user.home")
+            if (userHome != null) {
+                val gradleCacheDir = File(userHome, ".gradle/caches/modules-2/files-2.1/$groupId/$artifactId/$version")
+                if (gradleCacheDir.exists()) {
+                    gradleCacheDir.walkBottomUp().filter { it.isFile && it.name.endsWith(".pom") }.firstOrNull()?.let { pomFile ->
+                        val content = pomFile.readText(Charsets.UTF_8)
+                        pomText = content
+                        try {
+                            cachedPom.parentFile.mkdirs()
+                            cachedPom.writeText(content, Charsets.UTF_8)
+                        } catch (_: Exception) {}
+                    }
+                }
+            }
+
+            if (pomText == null) {
+                val allRepos = customRepos + REPOSITORIES
+                for (repo in allRepos) {
+                    val repoUrl = repo.removeSuffix("/")
+                    val pomUrl = "$repoUrl/$basePath/$pomName"
+                    if (downloadFile(pomUrl, cachedPom)) {
+                        pomText = cachedPom.readText(Charsets.UTF_8)
+                        break
+                    }
+                }
+            }
+        }
+
+        val text = pomText ?: return emptyList()
+        if (text.isBlank()) return emptyList()
+
+        return parseBomPom(text, artifactId, version, progressReporter)
+    }
+
+    private fun parseBomPom(
+        pomText: String,
+        artifactId: String,
+        bomVersion: String,
+        progressReporter: (String) -> Unit
+    ): List<String> {
+        try {
+            val factory = DocumentBuilderFactory.newInstance()
+            factory.isNamespaceAware = false
+            val builder = factory.newDocumentBuilder()
+            val doc = builder.parse(pomText.byteInputStream(Charsets.UTF_8))
+            doc.documentElement.normalize()
+
+            val properties = mutableMapOf<String, String>()
+            properties["project.version"] = bomVersion
+            properties["version"] = bomVersion
+
+            val propertiesNodes = doc.getElementsByTagName("properties")
+            if (propertiesNodes.length > 0) {
+                val propsElem = propertiesNodes.item(0) as? Element
+                if (propsElem != null) {
+                    val childNodes = propsElem.childNodes
+                    for (i in 0 until childNodes.length) {
+                        val node = childNodes.item(i)
+                        if (node.nodeType == Node.ELEMENT_NODE) {
+                            properties[node.nodeName.trim()] = node.textContent.trim()
+                        }
+                    }
+                }
+            }
+
+            val packagingNodes = doc.getElementsByTagName("packaging")
+            val packaging = if (packagingNodes.length > 0) packagingNodes.item(0).textContent.trim().lowercase() else "jar"
+            val isExplicitBom = artifactId.lowercase().endsWith("-bom") || artifactId.lowercase().contains("bom")
+
+            if (packaging != "pom" && !isExplicitBom) {
+                return emptyList()
+            }
+
+            val depMgmtNodes = doc.getElementsByTagName("dependencyManagement")
+            if (depMgmtNodes.length == 0) return emptyList()
+
+            val depMgmtElem = depMgmtNodes.item(0) as Element
+            val dependencyNodes = depMgmtElem.getElementsByTagName("dependency")
+            val coordinates = mutableListOf<String>()
+
+            for (i in 0 until dependencyNodes.length) {
+                val depNode = dependencyNodes.item(i)
+                if (depNode is Element) {
+                    val gNode = depNode.getElementsByTagName("groupId").item(0)
+                    val aNode = depNode.getElementsByTagName("artifactId").item(0)
+                    val vNode = depNode.getElementsByTagName("version").item(0)
+                    val typeNode = depNode.getElementsByTagName("type").item(0)
+                    val scopeNode = depNode.getElementsByTagName("scope").item(0)
+
+                    val type = typeNode?.textContent?.trim()
+                    val scope = scopeNode?.textContent?.trim()
+
+                    if (type == "pom" && scope == "import") continue
+
+                    val g = gNode?.textContent?.trim() ?: ""
+                    val a = aNode?.textContent?.trim() ?: ""
+                    var v = vNode?.textContent?.trim() ?: bomVersion
+
+                    if (v.startsWith("\${") && v.endsWith("}")) {
+                        val propKey = v.substring(2, v.length - 1).trim()
+                        v = properties[propKey] ?: bomVersion
+                    }
+
+                    if (g.isNotEmpty() && a.isNotEmpty() && v.isNotEmpty()) {
+                        coordinates.add("$g:$a:$v")
+                    }
+                }
+            }
+
+            val distinctCoords = coordinates.distinct()
+            if (distinctCoords.isNotEmpty()) {
+                progressReporter("Parsed ${distinctCoords.size} managed libraries from BOM dependencyManagement.")
+            }
+            return distinctCoords
+        } catch (e: Exception) {
+            Logger.warn("Failed to parse BOM POM XML: ${e.message}")
+            return emptyList()
+        }
     }
 
     /**

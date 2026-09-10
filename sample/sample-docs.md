@@ -24,3 +24,13 @@ val config = appConfig {
     }
 }
 ```
+
+And configure `GridScope` layout like this:
+
+```kotlin
+// Setup and run Grid layout configuration
+val gridResult = grid(config = { setColumns(3) }) {
+    gridItem(row = 1, column = 1, content = "Header")
+    gridItem(row = 2, column = 1, content = "Content Block")
+}
+```
