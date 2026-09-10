@@ -869,6 +869,78 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#4-real-world-prompt-examples-for-developers-ai-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Real-World Prompt Examples for Developers &amp; AI Agents
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Real-World Prompt Examples for Developers &amp; AI Agents">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1-exploring-unfamiliar-libraries-dsls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        💡 Example 1: Exploring Unfamiliar Libraries &amp; DSLs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-scanning-bill-of-materials-bom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📦 Example 2: Scanning Bill of Materials (BOM)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-auditing-library-version-upgrades-breaking-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔄 Example 3: Auditing Library Version Upgrades &amp; Breaking Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-4-exporting-local-source-code-context-for-ai-coding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚡ Example 4: Exporting Local Source Code Context for AI Coding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-5-version-catalog-auto-discovery-zero-knowledge-scanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 Example 5: Version Catalog Auto-Discovery &amp; Zero-Knowledge Scanning
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -963,6 +1035,78 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#4-real-world-prompt-examples-for-developers-ai-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Real-World Prompt Examples for Developers &amp; AI Agents
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Real-World Prompt Examples for Developers &amp; AI Agents">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1-exploring-unfamiliar-libraries-dsls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        💡 Example 1: Exploring Unfamiliar Libraries &amp; DSLs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-scanning-bill-of-materials-bom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📦 Example 2: Scanning Bill of Materials (BOM)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-auditing-library-version-upgrades-breaking-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔄 Example 3: Auditing Library Version Upgrades &amp; Breaking Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-4-exporting-local-source-code-context-for-ai-coding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚡ Example 4: Exporting Local Source Code Context for AI Coding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-5-version-catalog-auto-discovery-zero-knowledge-scanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 Example 5: Version Catalog Auto-Discovery &amp; Zero-Knowledge Scanning
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1031,6 +1175,61 @@
 </span></code></pre></div></li>
 </ol>
 <p>This generates a compact, token-efficient split structure under <code>build/ai-context/</code>. You can feed this directory into Cursor, Claude, or Gemini workspace chats, giving them full knowledge of your classes, properties, constructors, methods, Javadocs/KDocs, file imports, and declaration line locations without wasting context tokens on massive raw file reads.</p>
+<hr />
+<h2 id="4-real-world-prompt-examples-for-developers-ai-agents">4. Real-World Prompt Examples for Developers &amp; AI Agents<a class="headerlink" href="#4-real-world-prompt-examples-for-developers-ai-agents" title="Link to this section">&para;</a></h2>
+<p>Here are concrete examples of how you can prompt AI coding assistants (Cursor, Claude, Gemini, Copilot, etc.) to use <strong>Library Insight</strong> CLI commands automatically:</p>
+<h3 id="example-1-exploring-unfamiliar-libraries-dsls">💡 Example 1: Exploring Unfamiliar Libraries &amp; DSLs<a class="headerlink" href="#example-1-exploring-unfamiliar-libraries-dsls" title="Link to this section">&para;</a></h3>
+<blockquote>
+<p><strong>Developer Prompt:</strong>
+<em>"Use my <code>library-insight</code> CLI to scan <code>androidx.compose.foundation:foundation-layout:1.12.0</code>, search for <code>Grid</code>, explain its DSL structure, and create a working Jetpack Compose Grid layout example."</em></p>
+</blockquote>
+<p><strong>🤖 AI Agent Response Workflow:</strong>
+1. Executes <code>library-insight scan androidx.compose.foundation:foundation-layout:1.12.0</code>
+2. Executes <code>library-insight search Grid</code>
+3. Executes <code>library-insight explain Grid --deep</code> to inspect top-level <code>GridKt</code>, receiver scopes (<code>GridScope</code>, <code>GridConfigurationScope</code>), and KDocs in 1 turn.
+4. Generates 100% accurate, hallucination-free Kotlin Compose code matching the exact bytecode API signatures without needing web searches.</p>
+<hr />
+<h3 id="example-2-scanning-bill-of-materials-bom">📦 Example 2: Scanning Bill of Materials (BOM)<a class="headerlink" href="#example-2-scanning-bill-of-materials-bom" title="Link to this section">&para;</a></h3>
+<blockquote>
+<p><strong>Developer Prompt:</strong>
+<em>"Scan <code>androidx.compose:compose-bom:2024.09.00</code> using <code>library-insight scan</code> and explain how <code>LazyVerticalGrid</code> and <code>StaggeredGridCells</code> work."</em></p>
+</blockquote>
+<p><strong>🤖 AI Agent Response Workflow:</strong>
+1. Executes <code>library-insight scan androidx.compose:compose-bom:2024.09.00</code> (automatically parses POM XML and merges all 92 managed Compose libraries into one index).
+2. Executes <code>library-insight explain LazyVerticalGrid --deep</code> to discover <code>LazyGridScope</code>, <code>LazyGridItemSpanScope</code>, and <code>GridItemSpan</code>.
+3. Writes precise grid code using the exact version parameter signatures.</p>
+<hr />
+<h3 id="example-3-auditing-library-version-upgrades-breaking-changes">🔄 Example 3: Auditing Library Version Upgrades &amp; Breaking Changes<a class="headerlink" href="#example-3-auditing-library-version-upgrades-breaking-changes" title="Link to this section">&para;</a></h3>
+<blockquote>
+<p><strong>Developer Prompt:</strong>
+<em>"Compare Retrofit versions <code>2.9.0</code> vs <code>2.11.0</code> using <code>library-insight diff</code> and tell me what APIs were added, removed, or deprecated."</em></p>
+</blockquote>
+<p><strong>🤖 AI Agent Response Workflow:</strong>
+1. Executes <code>library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0</code>
+2. Analyzes the generated JSON/Console diff report for signature modifications.
+3. Provides a step-by-step migration advisor guide and deprecation checklist.</p>
+<hr />
+<h3 id="example-4-exporting-local-source-code-context-for-ai-coding">⚡ Example 4: Exporting Local Source Code Context for AI Coding<a class="headerlink" href="#example-4-exporting-local-source-code-context-for-ai-coding" title="Link to this section">&para;</a></h3>
+<blockquote>
+<p><strong>Developer Prompt:</strong>
+<em>"Scan our local codebase <code>library-insight scan-source app/src/main</code>, run <code>library-insight ai-export</code>, and explain how <code>DashboardViewModel</code> interacts with our repository layer."</em></p>
+</blockquote>
+<p><strong>🤖 AI Agent Response Workflow:</strong>
+1. Executes <code>library-insight scan-source app/src/main</code>
+2. Executes <code>library-insight ai-export</code>
+3. Inspects token-optimized markdown files in <code>build/ai-context/</code> to explain architecture and dependency flows with 0 token waste on raw code files.</p>
+<hr />
+<h3 id="example-5-version-catalog-auto-discovery-zero-knowledge-scanning">🔍 Example 5: Version Catalog Auto-Discovery &amp; Zero-Knowledge Scanning<a class="headerlink" href="#example-5-version-catalog-auto-discovery-zero-knowledge-scanning" title="Link to this section">&para;</a></h3>
+<blockquote>
+<p><strong>Developer Prompt:</strong>
+<em>"I want to create a grid layout using Compose, but I don't know the exact library version. Find the library name and version from our project's version catalog (<code>gradle/libs.versions.toml</code>), scan it with <code>library-insight</code>, and generate the code for me."</em></p>
+</blockquote>
+<p><strong>🤖 AI Agent Response Workflow:</strong>
+1. <strong>Version Catalog Inspection</strong>: The AI Agent inspects <code>gradle/libs.versions.toml</code> or <code>build.gradle.kts</code> to locate the project's declared library coordinates or BOM references (e.g. <code>androidx.compose.foundation:foundation-layout</code> or <code>compose-bom = "2024.09.00"</code>).
+   <em>(If not declared in the project, the agent runs <code>library-insight search-central "foundation-layout"</code> to query the latest release on Maven Central).</em>
+2. <strong>Recommends &amp; Executes Scan</strong>: The agent recommends the exact command (<code>li scan androidx.compose.foundation:foundation-layout:1.12.0</code> or <code>li scan androidx.compose:compose-bom:2024.09.00</code>) and executes it immediately.
+3. <strong>Explores &amp; Explains</strong>: Runs <code>li explain Grid --deep</code> to verify <code>GridScope</code>, <code>GridConfigurationScope</code>, and parameter signatures for that specific version.
+4. <strong>Generates Precise Code</strong>: Delivers exact, version-matched Kotlin code tailored to the developer's project configuration!</p>
 
 
 

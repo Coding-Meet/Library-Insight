@@ -677,10 +677,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#explain-explain-a-class" class="md-nav__link">
+  <a href="#explain-explain-a-class-or-symbol" class="md-nav__link">
     <span class="md-ellipsis">
       
-        explain — Explain a Class
+        explain — Explain a Class or Symbol
       
     </span>
   </a>
@@ -956,10 +956,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#explain-explain-a-class" class="md-nav__link">
+  <a href="#explain-explain-a-class-or-symbol" class="md-nav__link">
     <span class="md-ellipsis">
       
-        explain — Explain a Class
+        explain — Explain a Class or Symbol
       
     </span>
   </a>
@@ -1043,16 +1043,27 @@
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>--------------------------------------------------
 </span></code></pre></div>
 <hr />
-<h2 id="explain-explain-a-class"><code>explain</code> — Explain a Class<a class="headerlink" href="#explain-explain-a-class" title="Link to this section">&para;</a></h2>
-<p>Print detailed structural information (modifiers, superclass, constructors, properties, methods, Javadoc/KDoc, and nested usage guide examples extracted from README/Dokka markdown files) for a specific class.</p>
+<h2 id="explain-explain-a-class-or-symbol"><code>explain</code> — Explain a Class or Symbol<a class="headerlink" href="#explain-explain-a-class-or-symbol" title="Link to this section">&para;</a></h2>
+<p>Print detailed structural information (modifiers, superclass, constructors, properties, methods, Javadoc/KDoc, and nested usage guide examples extracted from README/Dokka markdown files) for a specific class or top-level symbol.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>HtmlBuilder
 </span></code></pre></div>
+<p><strong>Smart Resolution Capabilities:</strong></p>
+<ul>
+<li><strong>Kotlin Top-Level Function Resolution (<code>${name}Kt</code>)</strong>: Querying a top-level Kotlin function (e.g. <code>library-insight explain Grid</code>) automatically resolves to its Kotlin facade class (<code>GridKt</code>).</li>
+<li><strong>Member Method &amp; Property Lookup</strong>: Querying a method or property directly (e.g. <code>library-insight explain gridItem</code>) automatically locates its declaring class (e.g. <code>GridScope</code>).</li>
+<li><strong>Fuzzy Typo Suggestions</strong>: If a symbol is not found or has a typo, <code>explain</code> displays "Did you mean one of these?" with close matches.</li>
+</ul>
 <p><strong>Optional Parameters:</strong></p>
 <ul>
+<li><code>-d, --deep</code>: Recursively explain referenced parameter types, DSL receiver scopes, and return types in a single output.</li>
 <li><code>--db &lt;file&gt;</code>: Index database JSON file path to read from (default: <code>build/library-insight-index.json</code>)</li>
 </ul>
 <p><strong>Example with options:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>HtmlBuilder<span class="w"> </span>--db<span class="w"> </span>custom-index.json
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Deep recursive DSL scope resolution</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>Grid<span class="w"> </span>--deep
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Custom database index</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>HtmlBuilder<span class="w"> </span>--db<span class="w"> </span>custom-index.json
 </span></code></pre></div>
 <p><strong>Example output:</strong></p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>==================================================

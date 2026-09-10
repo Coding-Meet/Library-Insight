@@ -1121,6 +1121,15 @@
 <p>Analyze Java and Kotlin libraries, JVM artifacts, Kotlin Multiplatform libraries, and local source code with a standalone CLI or integrate directly into AI IDEs via MCP.</p>
 <p>AI coding assistants often guess Java/Kotlin APIs from outdated documentation, web examples, or a different version than the one used in your project. That leads to missing methods, deprecated usage, incorrect signatures, and wasted debugging time.</p>
 <p><strong>Library Insight</strong> solves this by analyzing the exact JAR, AAR, Maven dependency, Gradle output, or local Java/Kotlin source code used by your project. It builds a searchable, version-aware API index from compiled bytecode (including Kotlin <code>@Metadata</code>) or source code, allowing you to explore APIs, generate AI-ready context, and understand your codebase using the exact code you're working with—not outdated documentation or web examples.</p>
+<blockquote>
+<p><strong>💡 Developer Prompt Example:</strong>
+<em>"Use my <code>library-insight</code> CLI to scan <code>androidx.compose.foundation:foundation-layout:1.12.0</code>, search for <code>Grid</code>, explain its DSL structure, and create a working Jetpack Compose Grid layout example."</em></p>
+<p><strong>🤖 AI Agent Response Workflow:</strong>
+1. Executes <code>library-insight scan androidx.compose.foundation:foundation-layout:1.12.0</code>
+2. Executes <code>library-insight search Grid</code>
+3. Executes <code>library-insight explain Grid --deep</code> to inspect parameters, receiver scopes (<code>GridScope</code>), and embedded KDocs in 1 turn.
+4. Generates <strong>100% accurate, version-correct Kotlin code</strong> grounded directly in the artifact bytecode—without hallucinating deprecated signatures or relying on outdated web snippets!</p>
+</blockquote>
 <hr />
 <h2 id="video-walkthrough">📺 Video Walkthrough<a class="headerlink" href="#video-walkthrough" title="Link to this section">&para;</a></h2>
 <p>Watch the full product showcase explaining Library Insight's core features, architecture, KMP integration, and AI MCP server setup:</p>
@@ -1133,6 +1142,7 @@
 <ul>
 <li><strong>MCP Server</strong>: Connect Cursor, Claude Desktop, or any MCP-compatible IDE to query APIs directly.</li>
 <li><strong>Kotlin Multiplatform (KMP) Support</strong>: Resolve coordinates from Gradle Module Metadata (<code>.module</code> JSON), parse Native <code>.klib</code> metadata files, and merge platform variant API targets (<code>common</code>, <code>jvm</code>, <code>ios</code>, <code>js</code>, <code>wasm</code>).</li>
+<li><strong>Bill of Materials (BOM) Auto-Resolution</strong>: Parse Maven BOM POM XML files (<code>compose-bom</code>, <code>firebase-bom</code>) and automatically resolve, download, scan, and merge all constituent managed library artifacts into a unified API index.</li>
 <li><strong>Local Source Code Scanner (<code>scan-source</code>)</strong>: Analyze Kotlin and Java source projects without compilation, preserving KDoc/Javadoc, imports, and declaration source locations (<code>file:line</code>).</li>
 <li><strong>Version-Correct API Lookup</strong>: Build an API index from the exact JAR, AAR, Maven dependency, Gradle output, or source code used by your project to prevent AI hallucinations.</li>
 <li><strong>Deep Metadata Extraction</strong>: Extract classes, constructors, methods, properties, nullability, generics, annotations, modifiers, and source metadata.</li>

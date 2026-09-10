@@ -862,6 +862,34 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v150" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v1.5.0
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v1.5.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#major-feature-highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📦 Major Feature Highlights
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v141" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1227,6 +1255,34 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#v150" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v1.5.0
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v1.5.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#major-feature-highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📦 Major Feature Highlights
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#v141" class="md-nav__link">
@@ -1596,6 +1652,18 @@
 
 <h1 id="release-notes">Release Notes<a class="headerlink" href="#release-notes" title="Link to this section">&para;</a></h1>
 <p>All releases for <strong>Library Insight</strong> are documented below.</p>
+<hr />
+<h2 id="v150">v1.5.0<a class="headerlink" href="#v150" title="Link to this section">&para;</a></h2>
+<p><em>Released on September 10, 2026</em></p>
+<p>This major feature release introduces <strong>BOM (Bill of Materials) Auto-Resolution</strong>, <strong>Deep Recursive DSL &amp; Scope Resolution</strong>, <strong>Smart Symbol Facade &amp; Typo Lookup</strong>, and native <strong><code>li</code> short CLI command alias</strong> support across all platforms.</p>
+<h3 id="major-feature-highlights">📦 Major Feature Highlights<a class="headerlink" href="#major-feature-highlights" title="Link to this section">&para;</a></h3>
+<ul>
+<li><strong>BOM (Bill of Materials) Auto-Resolution</strong>: Added automatic Maven POM XML parsing and <code>&lt;dependencyManagement&gt;</code> expansion for BOM coordinates (e.g., <code>androidx.compose:compose-bom</code> or <code>com.google.firebase:firebase-bom</code>). Scanning a BOM coordinate automatically resolves, downloads, and merges all constituent managed library artifacts (e.g., 92 Compose libraries) into a unified API index.</li>
+<li><strong>Deep Recursive Explain (<code>-d</code>, <code>--deep</code>)</strong>: Added single-turn recursive DSL receiver scope, parameter type, and return type expansion. Running <code>library-insight explain Grid --deep</code> automatically discovers and outputs all referenced receiver scopes (<code>GridScope</code>, <code>GridConfigurationScope</code>) and track specs in 1 single turn, eliminating multi-turn AI exploration loops.</li>
+<li><strong>Smart <code>explain</code> Symbol Resolution</strong>: Enhanced <code>explain</code> to automatically map top-level Kotlin functions to their facade classes (e.g., <code>explain Grid</code> → <code>GridKt</code>), resolve member method/property queries directly to their declaring classes, and provide Levenshtein fuzzy typo suggestions ("Did you mean one of these?").</li>
+<li><strong><code>li</code> Native Short Command Alias</strong>: Added native binary executable generation for <code>li</code> alongside <code>library-insight</code> across macOS, Linux, and Windows (<code>li.bat</code>), allowing users and AI agents to execute commands using either <code>library-insight</code> or <code>li</code>.</li>
+<li><strong>Zero-Knowledge Version Catalog Discovery</strong>: Integrated smart project inspection for <code>gradle/libs.versions.toml</code> and <code>build.gradle.kts</code> to automatically discover library versions when omitted by developers.</li>
+</ul>
 <hr />
 <h2 id="v141">v1.4.1<a class="headerlink" href="#v141" title="Link to this section">&para;</a></h2>
 <p><em>Released on August 17, 2026</em></p>

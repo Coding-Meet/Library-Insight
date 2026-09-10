@@ -566,10 +566,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-explain-class-signatures" class="md-nav__link">
+  <a href="#3-explain-class-symbol-signatures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Explain class signatures
+        3. Explain class &amp; symbol signatures
       
     </span>
   </a>
@@ -1059,10 +1059,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-explain-class-signatures" class="md-nav__link">
+  <a href="#3-explain-class-symbol-signatures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Explain class signatures
+        3. Explain class &amp; symbol signatures
       
     </span>
   </a>
@@ -1134,7 +1134,7 @@
 <p>You can install the CLI globally on your system instantly with zero Node.js/npm dependencies using the installer script:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
 </span></code></pre></div>
-<p>Once installed, you can execute the <code>library-insight</code> command directly from any folder.</p>
+<p>Once installed, both <code>library-insight</code> and <code>li</code> commands are available globally and can be used interchangeably.</p>
 </div>
 <div class="tabbed-block">
 <p>If you just want to run a local build without registering it globally on your system:</p>
@@ -1163,7 +1163,7 @@
 <p>Here is a typical flow when you add or inspect a library or project:</p>
 <h3 id="1-indexing-the-apis">1. Indexing the APIs<a class="headerlink" href="#1-indexing-the-apis" title="Link to this section">&para;</a></h3>
 <p>You can build an API index database using either of the two pipelines:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">A. Scan Local Source Projects</label><label for="__tabbed_2_2">B. Scan Compiled Libraries</label><label for="__tabbed_2_3">C. Scan Kotlin Multiplatform (KMP) Libraries</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:4"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><input id="__tabbed_2_4" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">A. Scan Local Source Projects</label><label for="__tabbed_2_2">B. Scan Compiled Libraries</label><label for="__tabbed_2_3">C. Scan Kotlin Multiplatform (KMP) Libraries</label><label for="__tabbed_2_4">D. Scan Bill of Materials (BOM) Libraries</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Scan a local raw source directory containing Kotlin (<code>.kt</code>) and Java (<code>.java</code>) files without compilation:
@@ -1180,6 +1180,11 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>io.ktor:ktor-client-core:3.0.0
 </span></code></pre></div></p>
 </div>
+<div class="tabbed-block">
+<p>Scan a Maven BOM coordinate. Library Insight parses <code>&lt;dependencyManagement&gt;</code> from the BOM POM XML and automatically downloads, scans, and merges all constituent managed library artifacts into a unified API index:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>androidx.compose:compose-bom:2024.09.00
+</span></code></pre></div></p>
+</div>
 </div>
 </div>
 <h3 id="2-search-for-symbols">2. Search for Symbols<a class="headerlink" href="#2-search-for-symbols" title="Link to this section">&para;</a></h3>
@@ -1187,32 +1192,33 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">For Scanned Source Code</label><label for="__tabbed_3_2">For Scanned Libraries</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>library-insight<span class="w"> </span>search<span class="w"> </span>LoginRepository
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>library-insight<span class="w"> </span>search<span class="w"> </span>LoginRepository
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>library-insight<span class="w"> </span>search<span class="w"> </span>Retrofit
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>library-insight<span class="w"> </span>search<span class="w"> </span>Retrofit
 </span></code></pre></div>
 </div>
 </div>
 </div>
-<h3 id="3-explain-class-signatures">3. Explain class signatures<a class="headerlink" href="#3-explain-class-signatures" title="Link to this section">&para;</a></h3>
-<p>Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration source locations (file:line) for a class.</p>
+<h3 id="3-explain-class-symbol-signatures">3. Explain class &amp; symbol signatures<a class="headerlink" href="#3-explain-class-symbol-signatures" title="Link to this section">&para;</a></h3>
+<p>Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration source locations (file:line) for a class or top-level function. Smart resolution automatically routes top-level Kotlin functions (e.g. <code>Grid</code> → <code>GridKt</code>) and member methods to their declaring classes.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">For Scanned Source Code</label><label for="__tabbed_4_2">For Scanned Libraries</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>com.meet.sample.repository.LoginRepository
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>com.meet.sample.repository.LoginRepository
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>retrofit2.Retrofit
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>Retrofit
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>library-insight<span class="w"> </span>explain<span class="w"> </span>Grid<span class="w">  </span><span class="c1"># Automatically resolves top-level @Composable fun Grid to GridKt</span>
 </span></code></pre></div>
 </div>
 </div>
 </div>
 <h3 id="4-compare-versions-bytecode-only">4. Compare Versions (Bytecode Only)<a class="headerlink" href="#4-compare-versions-bytecode-only" title="Link to this section">&para;</a></h3>
 <p>See what was added, removed, or changed between two versions of compiled library dependencies.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>library-insight<span class="w"> </span>diff<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>library-insight<span class="w"> </span>diff<span class="w"> </span>com.squareup.retrofit2:retrofit:2.9.0<span class="w"> </span>com.squareup.retrofit2:retrofit:2.11.0
 </span></code></pre></div>
 
 
