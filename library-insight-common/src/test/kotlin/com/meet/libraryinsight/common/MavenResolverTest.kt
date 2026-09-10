@@ -39,4 +39,19 @@ class MavenResolverTest {
         val filtered = MavenResolver.filterCoordinatesByPlatform(sampleCoords, "all")
         assertEquals(3, filtered.size)
     }
+
+    @Test
+    fun testFilterCoordinatesByInclude() {
+        val sampleCoords = listOf(
+            "androidx.compose.animation:animation:1.12.0",
+            "androidx.compose.foundation:foundation-layout:1.12.0",
+            "androidx.compose.material3:material3:1.4.0",
+            "androidx.compose.runtime:runtime:1.12.0"
+        )
+
+        val filtered = MavenResolver.filterCoordinatesByInclude(sampleCoords, listOf("foundation*", "material3"))
+        assertEquals(2, filtered.size)
+        assertTrue(filtered.contains("androidx.compose.foundation:foundation-layout:1.12.0"))
+        assertTrue(filtered.contains("androidx.compose.material3:material3:1.4.0"))
+    }
 }

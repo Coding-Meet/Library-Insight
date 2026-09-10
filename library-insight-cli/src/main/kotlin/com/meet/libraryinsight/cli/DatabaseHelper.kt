@@ -25,4 +25,28 @@ object DatabaseHelper {
             null
         }
     }
+
+    private val memberIndexCacheDir: File
+        get() {
+            val userHome = System.getProperty("user.home")
+            val base = if (File("build").exists() || File("settings.gradle").exists() || File("settings.gradle.kts").exists()) {
+                File("build/library-insight/cache/indexes")
+            } else {
+                File(userHome, ".library-insight/cache/indexes")
+            }
+            base.mkdirs()
+            return base
+        }
+
+    fun getCachedMemberIndex(coordinate: String): LibraryApiIndex? {
+        val safeName = coordinate.replace(':', '_').replace('/', '_') + ".json"
+        val file = File(memberIndexCacheDir, safeName)
+        return loadIndex(file)
+    }
+
+    fun saveCachedMemberIndex(coordinate: String, index: LibraryApiIndex) {
+        val safeName = coordinate.replace(':', '_').replace('/', '_') + ".json"
+        val file = File(memberIndexCacheDir, safeName)
+        saveIndex(index, file)
+    }
 }

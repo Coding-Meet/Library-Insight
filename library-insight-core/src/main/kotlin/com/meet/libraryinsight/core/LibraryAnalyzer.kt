@@ -8,6 +8,11 @@ import com.meet.libraryinsight.model.*
 import com.meet.libraryinsight.parser.BytecodeParser
 import com.meet.libraryinsight.parser.RawAnnotation
 import com.meet.libraryinsight.parser.RawClassData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 object LibraryAnalyzer {
@@ -289,8 +294,28 @@ object LibraryAnalyzer {
 
     /**
      * Merges multiple platform target indices together into a single unified index.
+     * Performs parallel chunked merging when merging 8 or more indices.
      */
     fun mergeIndices(indices: List<LibraryApiIndex>): LibraryApiIndex {
+        if (indices.isEmpty()) throw IllegalArgumentException("No indices to merge")
+        if (indices.size == 1) return indices.first()
+
+        if (indices.size > 8) {
+            val chunks = indices.chunked(8)
+            val mergedChunks = runBlocking(Dispatchers.Default) {
+                coroutineScope {
+                    chunks.map { chunk ->
+                        async { mergeIndicesDirect(chunk) }
+                    }.awaitAll()
+                }
+            }
+            return mergeIndices(mergedChunks)
+        }
+
+        return mergeIndicesDirect(indices)
+    }
+
+    private fun mergeIndicesDirect(indices: List<LibraryApiIndex>): LibraryApiIndex {
         if (indices.isEmpty()) throw IllegalArgumentException("No indices to merge")
         if (indices.size == 1) return indices.first()
 

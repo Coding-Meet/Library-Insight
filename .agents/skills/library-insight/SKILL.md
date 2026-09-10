@@ -26,15 +26,16 @@ Library Insight analyzes compiled libraries (JVM artifacts and Kotlin Multiplatf
 > **Indexing & Version Discovery**
 >
 > - Use **`library-insight scan <jar|aar|klib|directory|maven-coordinate>`** to index compiled libraries.
-> - **BOM & KMP Scanning:** For Bill of Materials (BOM) coordinates (e.g. `androidx.compose:compose-bom:2024.09.00` or `com.google.firebase:firebase-bom`) and KMP libraries, `library-insight scan` automatically resolves member libraries and applies target platform filtering (`-p, --platform android` by default) to filter out non-target KMP variants (iOS, JS, Wasm), stubs, and lints in seconds. Pass `--platform all` to scan all variants.
-> - **Zero-Knowledge Version Discovery:** If the user does not specify a library version, inspect `gradle/libs.versions.toml` or `build.gradle.kts` to discover the project's declared version. If not present in the project, run **`library-insight search-central <query>`** to query the latest coordinate from Maven Central.
+> - **BOM & KMP Scanning:** For Bill of Materials (BOM) coordinates (e.g. `androidx.compose:compose-bom:2024.09.00` or `com.google.firebase:firebase-bom`) and KMP libraries, `library-insight scan` automatically resolves member libraries and applies target platform filtering (`-p, --platform android` by default) to filter out non-target KMP variants (iOS, JS, Wasm), stubs, and lints in seconds. Pass `--platform all` to scan all variants. Use **`-i, --include <pattern>`** (e.g. `-i "*foundation*"` or `-i "*ui*"`) to selectively scan matching member artifacts. **AI Agent Rule:** Use surrounding wildcards like `-i "*foundation*"` for include filters to match full group/artifact coordinates. Automatically infer and append missing `-i` and `-p` flags based on intent.
+> - **Zero-Knowledge Version Discovery:** If the user does not specify a library version, inspect `gradle/libs.versions.toml` or `build.gradle.kts` to discover the project's declared version. For standard open-source dependencies not declared in the project, run **`library-insight search-central <query>`** to query Maven Central. (Note: AndroidX and Compose libraries are hosted on Google Maven, so check `libs.versions.toml` or `build.gradle.kts` directly).
 > - Use **`library-insight scan-source <directory>`** to index a local Java/Kotlin source project without compilation.
 >
 > **Querying**
 >
 > - Use **`library-insight search <query>`** to locate packages, classes, methods, or properties.
 > - Use **`library-insight explain <class|function|member> [--deep]`** to inspect a class or top-level Kotlin symbol. Always pass **`--deep`** (or **`-d`**) when exploring DSLs or multi-type APIs (e.g. `library-insight explain Grid --deep` auto-resolves top-level `GridKt` and recursively includes all referenced receiver scopes like `GridScope` and `GridConfigurationScope` in 1 single turn).
-> - Use **`library-insight examples <class>`** to generate typical usage examples.
+> - **Inner & Companion Class Shell Escaping:** When querying nested or Companion classes in bash/zsh shell, escape the dollar sign with quotes (e.g. `library-insight explain "GridTrackSize\$Companion"`).
+> - Use **`library-insight examples <class>`** to generate typical usage examples (for top-level Kotlin functions, pass the facade class name e.g. `examples GridKt`).
 >
 > **Analysis**
 >
@@ -154,15 +155,13 @@ or
 
 ## Additional Guidance for AI Agents
 
-When answering questions about a library or project:
+When answering questions or generating code for a library or project, AI agents MUST follow this mandatory step-by-step workflow:
 
-1. Index the target if it has not already been indexed.
-2. Search before explaining.
-3. Explain only the symbols relevant to the user's request.
-4. Avoid loading the full index into context.
-5. Prefer focused symbol lookups over large exports.
-6. Generate AI context (`ai-export`) only when broad project understanding is required.
-7. When an MCP server is available, prefer MCP tools over spawning CLI processes.
+1. **Step 1: Version & Coordinates Discovery:** Check `gradle/libs.versions.toml` or `build.gradle.kts` to discover declared library versions. For undeclared libraries, run `library-insight search-central <query>` on Maven Central.
+2. **Step 2: Indexing:** Run `library-insight scan <coordinate> -i "<include-pattern>" -p android` (or `scan-source`) to index the target library.
+3. **Step 3: Mandatory Symbol Search:** ALWAYS run `library-insight search <query>` (e.g. `library-insight search Grid`) FIRST to discover all matching packages, classes, methods, and properties in the index. **DO NOT skip `search` or jump directly to `explain` without searching first.**
+4. **Step 4: Exact Symbol Priority Rule:** Run `library-insight explain <ExactSymbol> --deep` on the exact requested symbol (e.g. `Grid`) or top match from `search` before considering secondary alternatives.
+5. **Step 5: Code Generation & File Edits Rule:** Directly modify or create the target source file in the user's project with the version-matched code instead of only outputting raw code snippets in the chat response.
 
 # Scanners & Indexing
 
@@ -184,6 +183,7 @@ library-insight scan com.squareup.retrofit2:retrofit:2.11.0
 - `--db <file>`: Path to save the JSON index database (default: `build/library-insight-index.json`)
 - `-s, --sources <file>`: Path to sources JAR/AAR or source code folder to extract Javadoc/KDoc comments & guide examples
 - `-p, --platform <target>`: Target platform filter for BOM and KMP scans (`android`, `jvm`, `ios`, `desktop`, `all`). Defaults to `android`. Filters out non-target KMP variants (e.g. iOS/JS/Wasm), stubs, and lints.
+- `-i, --include <pattern>`: Filter BOM managed dependencies by wildcard pattern (e.g. `-i "compose-ui*"`, `-i "*animation*"`). Multiple allowed.
 - `--repo <url>`: Additional Maven repository URL to download coordinates (multiple allowed)
 - `--lib-name <name>`: Override the library name in the generated index
 - `--lib-version <version>`: Override the version tag in the generated index

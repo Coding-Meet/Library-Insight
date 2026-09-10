@@ -195,3 +195,11 @@ Generate application binary packages (ZIP, TAR, and local install distributions)
 ```bash
 ./gradlew installDist distZip distTar
 ```
+
+### 7. Local Development Install
+
+Compile local source code and install binaries and AI skills globally:
+
+```bash
+./install.sh --local
+```

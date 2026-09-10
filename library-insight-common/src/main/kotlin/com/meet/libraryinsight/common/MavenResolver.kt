@@ -278,6 +278,30 @@ object MavenResolver {
     }
 
     /**
+     * Filters list of artifact coordinates by include patterns (comma-separated or list).
+     * Returns coordinates whose artifactId or groupId matches any of the include patterns.
+     */
+    fun filterCoordinatesByInclude(coordinates: List<String>, includePatterns: List<String>): List<String> {
+        if (includePatterns.isEmpty()) return coordinates
+        val cleanPatterns = includePatterns.flatMap { it.split(',') }
+            .map { it.trim().lowercase() }
+            .filter { it.isNotEmpty() }
+        if (cleanPatterns.isEmpty()) return coordinates
+
+        return coordinates.filter { coord ->
+            val parts = coord.split(':')
+            val groupId = parts.getOrNull(0)?.lowercase() ?: ""
+            val artifactId = parts.getOrNull(1)?.lowercase() ?: ""
+
+            cleanPatterns.any { pattern ->
+                val stripped = pattern.removePrefix("*").removeSuffix("*")
+                if (stripped.isEmpty()) true
+                else artifactId.contains(stripped) || groupId.contains(stripped)
+            }
+        }
+    }
+
+    /**
      * Resolves and downloads the library binary and sources from repositories.
      * Caches the files to avoid redundant downloads.
      */

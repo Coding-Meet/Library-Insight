@@ -12,6 +12,13 @@ import com.meet.libraryinsight.common.MavenResolver
 import com.meet.libraryinsight.core.LibraryAnalyzer
 import com.meet.libraryinsight.common.Logger
 import com.meet.libraryinsight.model.LibraryApiIndex
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import java.io.File
 
 class ScanCommand : CliktCommand(
@@ -30,6 +37,7 @@ class ScanCommand : CliktCommand(
     val repos by option("--repo", help = "Additional Maven repository URLs to resolve coordinate artifacts").multiple()
     val sources by option("-s", "--sources", help = "Path to the sources JAR/directory (for local scans)").file(mustExist = true)
     val platform by option("-p", "--platform", help = "Target platform filter for BOM & KMP scans (android, jvm, ios, desktop, all). Defaults to android.").default("android")
+    val include by option("-i", "--include", help = "Include member artifact patterns for BOM scans (comma-separated, e.g. -i layout,animation)").multiple()
 
     override fun run() {
         Logger.info("ScanCommand started with path/coordinate: $pathOrCoordinate (platform filter: $platform)")
@@ -51,29 +59,55 @@ class ScanCommand : CliktCommand(
                 }
 
                 if (bomCoordinates.isNotEmpty()) {
-                    val filteredBomCoords = MavenResolver.filterCoordinatesByPlatform(bomCoordinates, platform)
-                    echo("Detected Bill of Materials (BOM) artifact containing ${bomCoordinates.size} managed libraries.")
-                    if (filteredBomCoords.size < bomCoordinates.size) {
+                    var filteredBomCoords = MavenResolver.filterCoordinatesByPlatform(bomCoordinates, platform)
+                    if (include.isNotEmpty()) {
+                        val beforeCount = filteredBomCoords.size
+                        filteredBomCoords = MavenResolver.filterCoordinatesByInclude(filteredBomCoords, include)
+                        echo("Detected Bill of Materials (BOM) artifact containing ${bomCoordinates.size} managed libraries.")
+                        echo("Filtered BOM members by include patterns $include: ${filteredBomCoords.size} of $beforeCount libraries match.")
+                    } else if (filteredBomCoords.size < bomCoordinates.size) {
+                        echo("Detected Bill of Materials (BOM) artifact containing ${bomCoordinates.size} managed libraries.")
                         echo("Filtered to ${filteredBomCoords.size} libraries matching platform target '$platform' (use '--platform all' to scan all targets).")
+                    } else {
+                        echo("Detected Bill of Materials (BOM) artifact containing ${bomCoordinates.size} managed libraries.")
                     }
-                    val targetIndices = mutableListOf<LibraryApiIndex>()
-                    val resolveErrors = mutableListOf<Pair<String, String>>()
-                    for (targetCoord in filteredBomCoords) {
-                        try {
-                            echo("  -> Scanning BOM member: $targetCoord")
-                            val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { _ -> }
-                            val targetParts = targetCoord.split(':')
-                            val targetIndex = LibraryAnalyzer.analyze(
-                                resolvedTarget.binaryFile,
-                                targetParts[1],
-                                targetParts[2],
-                                resolvedTarget.sourcesFile
-                            )
-                            targetIndices.add(targetIndex)
-                        } catch (e: Exception) {
-                            resolveErrors.add(targetCoord to (e.message ?: "Unknown error"))
+
+                    val targetIndices = java.util.Collections.synchronizedList(mutableListOf<LibraryApiIndex>())
+                    val resolveErrors = java.util.Collections.synchronizedList(mutableListOf<Pair<String, String>>())
+
+                    val semaphore = Semaphore(16)
+                    runBlocking(Dispatchers.IO) {
+                        coroutineScope {
+                            filteredBomCoords.map { targetCoord ->
+                                async {
+                                    semaphore.withPermit {
+                                        try {
+                                            val cached = DatabaseHelper.getCachedMemberIndex(targetCoord)
+                                            if (cached != null) {
+                                                echo("  -> Loaded cached member index: $targetCoord (0 ms)")
+                                                targetIndices.add(cached)
+                                            } else {
+                                                echo("  -> Scanning BOM member: $targetCoord")
+                                                val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { _ -> }
+                                                val targetParts = targetCoord.split(':')
+                                                val targetIndex = LibraryAnalyzer.analyze(
+                                                    resolvedTarget.binaryFile,
+                                                    targetParts[1],
+                                                    targetParts[2],
+                                                    resolvedTarget.sourcesFile
+                                                )
+                                                DatabaseHelper.saveCachedMemberIndex(targetCoord, targetIndex)
+                                                targetIndices.add(targetIndex)
+                                            }
+                                        } catch (e: Exception) {
+                                            resolveErrors.add(targetCoord to (e.message ?: "Unknown error"))
+                                        }
+                                    }
+                                }
+                            }.awaitAll()
                         }
                     }
+
                     if (targetIndices.isNotEmpty()) {
                         echo("Successfully scanned and merged ${targetIndices.size} of ${filteredBomCoords.size} BOM member libraries.")
                         for (error in resolveErrors) {
@@ -84,10 +118,8 @@ class ScanCommand : CliktCommand(
                             version = version
                         )
                     } else {
-                        val resolved = MavenResolver.resolve(pathOrCoordinate, repos) { progress ->
-                            echo("  -> $progress")
-                        }
-                        LibraryAnalyzer.analyze(resolved.binaryFile, name, version, resolved.sourcesFile)
+                        echo("Warning: No BOM member libraries matched the specified include or target filter criteria.")
+                        LibraryApiIndex(libraryName = name, version = version, packages = emptyList())
                     }
                 } else {
                     // 2. Check if KMP coordinate
@@ -104,20 +136,36 @@ class ScanCommand : CliktCommand(
                         if (filteredKmpCoords.size < kmpCoordinates.size) {
                             echo("Filtered KMP variants to ${filteredKmpCoords.size} targets matching platform '$platform' (use '--platform all' for all targets).")
                         }
-                        val targetIndices = mutableListOf<LibraryApiIndex>()
-                        val resolveErrors = mutableListOf<Pair<String, String>>()
-                        for (targetCoord in filteredKmpCoords) {
-                            try {
-                                val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { _ -> }
-                                val targetIndex = LibraryAnalyzer.analyze(
-                                    resolvedTarget.binaryFile,
-                                    name,
-                                    version,
-                                    resolvedTarget.sourcesFile
-                                )
-                                targetIndices.add(targetIndex)
-                            } catch (e: Exception) {
-                                resolveErrors.add(targetCoord to (e.message ?: "Unknown error"))
+                        val targetIndices = java.util.Collections.synchronizedList(mutableListOf<LibraryApiIndex>())
+                        val resolveErrors = java.util.Collections.synchronizedList(mutableListOf<Pair<String, String>>())
+
+                        val semaphore = Semaphore(16)
+                        runBlocking(Dispatchers.IO) {
+                            coroutineScope {
+                                filteredKmpCoords.map { targetCoord ->
+                                    async {
+                                        semaphore.withPermit {
+                                            try {
+                                                val cached = DatabaseHelper.getCachedMemberIndex(targetCoord)
+                                                if (cached != null) {
+                                                    targetIndices.add(cached)
+                                                } else {
+                                                    val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { _ -> }
+                                                    val targetIndex = LibraryAnalyzer.analyze(
+                                                        resolvedTarget.binaryFile,
+                                                        name,
+                                                        version,
+                                                        resolvedTarget.sourcesFile
+                                                    )
+                                                    DatabaseHelper.saveCachedMemberIndex(targetCoord, targetIndex)
+                                                    targetIndices.add(targetIndex)
+                                                }
+                                            } catch (e: Exception) {
+                                                resolveErrors.add(targetCoord to (e.message ?: "Unknown error"))
+                                            }
+                                        }
+                                    }
+                                }.awaitAll()
                             }
                         }
                         if (targetIndices.isNotEmpty()) {

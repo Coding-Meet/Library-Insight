@@ -18,6 +18,7 @@ library-insight scan com.squareup.retrofit2:retrofit:2.11.0
 - `--db <file>`: Path to save the JSON index database (default: `build/library-insight-index.json`)
 - `-s, --sources <file>`: Path to sources JAR/AAR or source code folder to extract Javadoc/KDoc comments & guide examples
 - `-p, --platform <target>`: Target platform filter for BOM and KMP scans (`android`, `jvm`, `ios`, `desktop`, `all`). Defaults to `android`. Filters out non-target KMP variants (e.g. iOS/JS/Wasm), stubs, and lints.
+- `-i, --include <pattern>`: Filter BOM managed dependencies by wildcard pattern (e.g. `-i "compose-ui*"`, `-i "*animation*"`). Multiple allowed.
 - `--repo <url>`: Additional Maven repository URL to download coordinates (multiple allowed)
 - `--lib-name <name>`: Override the library name in the generated index
 - `--lib-version <version>`: Override the version tag in the generated index
