@@ -11,9 +11,10 @@ AI coding assistants often guess Java/Kotlin APIs from outdated documentation, w
 **Library Insight** solves this by analyzing the exact JAR, AAR, Maven dependency, Gradle output, or local Java/Kotlin source code used by your project. It builds a searchable, version-aware API index from compiled bytecode (including Kotlin `@Metadata`) or source code, allowing you to explore APIs, generate AI-ready context, and understand your codebase using the exact code you're working with—not outdated documentation or web examples.
 
 > **💡 Developer Prompt Example:**
-> *"Use my `library-insight` CLI to scan `androidx.compose.foundation:foundation-layout:1.12.0`, search for `Grid`, explain its DSL structure, and create a working Jetpack Compose Grid layout example."*
+> _"Use my `library-insight` CLI to scan `androidx.compose.foundation:foundation-layout:1.12.0`, search for `Grid`, explain its DSL structure, and create a working Jetpack Compose Grid layout example."_
 >
 > **🤖 AI Agent Response Workflow:**
+>
 > 1. Executes `library-insight scan androidx.compose.foundation:foundation-layout:1.12.0`
 > 2. Executes `library-insight search Grid`
 > 3. Executes `library-insight explain Grid --deep` to inspect parameters, receiver scopes (`GridScope`), and embedded KDocs in 1 turn.
