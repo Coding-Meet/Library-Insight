@@ -1093,7 +1093,7 @@
 <h3 id="example-5-version-catalog-auto-discovery-zero-knowledge-scanning">Example 5: Version Catalog Auto-Discovery &amp; Zero-Knowledge Scanning<a class="headerlink" href="#example-5-version-catalog-auto-discovery-zero-knowledge-scanning" title="Link to this section">&para;</a></h3>
 <blockquote>
 <p><strong>Developer Prompt:</strong>
-<em>"I want to create a grid layout using Compose BOM, but I don't know the exact library version. Find the library name and version from our project's version catalog (<code>gradle/libs.versions.toml</code>), scan it with <code>library-insight</code>, and generate the code for me."</em></p>
+<em>"I want to create a grid layout using Compose BOM in our project, but I don't know the exact library version. Find the library name and version from our project's version catalog (<code>gradle/libs.versions.toml</code>), scan it with <code>library-insight</code>, and implement the grid component inside a new file <code>app/src/main/java/com/example/app/ComplexGridLayout.kt</code>."</em></p>
 </blockquote>
 <p><strong>AI Agent Response Workflow:</strong></p>
 <ol>
@@ -1103,7 +1103,7 @@
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>androidx.compose:compose-bom:2024.09.00<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;foundation*&quot;</span><span class="w"> </span>-p<span class="w"> </span>android
 </span></code></pre></div></li>
 <li><strong>Explores &amp; Explains</strong>: Runs <code>library-insight explain Grid --deep</code> to verify <code>GridScope</code>, <code>GridConfigurationScope</code>, and parameter signatures for that specific version.</li>
-<li><strong>Generates Precise Code</strong>: Delivers exact, version-matched Kotlin code tailored to the developer's project configuration!</li>
+<li><strong>Writes Project File</strong>: Automatically creates <code>app/src/main/java/com/example/app/ComplexGridLayout.kt</code> with 100% version-matched, working Kotlin code tailored to the developer's project configuration!</li>
 </ol>
 
 
