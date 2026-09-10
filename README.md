@@ -10,10 +10,11 @@ AI coding assistants often guess Java/Kotlin APIs from outdated documentation, w
 
 **Library Insight** solves this by analyzing the exact JAR, AAR, Maven dependency, Gradle output, or local Java/Kotlin source code used by your project. It builds a searchable, version-aware API index from compiled bytecode (including Kotlin `@Metadata`) or source code, allowing you to explore APIs, generate AI-ready context, and understand your codebase using the exact code you're working with—not outdated documentation or web examples.
 
-> **💡 Developer Prompt Example:**
-> *"Use my `library-insight` CLI to scan `androidx.compose.foundation:foundation-layout:1.12.0`, search for `Grid`, explain its DSL structure, and create a working Jetpack Compose Grid layout example."*
+> **Developer Prompt Example:**
+> _"Use my `library-insight` CLI to scan `androidx.compose.foundation:foundation-layout:1.12.0`, search for `Grid`, explain its DSL structure, and create a working Jetpack Compose Grid layout example."_
 >
-> **🤖 AI Agent Response Workflow:**
+> **AI Agent Response Workflow:**
+>
 > 1. Executes `library-insight scan androidx.compose.foundation:foundation-layout:1.12.0`
 > 2. Executes `library-insight search Grid`
 > 3. Executes `library-insight explain Grid --deep` to inspect parameters, receiver scopes (`GridScope`), and embedded KDocs in 1 turn.
@@ -104,18 +105,23 @@ For setup instructions in Cursor or Claude Desktop, see the [MCP Integration Gui
 
 ---
 
-## 🚀 Roadmap
+## Roadmap
 
 <!-- --8<-- [start:roadmap] -->
 
-We plan to expand Library Insight with deep source-level analysis capabilities:
+We plan to expand Library Insight with deep source analysis and automated project sync:
 
-### 🔍 Source Analysis Engine (Planned)
+### 1. Source Analysis Engine
 
-- **References Engine**: Build a symbol-to-usage index to locate references for any class, method, or property across the codebase (e.g. `library-insight references LoginRepository`).
-- **Implementations**: Query all interface implementations or subclass declarations (e.g. `library-insight implementations Repository` -> `RoomRepository`, `NetworkRepository`).
-- **Hierarchy**: Render the visual inheritance tree for any base class or interface (e.g. `library-insight hierarchy BaseViewModel`).
+- **References Engine**: Build a symbol-to-usage index to locate references for any class, method, or property across your local codebase (e.g. `library-insight references LoginRepository`).
+- **Implementations**: Query interface implementations or subclass declarations (e.g. `library-insight implementations Repository` -> `RoomRepository`, `NetworkRepository`).
+- **Hierarchy**: Render visual inheritance trees for any base class or interface (e.g. `library-insight hierarchy BaseViewModel`).
 - **Source Call Graph**: Trace internal method execution paths using raw source file declaration locations.
+
+### 2. Project Auto-Sync (`library-insight sync`)
+
+- **Version Catalog & Gradle Sync**: Automatically parse `gradle/libs.versions.toml` and `build.gradle.kts` in your project root to auto-index all declared project dependencies in 1 command without manually typing coordinates.
+
 <!-- --8<-- [end:roadmap] -->
 
 ---
@@ -166,8 +172,8 @@ mkdocs gh-deploy --force
 Release and publish a new version tag to GitHub:
 
 ```bash
-git tag v1.4.0
-git push origin v1.4.0
+git tag v1.5.0
+git push origin v1.5.0
 ```
 
 ### 5. Demos

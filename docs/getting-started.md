@@ -55,77 +55,89 @@ curl -fsSL https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/un
 
 ## Basic Workflow / Quick Start
 
-Here is a typical flow when you add or inspect a library or project:
+**Library Insight** works in a simple 4-step pipeline: **Index** -> **Explore** -> **AI Context Export** -> **Version Audit**.
 
-### 1. Indexing the APIs
+Here is how developers and AI coding agents use Library Insight step-by-step:
 
-You can build an API index database using either of the two pipelines:
+---
 
-=== "A. Scan Local Source Projects"
+### Step 1: Index Your API Surface (`scan` / `scan-source`)
 
-    Scan a local raw source directory containing Kotlin (`.kt`) and Java (`.java`) files without compilation:
-    ```bash
-    library-insight scan-source app/src/main
-    ```
+> **Why this step?** AI models hallucinate outdated methods because they don't know the exact library version installed in your project. Indexing creates a version-aware local API database from real bytecode or source files.
 
-=== "B. Scan Compiled Libraries"
+- **Scan a Compiled Dependency (e.g. Jetpack Compose Layout):**
 
-    Scan a compiled dependency from Maven Central (or pick it from your local Gradle cache):
-    ```bash
-    library-insight scan com.squareup.retrofit2:retrofit:2.11.0
-    ```
+  ```bash
+  library-insight scan androidx.compose.foundation:foundation-layout:1.12.0
+  ```
 
-=== "C. Scan Kotlin Multiplatform (KMP) Libraries"
+- **Scan a Bill of Materials (BOM):**
 
-    Scan a multiplatform library. Library Insight automatically resolves Gradle Module Metadata, downloads and parses target KLib metadata files, and merges platform variants (`common`, `jvm`, `ios`, etc.) into a unified index:
-    ```bash
-    library-insight scan io.ktor:ktor-client-core:3.0.0
-    ```
+  ```bash
+  library-insight scan androidx.compose:compose-bom:2024.09.00
+  ```
 
-=== "D. Scan Bill of Materials (BOM) Libraries"
+- **Scan Local Source Code:**
 
-    Scan a Maven BOM coordinate. Library Insight parses `<dependencyManagement>` from the BOM POM XML and automatically downloads, scans, and merges all constituent managed library artifacts into a unified API index:
-    ```bash
-    library-insight scan androidx.compose:compose-bom:2024.09.00
-    ```
+  ```bash
+  library-insight scan-source app/src/main
+  ```
 
-### 2. Search for Symbols
+- **Scan a Kotlin Multiplatform (KMP) Library:**
+  ```bash
+  library-insight scan io.ktor:ktor-client-core:3.0.0
+  ```
 
-Find a class, interface, or property in the index database.
+---
 
-=== "For Scanned Source Code"
+### Step 2: Explore & Inspect Signatures (`search` / `explain`)
 
-    ```bash
-    library-insight search LoginRepository
-    ```
+> **Why this step?** Discover classes, top-level functions, parameter signatures, and receiver scopes directly from your terminal or AI prompt.
 
-=== "For Scanned Libraries"
+1. **Search for symbols in the index:**
 
-    ```bash
-    library-insight search Retrofit
-    ```
+   ```bash
+   library-insight search Grid
+   ```
 
-### 3. Explain class & symbol signatures
+2. **Inspect standard symbol signatures & KDocs:**
 
-Inspect full API signatures, Javadocs/KDocs, file imports, and exact declaration source locations (file:line) for a class or top-level function. Smart resolution automatically routes top-level Kotlin functions (e.g. `Grid` → `GridKt`) and member methods to their declaring classes.
+   ```bash
+   library-insight explain Grid
+   ```
 
-=== "For Scanned Source Code"
+3. **Inspect DSL receiver scopes in 1 turn (`--deep`):**
+   ```bash
+   library-insight explain Grid --deep
+   ```
+   _(Automatically resolves top-level `@Composable fun Grid` to `GridKt` and displays nested scopes like `GridScope` and `GridItemSpanScope`)._
 
-    ```bash
-    library-insight explain com.meet.sample.repository.LoginRepository
-    ```
+---
 
-=== "For Scanned Libraries"
+### Step 3: Connect to AI Coding Assistants (`ai-export` / `mcp`)
 
-    ```bash
-    library-insight explain Retrofit
-    library-insight explain Grid  # Automatically resolves top-level @Composable fun Grid to GridKt
-    ```
+> **Why this step?** Feed version-accurate API knowledge to Cursor, Claude, Gemini, or Copilot so they generate 100% correct code without hallucinating.
 
-### 4. Compare Versions (Bytecode Only)
+1. **Export Token-Optimized Markdown Files:**
 
-See what was added, removed, or changed between two versions of compiled library dependencies.
+   ```bash
+   library-insight ai-export
+   ```
+
+   _(Generates compact documentation under `build/ai-context/` for workspace chats)._
+
+2. **Start the Native MCP Server:**
+   ```bash
+   library-insight mcp
+   ```
+   _(Integrates natively with Cursor, Windsurf, or Claude Desktop)._
+
+---
+
+### Step 4: Compare Library Versions & Upgrades (`diff`)
+
+> **Why this step?** Detect breaking changes, added/removed methods, or deprecations before upgrading a dependency in your project.
 
 ```bash
-library-insight diff com.squareup.retrofit2:retrofit:2.9.0 com.squareup.retrofit2:retrofit:2.11.0
+library-insight diff androidx.compose.foundation:foundation-layout:1.11.0 androidx.compose.foundation:foundation-layout:1.12.0
 ```
