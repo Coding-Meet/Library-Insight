@@ -228,6 +228,80 @@ object MavenResolver {
     }
 
     /**
+     * Filters a list of artifact coordinates by target platform (android, jvm, ios, desktop, all).
+     * Excludes non-matching platform variants, native stubs, and lint rule artifacts.
+     */
+    fun filterCoordinatesByPlatform(coordinates: List<String>, platform: String): List<String> {
+        val normPlatform = platform.lowercase().trim()
+        if (normPlatform == "all") return coordinates
+
+        val nativeIosSuffixes = listOf(
+            "-iosarm64", "-iossimulatorarm64", "-iosx64", "-tvosarm64", "-tvossimulatorarm64",
+            "-tvosx64", "-watchosarm32", "-watchosarm64", "-watchosdevicearm64",
+            "-watchossimulatorarm64", "-watchosx64"
+        )
+        val webSuffixes = listOf("-js", "-wasm-js", "-wasm")
+        val desktopNativeSuffixes = listOf("-desktop", "-macosx64", "-macosarm64", "-linuxx64", "-linuxarm64", "-mingwx64")
+        val stubsAndLints = listOf("stubs", "-lint")
+
+        return coordinates.filter { coord ->
+            val artifactId = coord.split(':').getOrNull(1)?.lowercase() ?: return@filter true
+
+            // Always filter out internal compiler stubs and lint rule JARs unless platform is 'all'
+            if (stubsAndLints.any { artifactId.endsWith(it) || artifactId.contains("-$it") }) {
+                return@filter false
+            }
+
+            when (normPlatform) {
+                "android" -> {
+                    val isIos = nativeIosSuffixes.any { artifactId.endsWith(it) || artifactId.contains(it) }
+                    val isWeb = webSuffixes.any { artifactId.endsWith(it) || artifactId.contains(it) }
+                    val isDesktop = desktopNativeSuffixes.any { artifactId.endsWith(it) || artifactId.contains(it) }
+                    !isIos && !isWeb && !isDesktop
+                }
+                "jvm" -> {
+                    val isIos = nativeIosSuffixes.any { artifactId.endsWith(it) || artifactId.contains(it) }
+                    val isWeb = webSuffixes.any { artifactId.endsWith(it) || artifactId.contains(it) }
+                    val isNativeOther = listOf("-macosx64", "-macosarm64", "-linuxx64", "-linuxarm64", "-mingwx64")
+                        .any { artifactId.endsWith(it) || artifactId.contains(it) }
+                    !isIos && !isWeb && !isNativeOther
+                }
+                "ios" -> {
+                    val isWeb = webSuffixes.any { artifactId.endsWith(it) || artifactId.contains(it) }
+                    val isAndroid = artifactId.endsWith("-android")
+                    val isDesktop = desktopNativeSuffixes.any { artifactId.endsWith(it) || artifactId.contains(it) }
+                    !isWeb && !isAndroid && !isDesktop
+                }
+                else -> true
+            }
+        }
+    }
+
+    /**
+     * Filters list of artifact coordinates by include patterns (comma-separated or list).
+     * Returns coordinates whose artifactId or groupId matches any of the include patterns.
+     */
+    fun filterCoordinatesByInclude(coordinates: List<String>, includePatterns: List<String>): List<String> {
+        if (includePatterns.isEmpty()) return coordinates
+        val cleanPatterns = includePatterns.flatMap { it.split(',') }
+            .map { it.trim().lowercase() }
+            .filter { it.isNotEmpty() }
+        if (cleanPatterns.isEmpty()) return coordinates
+
+        return coordinates.filter { coord ->
+            val parts = coord.split(':')
+            val groupId = parts.getOrNull(0)?.lowercase() ?: ""
+            val artifactId = parts.getOrNull(1)?.lowercase() ?: ""
+
+            cleanPatterns.any { pattern ->
+                val stripped = pattern.removePrefix("*").removeSuffix("*")
+                if (stripped.isEmpty()) true
+                else artifactId.contains(stripped) || groupId.contains(stripped)
+            }
+        }
+    }
+
+    /**
      * Resolves and downloads the library binary and sources from repositories.
      * Caches the files to avoid redundant downloads.
      */

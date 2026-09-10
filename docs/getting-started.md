@@ -74,8 +74,9 @@ Here is how developers and AI coding agents use Library Insight step-by-step:
 - **Scan a Bill of Materials (BOM):**
 
   ```bash
-  library-insight scan androidx.compose:compose-bom:2024.09.00
+  library-insight scan androidx.compose:compose-bom:2024.09.00 -i "compose-ui*"
   ```
+  *(Filters out non-Android KMP targets by default. Use `-i, --include <pattern>` to selectively target specific BOM member artifacts like `-i "compose-ui*"` or `-i "*animation*"`).*
 
 - **Scan Local Source Code:**
 
@@ -85,7 +86,7 @@ Here is how developers and AI coding agents use Library Insight step-by-step:
 
 - **Scan a Kotlin Multiplatform (KMP) Library:**
   ```bash
-  library-insight scan io.ktor:ktor-client-core:3.0.0
+  library-insight scan io.ktor:ktor-client-core:3.0.0 --platform android
   ```
 
 ---
@@ -130,7 +131,7 @@ Here is how developers and AI coding agents use Library Insight step-by-step:
    ```bash
    library-insight mcp
    ```
-   _(Integrates natively with Cursor, Windsurf, or Claude Desktop)._
+   _(Integrates natively with Android Studio Gemini, Codex, Cursor, Windsurf, or Claude Desktop)._
 
 ---
 

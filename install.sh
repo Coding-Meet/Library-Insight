@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Check if --local or -l flag is passed for building from local source
+USE_LOCAL=false
+if [ "$1" = "--local" ] || [ "$1" = "-l" ] || [ "$LOCAL" = "true" ]; then
+    USE_LOCAL=true
+fi
+
 # Fetch latest release version tag from GitHub API if not set
 if [ -z "$VERSION" ]; then
     LATEST_TAG=$(curl -s https://api.github.com/repos/Coding-Meet/Library-Insight/releases/latest | grep '"tag_name":' | sed -E 's/.*"v?([^"]+)".*/\1/')
@@ -12,44 +18,60 @@ ZIP_NAME="library-insight-$VERSION.zip"
 RELEASE_URL="https://github.com/Coding-Meet/Library-Insight/releases/download/v$VERSION/$ZIP_NAME"
 
 echo "=================================================="
-echo " Installing Library Insight v$VERSION..."
+if [ "$USE_LOCAL" = true ]; then
+    echo " Installing Library Insight from local source code..."
+else
+    echo " Installing Library Insight v$VERSION..."
+fi
 echo "=================================================="
 
 # Create install directory
 mkdir -p "$INSTALL_DIR"
 
-# Temporary download path
-TEMP_ZIP="/tmp/$ZIP_NAME"
-
-echo "Attempting to download pre-compiled release from GitHub..."
-echo "URL: $RELEASE_URL"
-
-# Download using curl
-if curl -L --fail -o "$TEMP_ZIP" "$RELEASE_URL"; then
-    echo "Download successful! Extracting..."
-    unzip -o "$TEMP_ZIP" -d "$INSTALL_DIR"
-    
-    # Check if files were extracted into a subdirectory and move them up
-    if [ -d "$INSTALL_DIR/library-insight-$VERSION" ]; then
-        cp -R "$INSTALL_DIR/library-insight-$VERSION"/* "$INSTALL_DIR"
-        rm -rf "$INSTALL_DIR/library-insight-$VERSION"
-    elif [ -d "$INSTALL_DIR/library-insight-cli-$VERSION" ]; then
-        cp -R "$INSTALL_DIR/library-insight-cli-$VERSION"/* "$INSTALL_DIR"
-        rm -rf "$INSTALL_DIR/library-insight-cli-$VERSION"
-    fi
-    rm -f "$TEMP_ZIP"
-    echo "Pre-compiled release installed successfully!"
-else
-    echo "--------------------------------------------------"
-    echo " Note: Release zip download failed."
-    echo "--------------------------------------------------"
+if [ "$USE_LOCAL" = true ]; then
     if [ -f "./gradlew" ]; then
-        echo " Falling back to compiling from local source code..."
-        ./gradlew :library-insight-cli:installDist
+        echo "Generating AI skill and compiling local source code..."
+        ./gradlew generateAgentSkill :library-insight-cli:installDist
         cp -R library-insight-cli/build/install/library-insight/* "$INSTALL_DIR"
+        echo "Local build installed successfully!"
     else
-        echo " ERROR: Could not download pre-compiled release and no local gradlew wrapper found."
+        echo "ERROR: --local option passed but no local gradlew wrapper found."
         exit 1
+    fi
+else
+    # Temporary download path
+    TEMP_ZIP="/tmp/$ZIP_NAME"
+
+    echo "Attempting to download pre-compiled release from GitHub..."
+    echo "URL: $RELEASE_URL"
+
+    # Download using curl
+    if curl -L --fail -o "$TEMP_ZIP" "$RELEASE_URL"; then
+        echo "Download successful! Extracting..."
+        unzip -o "$TEMP_ZIP" -d "$INSTALL_DIR"
+        
+        # Check if files were extracted into a subdirectory and move them up
+        if [ -d "$INSTALL_DIR/library-insight-$VERSION" ]; then
+            cp -R "$INSTALL_DIR/library-insight-$VERSION"/* "$INSTALL_DIR"
+            rm -rf "$INSTALL_DIR/library-insight-$VERSION"
+        elif [ -d "$INSTALL_DIR/library-insight-cli-$VERSION" ]; then
+            cp -R "$INSTALL_DIR/library-insight-cli-$VERSION"/* "$INSTALL_DIR"
+            rm -rf "$INSTALL_DIR/library-insight-cli-$VERSION"
+        fi
+        rm -f "$TEMP_ZIP"
+        echo "Pre-compiled release installed successfully!"
+        else
+        echo "--------------------------------------------------"
+        echo " Note: Release zip download failed."
+        echo "--------------------------------------------------"
+        if [ -f "./gradlew" ]; then
+            echo " Falling back to compiling from local source code..."
+            ./gradlew generateAgentSkill :library-insight-cli:installDist
+            cp -R library-insight-cli/build/install/library-insight/* "$INSTALL_DIR"
+        else
+            echo " ERROR: Could not download pre-compiled release and no local gradlew wrapper found."
+            exit 1
+        fi
     fi
 fi
 
@@ -86,15 +108,17 @@ echo ""
 echo "=================================================="
 echo " Distributing AI Agent Skill to Detected Configs..."
 echo "=================================================="
-SKILL_RAW_URL="https://raw.githubusercontent.com/Coding-Meet/Library-Insight/main/.agents/skills/library-insight/SKILL.md"
-
-# Always download latest SKILL.md definition
-echo "Fetching latest AI Agent Skill definition..."
-curl -fsSL -o "$INSTALL_DIR/SKILL.md" "$SKILL_RAW_URL" || true
-
-SKILL_SOURCE="$INSTALL_DIR/SKILL.md"
-if [ ! -s "$SKILL_SOURCE" ] && [ -f ".agents/skills/library-insight/SKILL.md" ]; then
+if [ "$USE_LOCAL" = true ] && [ -f ".agents/skills/library-insight/SKILL.md" ]; then
+    echo "Using freshly generated local AI Agent Skill definition..."
     SKILL_SOURCE=".agents/skills/library-insight/SKILL.md"
+    cp -f "$SKILL_SOURCE" "$INSTALL_DIR/SKILL.md" 2>/dev/null || true
+else
+    echo "Fetching latest AI Agent Skill definition from GitHub..."
+    curl -fsSL -o "$INSTALL_DIR/SKILL.md" "$SKILL_RAW_URL" || true
+    SKILL_SOURCE="$INSTALL_DIR/SKILL.md"
+    if [ ! -s "$SKILL_SOURCE" ] && [ -f ".agents/skills/library-insight/SKILL.md" ]; then
+        SKILL_SOURCE=".agents/skills/library-insight/SKILL.md"
+    fi
 fi
 
 if [ -f "$SKILL_SOURCE" ]; then

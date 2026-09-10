@@ -77,7 +77,7 @@ Here are concrete examples of how you can prompt AI coding assistants (Cursor, C
 
 **AI Agent Response Workflow:**
 
-1. Executes `library-insight scan androidx.compose:compose-bom:2024.09.00` (automatically parses POM XML and merges all 92 managed Compose libraries into one index).
+1. Executes `library-insight scan androidx.compose:compose-bom:2024.09.00` (automatically parses POM XML, filters out non-Android/KMP stubs via default `--platform android`, and merges target libraries into one index in seconds).
 2. Executes `library-insight explain LazyVerticalGrid --deep` to discover `LazyGridScope`, `LazyGridItemSpanScope`, and `GridItemSpan`.
 3. Writes precise grid code using the exact version parameter signatures.
 
@@ -112,12 +112,15 @@ Here are concrete examples of how you can prompt AI coding assistants (Cursor, C
 ### Example 5: Version Catalog Auto-Discovery & Zero-Knowledge Scanning
 
 > **Developer Prompt:**
-> _"I want to create a grid layout using Compose, but I don't know the exact library version. Find the library name and version from our project's version catalog (`gradle/libs.versions.toml`), scan it with `library-insight`, and generate the code for me."_
+> _"I want to create a grid layout using Compose BOM in our project, but I don't know the exact library version. Find the library name and version from our project's version catalog (`gradle/libs.versions.toml`), scan it with `library-insight`, and implement the grid component inside a new file `app/src/main/java/com/example/app/ComplexGridLayout.kt`."_
 
 **AI Agent Response Workflow:**
 
 1. **Version Catalog Inspection**: The AI Agent inspects `gradle/libs.versions.toml` or `build.gradle.kts` to locate the project's declared library coordinates or BOM references (e.g. `androidx.compose.foundation:foundation-layout` or `compose-bom = "2024.09.00"`).
    _(If not declared in the project, the agent runs `library-insight search-central "foundation-layout"` to query the latest release on Maven Central)._
-2. **Recommends & Executes Scan**: The agent recommends the exact command (`library-insight scan androidx.compose.foundation:foundation-layout:1.12.0` or `library-insight scan androidx.compose:compose-bom:2024.09.00`) and executes it immediately.
-3. **Explores & Explains**: Runs `library-insight explain Grid --deep` to verify `GridScope`, `GridConfigurationScope`, and parameter signatures for that specific version.
-4. **Generates Precise Code**: Delivers exact, version-matched Kotlin code tailored to the developer's project configuration!
+2. **Auto-Infers Options & Executes Scan**: The agent automatically infers missing parameters (such as adding `-i "foundation*"` or `-p android` for BOM coordinates) to avoid downloading unnecessary member libraries or platform variants, recommending and executing:
+   ```bash
+   library-insight scan androidx.compose:compose-bom:2024.09.00 -i "foundation*" -p android
+   ```
+3. **Mandatory Symbol Search & Explanation**: The agent FIRST executes `library-insight search Grid` to discover all matching symbols across indexed packages, followed by `library-insight explain Grid --deep` to verify `GridScope`, `GridConfigurationScope`, and parameter signatures for that specific version.
+4. **Writes Project File**: Automatically creates `app/src/main/java/com/example/app/ComplexGridLayout.kt` with 100% version-matched, working Kotlin code tailored to the developer's project configuration!
