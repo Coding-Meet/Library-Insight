@@ -1061,7 +1061,7 @@
 </blockquote>
 <p><strong>AI Agent Response Workflow:</strong></p>
 <ol>
-<li>Executes <code>library-insight scan androidx.compose:compose-bom:2024.09.00</code> (automatically parses POM XML and merges all 92 managed Compose libraries into one index).</li>
+<li>Executes <code>library-insight scan androidx.compose:compose-bom:2024.09.00</code> (automatically parses POM XML, filters out non-Android/KMP stubs via default <code>--platform android</code>, and merges target libraries into one index in seconds).</li>
 <li>Executes <code>library-insight explain LazyVerticalGrid --deep</code> to discover <code>LazyGridScope</code>, <code>LazyGridItemSpanScope</code>, and <code>GridItemSpan</code>.</li>
 <li>Writes precise grid code using the exact version parameter signatures.</li>
 </ol>
@@ -1093,13 +1093,15 @@
 <h3 id="example-5-version-catalog-auto-discovery-zero-knowledge-scanning">Example 5: Version Catalog Auto-Discovery &amp; Zero-Knowledge Scanning<a class="headerlink" href="#example-5-version-catalog-auto-discovery-zero-knowledge-scanning" title="Link to this section">&para;</a></h3>
 <blockquote>
 <p><strong>Developer Prompt:</strong>
-<em>"I want to create a grid layout using Compose, but I don't know the exact library version. Find the library name and version from our project's version catalog (<code>gradle/libs.versions.toml</code>), scan it with <code>library-insight</code>, and generate the code for me."</em></p>
+<em>"I want to create a grid layout using Compose BOM, but I don't know the exact library version. Find the library name and version from our project's version catalog (<code>gradle/libs.versions.toml</code>), scan it with <code>library-insight</code>, and generate the code for me."</em></p>
 </blockquote>
 <p><strong>AI Agent Response Workflow:</strong></p>
 <ol>
 <li><strong>Version Catalog Inspection</strong>: The AI Agent inspects <code>gradle/libs.versions.toml</code> or <code>build.gradle.kts</code> to locate the project's declared library coordinates or BOM references (e.g. <code>androidx.compose.foundation:foundation-layout</code> or <code>compose-bom = "2024.09.00"</code>).
    <em>(If not declared in the project, the agent runs <code>library-insight search-central "foundation-layout"</code> to query the latest release on Maven Central).</em></li>
-<li><strong>Recommends &amp; Executes Scan</strong>: The agent recommends the exact command (<code>library-insight scan androidx.compose.foundation:foundation-layout:1.12.0</code> or <code>library-insight scan androidx.compose:compose-bom:2024.09.00</code>) and executes it immediately.</li>
+<li><strong>Auto-Infers Options &amp; Executes Scan</strong>: The agent automatically infers missing parameters (such as adding <code>-i "foundation*"</code> or <code>-p android</code> for BOM coordinates) to avoid downloading unnecessary member libraries or platform variants, recommending and executing:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>androidx.compose:compose-bom:2024.09.00<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;foundation*&quot;</span><span class="w"> </span>-p<span class="w"> </span>android
+</span></code></pre></div></li>
 <li><strong>Explores &amp; Explains</strong>: Runs <code>library-insight explain Grid --deep</code> to verify <code>GridScope</code>, <code>GridConfigurationScope</code>, and parameter signatures for that specific version.</li>
 <li><strong>Generates Precise Code</strong>: Delivers exact, version-matched Kotlin code tailored to the developer's project configuration!</li>
 </ol>

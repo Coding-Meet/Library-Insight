@@ -1052,6 +1052,8 @@
 <ul>
 <li><code>--db &lt;file&gt;</code>: Path to save the JSON index database (default: <code>build/library-insight-index.json</code>)</li>
 <li><code>-s, --sources &lt;file&gt;</code>: Path to sources JAR/AAR or source code folder to extract Javadoc/KDoc comments &amp; guide examples</li>
+<li><code>-p, --platform &lt;target&gt;</code>: Target platform filter for BOM and KMP scans (<code>android</code>, <code>jvm</code>, <code>ios</code>, <code>desktop</code>, <code>all</code>). Defaults to <code>android</code>. Filters out non-target KMP variants (e.g. iOS/JS/Wasm), stubs, and lints.</li>
+<li><code>-i, --include &lt;pattern&gt;</code>: Filter BOM managed dependencies by wildcard pattern (e.g. <code>-i "compose-ui*"</code>, <code>-i "*animation*"</code>). Multiple allowed.</li>
 <li><code>--repo &lt;url&gt;</code>: Additional Maven repository URL to download coordinates (multiple allowed)</li>
 <li><code>--lib-name &lt;name&gt;</code>: Override the library name in the generated index</li>
 <li><code>--lib-version &lt;version&gt;</code>: Override the version tag in the generated index</li>

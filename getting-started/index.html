@@ -1038,8 +1038,9 @@
 <ul>
 <li><strong>Scan a Bill of Materials (BOM):</strong></li>
 </ul>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>androidx.compose:compose-bom:2024.09.00
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>androidx.compose:compose-bom:2024.09.00<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;compose-ui*&quot;</span>
 </span></code></pre></div>
+  <em>(Filters out non-Android KMP targets by default. Use <code>-i, --include &lt;pattern&gt;</code> to selectively target specific BOM member artifacts like <code>-i "compose-ui*"</code> or <code>-i "*animation*"</code>).</em></p>
 <ul>
 <li><strong>Scan Local Source Code:</strong></li>
 </ul>
@@ -1047,7 +1048,7 @@
 </span></code></pre></div>
 <ul>
 <li><strong>Scan a Kotlin Multiplatform (KMP) Library:</strong>
-  <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>io.ktor:ktor-client-core:3.0.0
+  <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>io.ktor:ktor-client-core:3.0.0<span class="w"> </span>--platform<span class="w"> </span>android
 </span></code></pre></div></li>
 </ul>
 <hr />
@@ -1086,7 +1087,7 @@
 <li><strong>Start the Native MCP Server:</strong>
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>library-insight<span class="w"> </span>mcp
 </span></code></pre></div>
-   <em>(Integrates natively with Cursor, Windsurf, or Claude Desktop).</em></li>
+   <em>(Integrates natively with Android Studio Gemini, Codex, Cursor, Windsurf, or Claude Desktop).</em></li>
 </ol>
 <hr />
 <h3 id="step-4-compare-library-versions-upgrades-diff">Step 4: Compare Library Versions &amp; Upgrades (<code>diff</code>)<a class="headerlink" href="#step-4-compare-library-versions-upgrades-diff" title="Link to this section">&para;</a></h3>
