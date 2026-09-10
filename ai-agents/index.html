@@ -1102,7 +1102,7 @@
 <li><strong>Auto-Infers Options &amp; Executes Scan</strong>: The agent automatically infers missing parameters (such as adding <code>-i "foundation*"</code> or <code>-p android</code> for BOM coordinates) to avoid downloading unnecessary member libraries or platform variants, recommending and executing:
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>androidx.compose:compose-bom:2024.09.00<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;foundation*&quot;</span><span class="w"> </span>-p<span class="w"> </span>android
 </span></code></pre></div></li>
-<li><strong>Explores &amp; Explains</strong>: Runs <code>library-insight explain Grid --deep</code> to verify <code>GridScope</code>, <code>GridConfigurationScope</code>, and parameter signatures for that specific version.</li>
+<li><strong>Mandatory Symbol Search &amp; Explanation</strong>: The agent FIRST executes <code>library-insight search Grid</code> to discover all matching symbols across indexed packages, followed by <code>library-insight explain Grid --deep</code> to verify <code>GridScope</code>, <code>GridConfigurationScope</code>, and parameter signatures for that specific version.</li>
 <li><strong>Writes Project File</strong>: Automatically creates <code>app/src/main/java/com/example/app/ComplexGridLayout.kt</code> with 100% version-matched, working Kotlin code tailored to the developer's project configuration!</li>
 </ol>
 
