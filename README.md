@@ -10,17 +10,14 @@ AI coding assistants often guess Java/Kotlin APIs from outdated documentation, w
 
 **Library Insight** solves this by analyzing the exact JAR, AAR, Maven dependency, Gradle output, or local Java/Kotlin source code used by your project. It builds a searchable, version-aware API index from compiled bytecode (including Kotlin `@Metadata`) or source code, allowing you to explore APIs, generate AI-ready context, and understand your codebase using the exact code you're working with—not outdated documentation or web examples.
 
-> **💡 Real-World Use-Case: Version-Accurate Code Generation for New Library Releases**
+> **💡 Developer Prompt Example:**
+> *"Use my `library-insight` CLI to scan `androidx.compose.foundation:foundation-layout:1.12.0`, search for `Grid`, explain its DSL structure, and create a working Jetpack Compose Grid layout example."*
 >
-> When adopting a new library version (e.g. Jetpack Compose `1.12.0` introducing explicit `Grid` layout APIs), AI models often hallucinate deprecated signatures or rely on outdated web snippets.
-> 
-> Instead of guessing, an AI agent runs:
-> ```bash
-> library-insight scan androidx.compose.foundation:foundation-layout:1.12.0
-> library-insight search Grid
-> library-insight explain Grid --deep
-> ```
-> Library Insight extracts the exact `@Composable fun Grid(...)` parameters, `@ExperimentalGridApi` scopes (`GridScope`, `GridConfigurationScope`), child modifiers (`Modifier.gridItem`), and embedded KDocs straight from the installed artifact. The AI agent instantly generates **100% accurate, version-correct Kotlin code** grounded in the real dependency!
+> **🤖 AI Agent Response Workflow:**
+> 1. Executes `library-insight scan androidx.compose.foundation:foundation-layout:1.12.0`
+> 2. Executes `library-insight search Grid`
+> 3. Executes `library-insight explain Grid --deep` to inspect parameters, receiver scopes (`GridScope`), and embedded KDocs in 1 turn.
+> 4. Generates **100% accurate, version-correct Kotlin code** grounded directly in the artifact bytecode—without hallucinating deprecated signatures or relying on outdated web snippets!
 
 <!-- --8<-- [end:intro] -->
 
