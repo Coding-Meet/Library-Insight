@@ -29,9 +29,10 @@ class ScanCommand : CliktCommand(
     val libVersion by option("--lib-version", help = "Version of the library")
     val repos by option("--repo", help = "Additional Maven repository URLs to resolve coordinate artifacts").multiple()
     val sources by option("-s", "--sources", help = "Path to the sources JAR/directory (for local scans)").file(mustExist = true)
+    val platform by option("-p", "--platform", help = "Target platform filter for BOM & KMP scans (android, jvm, ios, desktop, all). Defaults to android.").default("android")
 
     override fun run() {
-        Logger.info("ScanCommand started with path/coordinate: $pathOrCoordinate")
+        Logger.info("ScanCommand started with path/coordinate: $pathOrCoordinate (platform filter: $platform)")
         try {
             val index = if (MavenResolver.isCoordinate(pathOrCoordinate)) {
                 echo("Detected Maven coordinate: $pathOrCoordinate")
@@ -50,10 +51,14 @@ class ScanCommand : CliktCommand(
                 }
 
                 if (bomCoordinates.isNotEmpty()) {
+                    val filteredBomCoords = MavenResolver.filterCoordinatesByPlatform(bomCoordinates, platform)
                     echo("Detected Bill of Materials (BOM) artifact containing ${bomCoordinates.size} managed libraries.")
+                    if (filteredBomCoords.size < bomCoordinates.size) {
+                        echo("Filtered to ${filteredBomCoords.size} libraries matching platform target '$platform' (use '--platform all' to scan all targets).")
+                    }
                     val targetIndices = mutableListOf<LibraryApiIndex>()
                     val resolveErrors = mutableListOf<Pair<String, String>>()
-                    for (targetCoord in bomCoordinates) {
+                    for (targetCoord in filteredBomCoords) {
                         try {
                             echo("  -> Scanning BOM member: $targetCoord")
                             val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { _ -> }
@@ -70,7 +75,7 @@ class ScanCommand : CliktCommand(
                         }
                     }
                     if (targetIndices.isNotEmpty()) {
-                        echo("Successfully scanned and merged ${targetIndices.size} of ${bomCoordinates.size} BOM member libraries.")
+                        echo("Successfully scanned and merged ${targetIndices.size} of ${filteredBomCoords.size} BOM member libraries.")
                         for (error in resolveErrors) {
                             Logger.info("Skipped BOM member ${error.first}: ${error.second}")
                         }
@@ -95,9 +100,13 @@ class ScanCommand : CliktCommand(
                     }
 
                     if (kmpCoordinates.isNotEmpty() && kmpCoordinates != listOf(pathOrCoordinate)) {
+                        val filteredKmpCoords = MavenResolver.filterCoordinatesByPlatform(kmpCoordinates, platform)
+                        if (filteredKmpCoords.size < kmpCoordinates.size) {
+                            echo("Filtered KMP variants to ${filteredKmpCoords.size} targets matching platform '$platform' (use '--platform all' for all targets).")
+                        }
                         val targetIndices = mutableListOf<LibraryApiIndex>()
                         val resolveErrors = mutableListOf<Pair<String, String>>()
-                        for (targetCoord in kmpCoordinates) {
+                        for (targetCoord in filteredKmpCoords) {
                             try {
                                 val resolvedTarget = MavenResolver.resolve(targetCoord, repos) { _ -> }
                                 val targetIndex = LibraryAnalyzer.analyze(
@@ -112,7 +121,7 @@ class ScanCommand : CliktCommand(
                             }
                         }
                         if (targetIndices.isNotEmpty()) {
-                            echo("Detected Kotlin Multiplatform (KMP) library. Successfully resolved ${targetIndices.size} of ${kmpCoordinates.size} platform targets:")
+                            echo("Detected Kotlin Multiplatform (KMP) library. Successfully resolved ${targetIndices.size} of ${filteredKmpCoords.size} platform targets:")
                             for (targetIndex in targetIndices) {
                                 Logger.info("Resolved KMP variant: ${targetIndex.libraryName}")
                             }

@@ -77,7 +77,7 @@ Here are concrete examples of how you can prompt AI coding assistants (Cursor, C
 
 **AI Agent Response Workflow:**
 
-1. Executes `library-insight scan androidx.compose:compose-bom:2024.09.00` (automatically parses POM XML and merges all 92 managed Compose libraries into one index).
+1. Executes `library-insight scan androidx.compose:compose-bom:2024.09.00` (automatically parses POM XML, filters out non-Android/KMP stubs via default `--platform android`, and merges target libraries into one index in seconds).
 2. Executes `library-insight explain LazyVerticalGrid --deep` to discover `LazyGridScope`, `LazyGridItemSpanScope`, and `GridItemSpan`.
 3. Writes precise grid code using the exact version parameter signatures.
 

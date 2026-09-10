@@ -76,6 +76,7 @@ Here is how developers and AI coding agents use Library Insight step-by-step:
   ```bash
   library-insight scan androidx.compose:compose-bom:2024.09.00
   ```
+  *(Filters out non-Android/non-JVM KMP targets like iOS, JS, Wasm, stubs, and lints by default. Use `--platform all` to scan all 200+ variants).*
 
 - **Scan Local Source Code:**
 
@@ -85,7 +86,7 @@ Here is how developers and AI coding agents use Library Insight step-by-step:
 
 - **Scan a Kotlin Multiplatform (KMP) Library:**
   ```bash
-  library-insight scan io.ktor:ktor-client-core:3.0.0
+  library-insight scan io.ktor:ktor-client-core:3.0.0 --platform android
   ```
 
 ---

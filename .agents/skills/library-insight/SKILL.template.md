@@ -26,7 +26,7 @@ Library Insight analyzes compiled libraries (JVM artifacts and Kotlin Multiplatf
 > **Indexing & Version Discovery**
 >
 > - Use **`library-insight scan <jar|aar|klib|directory|maven-coordinate>`** to index compiled libraries.
-> - **BOM Scanning:** For Bill of Materials (BOM) coordinates (e.g. `androidx.compose:compose-bom:2024.09.00` or `com.google.firebase:firebase-bom`), `library-insight scan` automatically parses the POM XML, resolves all managed member libraries, and merges them into a single API index.
+> - **BOM & KMP Scanning:** For Bill of Materials (BOM) coordinates (e.g. `androidx.compose:compose-bom:2024.09.00` or `com.google.firebase:firebase-bom`) and KMP libraries, `library-insight scan` automatically resolves member libraries and applies target platform filtering (`-p, --platform android` by default) to filter out non-target KMP variants (iOS, JS, Wasm), stubs, and lints in seconds. Pass `--platform all` to scan all variants.
 > - **Zero-Knowledge Version Discovery:** If the user does not specify a library version, inspect `gradle/libs.versions.toml` or `build.gradle.kts` to discover the project's declared version. If not present in the project, run **`library-insight search-central <query>`** to query the latest coordinate from Maven Central.
 > - Use **`library-insight scan-source <directory>`** to index a local Java/Kotlin source project without compilation.
 >

@@ -8,13 +8,14 @@ All releases for **Library Insight** are documented below.
 
 _Released on September 10, 2026_
 
-This major feature release introduces **BOM (Bill of Materials) Auto-Resolution**, **Deep Recursive DSL & Scope Resolution**, **Smart Symbol Facade & Typo Lookup**, and native **`li` short CLI command alias** support across all platforms.
+This major feature release introduces **BOM (Bill of Materials) Auto-Resolution**, **Target Platform Filtering (`--platform`)**, **Deep Recursive DSL & Scope Resolution**, **Smart Symbol Facade & Typo Lookup**, and native **`li` short CLI command alias** support across all platforms.
 
-### 📦 Major Feature Highlights
+### Major Feature Highlights
 
-- **BOM (Bill of Materials) Auto-Resolution**: Added automatic Maven POM XML parsing and `<dependencyManagement>` expansion for BOM coordinates (e.g., `androidx.compose:compose-bom` or `com.google.firebase:firebase-bom`). Scanning a BOM coordinate automatically resolves, downloads, and merges all constituent managed library artifacts (e.g., 92 Compose libraries) into a unified API index.
+- **BOM (Bill of Materials) Auto-Resolution**: Added automatic Maven POM XML parsing and `<dependencyManagement>` expansion for BOM coordinates (e.g., `androidx.compose:compose-bom` or `com.google.firebase:firebase-bom`). Scanning a BOM coordinate automatically resolves, downloads, and merges all constituent managed library artifacts into a unified API index.
+- **Target Platform Filtering (`-p, --platform`)**: Added target platform filtering (`android`, `jvm`, `ios`, `desktop`, `all`) to BOM and KMP scans. Defaults to `android`, automatically filtering out non-Android KMP variants (iOS, JS, Wasm, Mac, Linux, Windows), stubs, and lints. This reduces BOM scan time and network download sizes by >80%.
 - **Deep Recursive Explain (`-d`, `--deep`)**: Added single-turn recursive DSL receiver scope, parameter type, and return type expansion. Running `library-insight explain Grid --deep` automatically discovers and outputs all referenced receiver scopes (`GridScope`, `GridConfigurationScope`) and track specs in 1 single turn, eliminating multi-turn AI exploration loops.
-- **Smart `explain` Symbol Resolution**: Enhanced `explain` to automatically map top-level Kotlin functions to their facade classes (e.g., `explain Grid` → `GridKt`), resolve member method/property queries directly to their declaring classes, and provide Levenshtein fuzzy typo suggestions ("Did you mean one of these?").
+- **Smart `explain` Symbol Resolution**: Enhanced `explain` to automatically map top-level Kotlin functions to their facade classes (e.g., `explain Grid` -> `GridKt`), resolve member method/property queries directly to their declaring classes, and provide Levenshtein fuzzy typo suggestions ("Did you mean one of these?").
 - **`li` Native Short Command Alias**: Added native binary executable generation for `li` alongside `library-insight` across macOS, Linux, and Windows (`li.bat`), allowing users and AI agents to execute commands using either `library-insight` or `li`.
 - **Zero-Knowledge Version Catalog Discovery**: Integrated smart project inspection for `gradle/libs.versions.toml` and `build.gradle.kts` to automatically discover library versions when omitted by developers.
 
