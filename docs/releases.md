@@ -6,7 +6,7 @@ All releases for **Library Insight** are documented below.
 
 ## v1.5.0
 
-_Released on September 10, 2026_
+_Released on September 11, 2026_
 
 This major feature release introduces **BOM (Bill of Materials) Auto-Resolution**, **Target Platform Filtering (`--platform`)**, **Deep Recursive DSL & Scope Resolution**, **Smart Symbol Facade & Typo Lookup**, and native **`li` short CLI command alias** support across all platforms.
 

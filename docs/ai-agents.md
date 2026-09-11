@@ -66,7 +66,7 @@ Here are concrete examples of how you can prompt AI coding assistants (Cursor, C
 1. Executes `library-insight scan androidx.compose.foundation:foundation-layout:1.12.0`
 2. Executes `library-insight search Grid`
 3. Executes `library-insight explain Grid --deep` to inspect top-level `GridKt`, receiver scopes (`GridScope`, `GridConfigurationScope`), and KDocs in 1 turn.
-4. Generates 100% accurate, hallucination-free Kotlin Compose code matching the exact bytecode API signatures without needing web searches.
+4. Generates artifact-grounded, version-matched Kotlin Compose code matching the exact bytecode API signatures without needing web searches.
 
 ---
 
@@ -123,4 +123,4 @@ Here are concrete examples of how you can prompt AI coding assistants (Cursor, C
    library-insight scan androidx.compose:compose-bom:2024.09.00 -i "foundation*" -p android
    ```
 3. **Mandatory Symbol Search & Explanation**: The agent FIRST executes `library-insight search Grid` to discover all matching symbols across indexed packages, followed by `library-insight explain Grid --deep` to verify `GridScope`, `GridConfigurationScope`, and parameter signatures for that specific version.
-4. **Writes Project File**: Automatically creates `app/src/main/java/com/example/app/ComplexGridLayout.kt` with 100% version-matched, working Kotlin code tailored to the developer's project configuration!
+4. **Writes Project File**: Automatically creates `app/src/main/java/com/example/app/ComplexGridLayout.kt` with artifact-grounded, version-matched Kotlin code tailored to the developer's project configuration!
