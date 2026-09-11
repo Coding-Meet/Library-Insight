@@ -1051,7 +1051,7 @@
 <li>Executes <code>library-insight scan androidx.compose.foundation:foundation-layout:1.12.0</code></li>
 <li>Executes <code>library-insight search Grid</code></li>
 <li>Executes <code>library-insight explain Grid --deep</code> to inspect top-level <code>GridKt</code>, receiver scopes (<code>GridScope</code>, <code>GridConfigurationScope</code>), and KDocs in 1 turn.</li>
-<li>Generates 100% accurate, hallucination-free Kotlin Compose code matching the exact bytecode API signatures without needing web searches.</li>
+<li>Generates artifact-grounded, version-matched Kotlin Compose code matching the exact bytecode API signatures without needing web searches.</li>
 </ol>
 <hr />
 <h3 id="example-2-scanning-bill-of-materials-bom">Example 2: Scanning Bill of Materials (BOM)<a class="headerlink" href="#example-2-scanning-bill-of-materials-bom" title="Link to this section">&para;</a></h3>
@@ -1103,7 +1103,7 @@
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>library-insight<span class="w"> </span>scan<span class="w"> </span>androidx.compose:compose-bom:2024.09.00<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;foundation*&quot;</span><span class="w"> </span>-p<span class="w"> </span>android
 </span></code></pre></div></li>
 <li><strong>Mandatory Symbol Search &amp; Explanation</strong>: The agent FIRST executes <code>library-insight search Grid</code> to discover all matching symbols across indexed packages, followed by <code>library-insight explain Grid --deep</code> to verify <code>GridScope</code>, <code>GridConfigurationScope</code>, and parameter signatures for that specific version.</li>
-<li><strong>Writes Project File</strong>: Automatically creates <code>app/src/main/java/com/example/app/ComplexGridLayout.kt</code> with 100% version-matched, working Kotlin code tailored to the developer's project configuration!</li>
+<li><strong>Writes Project File</strong>: Automatically creates <code>app/src/main/java/com/example/app/ComplexGridLayout.kt</code> with artifact-grounded, version-matched Kotlin code tailored to the developer's project configuration!</li>
 </ol>
 
 
