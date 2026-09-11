@@ -117,7 +117,7 @@ Here is how developers and AI coding agents use Library Insight step-by-step:
 
 ### Step 3: Connect to AI Coding Assistants (`ai-export` / `mcp`)
 
-> **Why this step?** Feed version-accurate API knowledge to Cursor, Claude, Gemini, or Copilot so they generate 100% correct code without hallucinating.
+> **Why this step?** Feed version-accurate API knowledge to Cursor, Claude, Gemini, or Copilot so they generate artifact-grounded code matching installed dependency signatures.
 
 1. **Export Token-Optimized Markdown Files:**
 

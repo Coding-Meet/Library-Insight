@@ -18,7 +18,7 @@ AI coding assistants often guess Java/Kotlin APIs from outdated documentation, w
 > 1. Executes `library-insight scan androidx.compose.foundation:foundation-layout:1.12.0`
 > 2. Executes `library-insight search Grid`
 > 3. Executes `library-insight explain Grid --deep` to inspect parameters, receiver scopes (`GridScope`), and embedded KDocs in 1 turn.
-> 4. Generates **100% accurate, version-correct Kotlin code** grounded directly in the artifact bytecode—without hallucinating deprecated signatures or relying on outdated web snippets!
+> 4. Generates **artifact-grounded, version-matched Kotlin code** verified directly against the artifact bytecode—without hallucinating missing signatures or relying on outdated web snippets!
 
 <!-- --8<-- [end:intro] -->
 
