@@ -81,7 +81,13 @@ object SearchEngine {
                     isSignatureQuery -> clazz.superTypes.any { it.lowercase().contains(lowercaseQuery) }
                     isSuspendQuery -> false
                     isGenericQuery -> clazz.typeParameters.isNotEmpty() && clazz.typeParameters.any { it.name.lowercase().contains(lowercaseQuery.replace("<", "").replace(">", "")) }
-                    else -> clazz.name.lowercase().contains(lowercaseQuery) || clazz.simpleName.lowercase().contains(lowercaseQuery)
+                    else -> {
+                        val dollarNormalizedQuery = lowercaseQuery.replace('.', '$')
+                        clazz.name.lowercase().contains(lowercaseQuery) ||
+                        clazz.simpleName.lowercase().contains(lowercaseQuery) ||
+                        clazz.name.lowercase().contains(dollarNormalizedQuery) ||
+                        clazz.simpleName.lowercase().contains(dollarNormalizedQuery)
+                    }
                 }
 
                 if (classMatches) {

@@ -47,6 +47,21 @@ class ExplainCommand : CliktCommand(
             }
         }
 
+        // 2b. Companion or Inner class dot-notation normalization fallback (e.g. Outer.Companion -> Outer$Companion)
+        if (clazz == null && className.contains(".")) {
+            val dollarClassName = className.replace(".", "$")
+            clazz = allClasses.firstOrNull {
+                it.name == dollarClassName ||
+                it.simpleName == dollarClassName ||
+                it.name.endsWith(".$dollarClassName") ||
+                it.name.endsWith(dollarClassName) ||
+                it.name.substringAfterLast('.').equals(dollarClassName.substringAfterLast('.'), ignoreCase = true)
+            }
+            if (clazz != null) {
+                echo("Note: Resolved '$className' to companion/inner class '${clazz.simpleName}'.\n")
+            }
+        }
+
         // 3. Kotlin top-level function facade fallback (${className}Kt)
         if (clazz == null) {
             val ktClassName = "${className}Kt"
