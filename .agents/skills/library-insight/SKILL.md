@@ -161,7 +161,7 @@ When answering questions or generating code for a library or project, AI agents 
 2. **Step 2: Indexing:** Run `library-insight scan <coordinate> -i "<include-pattern>" -p android` (or `scan-source`) to index the target library.
 3. **Step 3: Mandatory Symbol Search:** ALWAYS run `library-insight search <query>` (e.g. `library-insight search Grid`) FIRST to discover all matching packages, classes, methods, and properties in the index. **DO NOT skip `search` or jump directly to `explain` without searching first.**
 4. **Step 4: Exact Symbol Priority Rule:** Run `library-insight explain <ExactSymbol> --deep` on the exact requested symbol (e.g. `Grid`) or top match from `search` before considering secondary alternatives.
-5. **Step 5: Code Generation & File Edits Rule:** Directly modify or create the target source file in the user's project with the version-matched code instead of only outputting raw code snippets in the chat response.
+5. **Step 5: Code Generation & File Edits Rule:** Directly modify or create the target source file in the user's project with the version-matched code instead of only outputting raw code snippets in the chat response. Always execute project build (e.g. `gradle_build(commandLine=app:assembleDebug)`) before invoking Compose UI Preview rendering tools to ensure compiled `.class` files exist and prevent `NoClassDefFoundError`.
 
 # Scanners & Indexing
 
